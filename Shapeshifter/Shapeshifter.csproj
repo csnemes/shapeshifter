@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Shapeshifter</RootNamespace>
+    <AssemblyName>Shapeshifter</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>packages\Newtonsoft.Json.6.0.2\lib\net40\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core\ConversionHelpers.cs" />
+    <Compile Include="Core\ConvertersCollection.cs" />
+    <Compile Include="Core\Converters\CustomConverterWrapper.cs" />
+    <Compile Include="Core\Converters\EnumToStringConverter.cs" />
+    <Compile Include="Core\Converters\KeyValuePairConverter.cs" />
+    <Compile Include="Core\MethodSerializerCandidate.cs" />
+    <Compile Include="Core\DefaultSerializerCandidate.cs" />
+    <Compile Include="Core\Exceptions.cs" />
+    <Compile Include="Core\Constants.cs" />
+    <Compile Include="Core\MethodDeserializerCandidate.cs" />
+    <Compile Include="Core\DefaultDeserializerCandidate.cs" />
+    <Compile Include="Core\IPackformatWriter.cs" />
+    <Compile Include="Core\ISerializableTypeVisitor.cs" />
+    <Compile Include="Core\IValueConverter.cs" />
+    <Compile Include="Core\ObjectProperties.cs" />
+    <Compile Include="Core\PackformatValueReaderWrap.cs" />
+    <Compile Include="Builder\InstanceBuilder.cs" />
+    <Compile Include="Core\ObjectInPackedForm.cs" />
+    <Compile Include="Core\PackformatValueWriterWrap.cs" />
+    <Compile Include="Core\ReflectionInstanceSerializer.cs" />
+    <Compile Include="Core\DeserializationCandidatesCollection.cs" />
+    <Compile Include="Core\PackformatCandidatesDetector.cs" />
+    <Compile Include="Core\SerializationStructureWalker.cs" />
+    <Compile Include="Core\SerializerCandidate.cs" />
+    <Compile Include="Core\TypeInfo.cs" />
+    <Compile Include="History\DeserializerInfo.cs" />
+    <Compile Include="History\MissingDeserializerInfo.cs" />
+    <Compile Include="History\SerializerInfo.cs" />
+    <Compile Include="History\Snapshot.cs" />
+    <Compile Include="History\SnapshotDetector.cs" />
+    <Compile Include="History\SnapshotDifference.cs" />
+    <Compile Include="History\SnapshotHistory.cs" />
+    <Compile Include="ICustomPackformatConverter.cs" />
+    <Compile Include="IPackformatValueWriter.cs" />
+    <Compile Include="Properties\Annotations.cs" />
+    <Compile Include="SerializerAttribute.cs" />
+    <Compile Include="ShapeshifterException.cs" />
+    <Compile Include="ShapeshifterSerializer.cs" />
+    <Compile Include="Utils\LinqExtensions.cs" />
+    <Compile Include="Utils\MurMurHash3.cs" />
+    <Compile Include="Core\PackformatWriter.cs" />
+    <Compile Include="Core\SerializableTypeMemberInfo.cs" />
+    <Compile Include="Core\ReflectionInstanceDeserializer.cs" />
+    <Compile Include="Core\TypeInspector.cs" />
+    <Compile Include="Core\SerializationCandidatesCollection.cs" />
+    <Compile Include="Core\DeserializerCandidate.cs" />
+    <Compile Include="Core\PackformatReader.cs" />
+    <Compile Include="Core\DeserializerKey.cs" />
+    <Compile Include="IInstanceBuilder.cs" />
+    <Compile Include="IShapeshifterSerializer.cs" />
+    <Compile Include="IPackformatValueReader.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnexpectedEndOfTokenStreamException.cs" />
+    <Compile Include="DeserializerAttribute.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,107 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using Shapeshifter.Core;
+
+namespace Shapeshifter
+{
+    /// <summary>
+    ///     Serializer and deserializer for the given type T
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <remarks>
+    ///     See UnitTests for usage.
+    /// </remarks>
+    public class ShapeshifterSerializer<T> : ShapeshifterSerializer, IShapeshifterSerializer<T>
+    {
+        public ShapeshifterSerializer() : base(typeof (T))
+        {
+        }
+
+        public ShapeshifterSerializer(IEnumerable<Type> knownTypes) : base(typeof (T), knownTypes)
+        {
+        }
+
+        public ShapeshifterSerializer(IEnumerable<Type> knownTypes,
+            IEnumerable<ICustomPackformatConverter> customConverters)
+            : base(typeof (T), knownTypes, customConverters)
+        {
+        }
+
+        public new T Deserialize(Stream sourceStream)
+        {
+            return (T) base.Deserialize(sourceStream);
+        }
+
+        public new T Deserialize(string source)
+        {
+            return (T) base.Deserialize(source);
+        }
+    }
+
+    public class ShapeshifterSerializer : IShapeshifterSerializer
+    {
+        private readonly List<ICustomPackformatConverter> _customConverters;
+        private readonly Lazy<PackformatCandidatesDetector> _serializationCandidates;
+        private readonly Type _targetType;
+
+        public ShapeshifterSerializer(Type type) : this(type, new Type[0])
+        {
+        }
+
+        public ShapeshifterSerializer(Type type, IEnumerable<Type> knownTypes)
+            : this(type, knownTypes, new ICustomPackformatConverter[0])
+        {
+        }
+
+        public ShapeshifterSerializer(Type type, IEnumerable<Type> knownTypes,
+            IEnumerable<ICustomPackformatConverter> customConverters)
+        {
+            _targetType = type;
+            var typesToCheck = new List<Type>( (knownTypes ?? new Type[0]) ) {type};
+            _serializationCandidates = new Lazy<PackformatCandidatesDetector>(
+                () => PackformatCandidatesDetector.CreateFor(typesToCheck));
+            _customConverters = new List<ICustomPackformatConverter>(customConverters);
+        }
+
+        private SerializationCandidatesCollection SerializationCandidatesCollection
+        {
+            get { return _serializationCandidates.Value.SerializationCandidates; }
+        }
+
+        private DeserializationCandidatesCollection DeserializationCandidatesCollection
+        {
+            get { return _serializationCandidates.Value.DeserializationCandidates; }
+        }
+
+        public void Serialize(Stream targetStream, object objToPack)
+        {
+            var textWriter = new StreamWriter(targetStream);
+            var packerEngine = new PackformatWriter(textWriter, SerializationCandidatesCollection, _customConverters);
+            packerEngine.Pack(objToPack);
+        }
+
+        public string Serialize(object objToPack)
+        {
+            var writer = new StringWriter(new StringBuilder());
+            var packerEngine = new PackformatWriter(writer, SerializationCandidatesCollection, _customConverters);
+            packerEngine.Pack(objToPack);
+            return writer.GetStringBuilder().ToString();
+        }
+
+        public object Deserialize(Stream sourceStream)
+        {
+            var reader = new StreamReader(sourceStream);
+            var unpackerEngine = new PackformatReader(reader, DeserializationCandidatesCollection, _customConverters);
+            return unpackerEngine.Unpack(_targetType);
+        }
+
+        public object Deserialize(string source)
+        {
+            var reader = new StringReader(source);
+            var unpackerEngine = new PackformatReader(reader, DeserializationCandidatesCollection, _customConverters);
+            return unpackerEngine.Unpack(_targetType);
+        }
+    }
+}
