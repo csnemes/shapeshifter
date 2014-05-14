@@ -1,0 +1,12 @@
+
+--------------------------------------------------------------------------------------
+Roadmap
+--------------------------------------------------------------------------------------
+Add support for manually creating class instances a.k.a. TypeBuilders, auto mapping should be supported; small changes in the type should require minimum amount of code to write down
+
+Performance improvements
+Support load from regular JSON format (without Shapeshifter's attributes)
+
+VS package for history handling, code generation
+
+
