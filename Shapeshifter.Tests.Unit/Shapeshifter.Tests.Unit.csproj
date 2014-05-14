@@ -66,6 +66,7 @@
     <Compile Include="RoundtripTests\EnumSupportTests.cs" />
     <Compile Include="RoundtripTests\CollectionSupportTests.cs" />
     <Compile Include="RoundtripTests\GenericSupportTests.cs" />
+    <Compile Include="RoundtripTests\GuidSupportTests.cs" />
     <Compile Include="RoundtripTests\ListSupportTests.cs" />
     <Compile Include="RoundtripTests\NativeTypesSupportTests.cs" />
     <Compile Include="RoundtripTests\NullableSupportTests.cs" />

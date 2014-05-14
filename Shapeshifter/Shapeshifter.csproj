@@ -52,6 +52,7 @@
     <Compile Include="Core\ConvertersCollection.cs" />
     <Compile Include="Core\Converters\CustomConverterWrapper.cs" />
     <Compile Include="Core\Converters\EnumToStringConverter.cs" />
+    <Compile Include="Core\Converters\GuidToStringConverter.cs" />
     <Compile Include="Core\Converters\KeyValuePairConverter.cs" />
     <Compile Include="Core\MethodSerializerCandidate.cs" />
     <Compile Include="Core\DefaultSerializerCandidate.cs" />

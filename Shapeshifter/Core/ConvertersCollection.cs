@@ -15,6 +15,7 @@ namespace Shapeshifter.Core
         public ConvertersCollection(IEnumerable<ICustomPackformatConverter> customConverters)
         {
             //built-in converters 
+            _converters.Add(new GuidToStringConverter());
             _converters.Add(new EnumToStringConverter());
             _converters.Add(new KeyValuePairConverter());
             //and custom ones
