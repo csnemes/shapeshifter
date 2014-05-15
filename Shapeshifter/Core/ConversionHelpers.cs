@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Runtime.Remoting.Services;
 
 namespace Shapeshifter.Core
 {
@@ -28,13 +29,13 @@ namespace Shapeshifter.Core
         //TODO refactor, split into methods of manageable size
         public object ConvertValueToTargetType(Type targetType, object value)
         {
-            if (value == null) return null;
-
             var packedForm = value as ObjectInPackedForm;
             if (packedForm != null)
             {
                 value = packedForm.Deserialize();
             }
+
+            //TODO skip native types which can not be subject of conversion
 
             //look for custom converters
             IValueConverter converter = ResolveConverter(targetType);
@@ -42,6 +43,9 @@ namespace Shapeshifter.Core
             {
                 return converter.ConvertFromPackformat(this, targetType, value);
             }
+
+            //custom converters must handle the case of converting null so this shortcut of null handling is done after conversions
+            if (value == null) return null;
 
             if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof (Nullable<>))
             {
@@ -200,6 +204,9 @@ namespace Shapeshifter.Core
 
         public object ConvertValueToPackformatType(object value)
         {
+            //null to null
+            if (value == null) return null;
+
             //look for custom converters
             IValueConverter converter = ResolveConverter(value.GetType());
             if (converter != null)
@@ -208,6 +215,12 @@ namespace Shapeshifter.Core
             }
 
             return value; //no conversion
+        }
+
+        private bool HasConverter(Type type)
+        {
+            //TODO more efficient check
+            return _converters.ResolveConverter(type) != null;
         }
 
 

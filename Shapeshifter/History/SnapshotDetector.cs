@@ -63,21 +63,21 @@ namespace Shapeshifter.History
         public static SnapshotDetector CreateFor(Type type)
         {
             var builder = new SnapshotDetector();
-            builder.Walker.WalkType(type);
+            builder.Walker.WalkRootType(type);
             return builder;
         }
 
         public static SnapshotDetector CreateFor(IEnumerable<Type> types)
         {
             var builder = new SnapshotDetector();
-            builder.Walker.WalkTypes(types);
+            builder.Walker.WalkRootTypes(types);
             return builder;
         }
 
         public static SnapshotDetector CreateFor(Assembly assembly)
         {
             var builder = new SnapshotDetector();
-            builder.Walker.WalkTypes(assembly.GetTypes());
+            builder.Walker.WalkRootTypes(assembly.GetTypes());
             return builder;
         }
 
@@ -86,7 +86,7 @@ namespace Shapeshifter.History
             var builder = new SnapshotDetector();
             foreach (Assembly assembly in assemblies)
             {
-                builder.Walker.WalkTypes(assembly.GetTypes());
+                builder.Walker.WalkRootTypes(assembly.GetTypes());
             }
             return builder;
         }

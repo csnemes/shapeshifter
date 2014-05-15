@@ -69,6 +69,7 @@
     <Compile Include="RoundtripTests\GuidSupportTests.cs" />
     <Compile Include="RoundtripTests\ListSupportTests.cs" />
     <Compile Include="RoundtripTests\NativeTypesSupportTests.cs" />
+    <Compile Include="RoundtripTests\NestingPackformatConvertersTests.cs" />
     <Compile Include="RoundtripTests\NullableSupportTests.cs" />
     <Compile Include="RoundtripTests\BasicVersioningTests.cs" />
     <Compile Include="RoundtripTests\TestsBase.cs" />

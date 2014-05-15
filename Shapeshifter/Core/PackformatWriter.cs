@@ -18,12 +18,12 @@ namespace Shapeshifter.Core
         private readonly JsonWriter _writer;
 
         public PackformatWriter(TextWriter writer, SerializationCandidatesCollection typeContext)
-            : this(writer, typeContext, new List<ICustomPackformatConverter>())
+            : this(writer, typeContext, new List<IPackformatSurrogateConverter>())
         {
         }
 
         public PackformatWriter(TextWriter writer, SerializationCandidatesCollection typeContext,
-            IEnumerable<ICustomPackformatConverter> customConverters)
+            IEnumerable<IPackformatSurrogateConverter> customConverters)
         {
             _writer = new JsonTextWriter(writer);
             _typeContext = typeContext;
@@ -75,13 +75,13 @@ namespace Shapeshifter.Core
 
         private void WriteValue(object obj)
         {
+            obj = _conversionHelpers.ConvertValueToPackformatType(obj);
+
             if (obj == null)
             {
                 _writer.WriteNull();
                 return;
             }
-
-            obj = _conversionHelpers.ConvertValueToPackformatType(obj);
 
             if (obj is string)
             {

@@ -17,14 +17,14 @@ namespace Shapeshifter.Tests.Unit
         public void IsSerializable_ShouldRecognize_DataContractAttirbute()
         {
             var ti = new TypeInspector(typeof(ClassWithDataContract));
-            ti.IsSerializable.Should().BeTrue();
+            ti.HasDataContractAttribute.Should().BeTrue();
         }
 
         [Test]
         public void IsSerializable_ShouldRecognize_NoDataContractAttirbute()
         {
             var ti = new TypeInspector(typeof(ClassWithoutDataContract));
-            ti.IsSerializable.Should().BeFalse();
+            ti.HasDataContractAttribute.Should().BeFalse();
         }
 
         [Test]

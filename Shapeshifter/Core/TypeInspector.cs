@@ -18,7 +18,7 @@ namespace Shapeshifter.Core
     /// </remarks>
     internal class TypeInspector
     {
-        private readonly Lazy<bool> _isSerializable;
+        private readonly Lazy<bool> _hasDataContractAttribute;
         private readonly Lazy<List<SerializableTypeMemberInfo>> _itemCandidates;
         private readonly Lazy<List<KnownTypeAttribute>> _knownTypeAttributes;
         private readonly Lazy<SerializerAttribute> _serializerAttribute;
@@ -29,7 +29,7 @@ namespace Shapeshifter.Core
         public TypeInspector(Type type)
         {
             _type = type;
-            _isSerializable =
+            _hasDataContractAttribute =
                 new Lazy<bool>(() => _type.GetCustomAttributes(typeof (DataContractAttribute), false).Any());
             _itemCandidates =
                 new Lazy<List<SerializableTypeMemberInfo>>(() => GetSerializableItemCandidatesForType(_type));
@@ -43,9 +43,9 @@ namespace Shapeshifter.Core
             get { return _itemCandidates.Value; }
         }
 
-        public bool IsSerializable
+        public bool HasDataContractAttribute
         {
-            get { return _isSerializable.Value; }
+            get { return _hasDataContractAttribute.Value; }
         }
 
         public bool HasSerializerAttribute
@@ -53,6 +53,15 @@ namespace Shapeshifter.Core
             get { return SerializerAttribute != null; }
         }
 
+        public bool IsSerializable
+        {
+            get { return HasDataContractAttribute || HasSerializerAttribute || IsNativeType; }
+        }
+
+        public bool IsNativeType
+        {
+            get { return this.Type.IsPrimitive || this.Type == typeof(String); }
+        }
 
         public bool HasKnownTypeAttribute
         {
@@ -86,9 +95,41 @@ namespace Shapeshifter.Core
             get { return GetPackformatNameFromSerializerAttribute() ?? GetTypePrettyShortName(_type); }
         }
 
-        private Type Type
+        internal Type Type
         {
             get { return _type; }
+        }
+
+        public IEnumerable<Type> GetKnownTypes()
+        {
+            foreach (KnownTypeAttribute knownTypeAttribute in KnownTypeAttributes)
+            {
+                if (knownTypeAttribute.Type != null)
+                {
+                    yield return knownTypeAttribute.Type;
+                }
+                else
+                {
+                    MethodInfo methodToCall = this.Type.GetMethod(knownTypeAttribute.MethodName,
+                        BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+                    if (methodToCall == null)
+                    {
+                        throw Exceptions.KnownTypeMethodNotFound(knownTypeAttribute.MethodName, this.Type);
+                    }
+
+                    var knownTypesList = methodToCall.Invoke(null, new object[0]) as IEnumerable<Type>;
+                    if (knownTypesList == null)
+                    {
+                        throw Exceptions.KnownTypeMethodReturnValueIsInvalid(knownTypeAttribute.MethodName, this.Type);
+                    }
+
+                    foreach (var knownType in knownTypesList)
+                    {
+                        yield return knownType;
+                    }
+                }
+            }
         }
 
         private static string GetTypePrettyShortName(Type type)
@@ -186,7 +227,7 @@ namespace Shapeshifter.Core
             Type type = Type;
             var typeInfo = new TypeInfo(Type, PackformatName, Version, SerializableItemCandidates);
 
-            if (IsSerializable)
+            if (HasDataContractAttribute)
             {
                 visitor.VisitSerializerOnClass(typeInfo);
                 //add default deserializer with current version

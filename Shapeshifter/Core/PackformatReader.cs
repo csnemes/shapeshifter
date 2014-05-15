@@ -17,12 +17,12 @@ namespace Shapeshifter.Core
         private readonly DeserializationCandidatesCollection _typeContext;
 
         public PackformatReader(TextReader reader, DeserializationCandidatesCollection typeContext) :
-            this(reader, typeContext, new List<ICustomPackformatConverter>())
+            this(reader, typeContext, new List<IPackformatSurrogateConverter>())
         {
         }
 
         public PackformatReader(TextReader reader, DeserializationCandidatesCollection typeContext,
-            IEnumerable<ICustomPackformatConverter> customConverters)
+            IEnumerable<IPackformatSurrogateConverter> customConverters)
         {
             _reader = new JsonTextReader(reader);
             _typeContext = typeContext;
@@ -30,12 +30,12 @@ namespace Shapeshifter.Core
         }
 
         public PackformatReader(string source, DeserializationCandidatesCollection typeContext)
-            : this(new StringReader(source), typeContext, new List<ICustomPackformatConverter>())
+            : this(new StringReader(source), typeContext, new List<IPackformatSurrogateConverter>())
         {
         }
 
         public PackformatReader(string source, DeserializationCandidatesCollection typeContext,
-            IEnumerable<ICustomPackformatConverter> customConverters)
+            IEnumerable<IPackformatSurrogateConverter> customConverters)
             : this(new StringReader(source), typeContext, customConverters)
         {
         }

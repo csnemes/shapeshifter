@@ -127,6 +127,20 @@ namespace Shapeshifter.Core
                     tokenType)));
         }
 
+        public static Exception InvalidSurrogate(Type type)
+        {
+            return SafeCreateException(
+                () => new ShapeshifterException(String.Format("Type {0} misses DataContract attribute.",
+                    type.Name)));
+        }
+
+        public static Exception KnownTypeAttributeMissingFromSurrogateConverter(Type type)
+        {
+            return SafeCreateException(
+                () => new ShapeshifterException(String.Format("Surrogate converter type {0} misses KnownType attribute, which is required to describe the surrogate type(s).",
+                    type.Name)));
+        }
+
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {
             try
@@ -142,5 +156,6 @@ namespace Shapeshifter.Core
                             " exception with {0}.", exceptionCreationFunc), ex);
             }
         }
+
     }
 }

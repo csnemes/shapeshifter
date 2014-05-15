@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Shapeshifter.Core;
 
@@ -24,7 +25,7 @@ namespace Shapeshifter
         }
 
         public ShapeshifterSerializer(IEnumerable<Type> knownTypes,
-            IEnumerable<ICustomPackformatConverter> customConverters)
+            IEnumerable<IPackformatSurrogateConverter> customConverters)
             : base(typeof (T), knownTypes, customConverters)
         {
         }
@@ -42,7 +43,7 @@ namespace Shapeshifter
 
     public class ShapeshifterSerializer : IShapeshifterSerializer
     {
-        private readonly List<ICustomPackformatConverter> _customConverters;
+        private readonly List<IPackformatSurrogateConverter> _customConverters;
         private readonly Lazy<PackformatCandidatesDetector> _serializationCandidates;
         private readonly Type _targetType;
 
@@ -51,19 +52,40 @@ namespace Shapeshifter
         }
 
         public ShapeshifterSerializer(Type type, IEnumerable<Type> knownTypes)
-            : this(type, knownTypes, new ICustomPackformatConverter[0])
+            : this(type, knownTypes, new IPackformatSurrogateConverter[0])
         {
         }
 
         public ShapeshifterSerializer(Type type, IEnumerable<Type> knownTypes,
-            IEnumerable<ICustomPackformatConverter> customConverters)
+            IEnumerable<IPackformatSurrogateConverter> customConverters)
         {
             _targetType = type;
-            var typesToCheck = new List<Type>( (knownTypes ?? new Type[0]) ) {type};
+            _customConverters = new List<IPackformatSurrogateConverter>(customConverters);
+
+            var rootTypesToCheck = new List<Type>() { type };
+            var knownTypesToCheck = new List<Type>((knownTypes ?? new Type[0]));
+            knownTypesToCheck.AddRange(GetSurrogateTypesForConverters(_customConverters));
+
             _serializationCandidates = new Lazy<PackformatCandidatesDetector>(
-                () => PackformatCandidatesDetector.CreateFor(typesToCheck));
-            _customConverters = new List<ICustomPackformatConverter>(customConverters);
+                () => PackformatCandidatesDetector.CreateFor(rootTypesToCheck, knownTypesToCheck));
         }
+
+        private IEnumerable<Type> GetSurrogateTypesForConverters(IEnumerable<IPackformatSurrogateConverter> customConverters)
+        {
+            foreach (var typeInspector in customConverters.Select(t => new TypeInspector(t.GetType())))
+            {
+                if (!typeInspector.HasKnownTypeAttribute)
+                {
+                    throw Exceptions.KnownTypeAttributeMissingFromSurrogateConverter(typeInspector.Type);
+                }
+
+                foreach (var knownType in typeInspector.GetKnownTypes())
+                {
+                    yield return knownType;
+                }
+            }
+        }
+
 
         private SerializationCandidatesCollection SerializationCandidatesCollection
         {

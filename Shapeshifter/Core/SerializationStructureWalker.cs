@@ -23,34 +23,37 @@ namespace Shapeshifter.Core
             _visitor = visitor;
         }
 
-        public void WalkType(Type type)
+        public void WalkRootType(Type type)
+        {
+            InternalWalkType(type, false);
+        }
+
+        public void WalkKnownType(Type type)
         {
             InternalWalkType(type, true);
         }
 
-        public void WalkTypes(IEnumerable<Type> types)
+        public void WalkRootTypes(IEnumerable<Type> types)
         {
             foreach (Type type in types)
             {
-                InternalWalkType(type, true);
+                InternalWalkType(type, false);
             }
         }
 
-        private void InternalWalkType(Type type, bool isRoot = false)
+        private void InternalWalkType(Type type, bool isKnownType = false)
         {
-            //skip natives and already visited types
-            if (type.IsPrimitive || type == typeof (string)) return;
-            if (_typesVisited.Contains(type)) return;
-
-            _typesVisited.Add(type);
-
+            //TODO cache typeInspectors statically?
             var typeInspector = new TypeInspector(type);
 
+            //skip natives and already visited types
+            if (typeInspector.IsNativeType || _typesVisited.Contains(type)) return;
+
+            _typesVisited.Add(type);
+            
             typeInspector.AcceptOnStaticMethods(_visitor);
 
             if (!typeInspector.IsSerializable) return;
-
-            if (isRoot && !typeInspector.HasSerializerAttribute) return;
 
             typeInspector.AcceptOnType(_visitor);
 
@@ -81,34 +84,11 @@ namespace Shapeshifter.Core
 
             if (typeInspector.HasKnownTypeAttribute)
             {
-                foreach (KnownTypeAttribute knownTypeAttribute in typeInspector.KnownTypeAttributes)
+                foreach (var knownType in typeInspector.GetKnownTypes())
                 {
-                    if (knownTypeAttribute.Type != null)
-                    {
-                        InternalWalkType(knownTypeAttribute.Type);
-                    }
-                    else
-                    {
-                        MethodInfo methodToCall = type.GetMethod(knownTypeAttribute.MethodName,
-                            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
-
-                        if (methodToCall == null)
-                        {
-                            throw Exceptions.KnownTypeMethodNotFound(knownTypeAttribute.MethodName, type);
-                        }
-
-                        var knownTypesList = methodToCall.Invoke(null, new object[0]) as IEnumerable<Type>;
-                        if (knownTypesList == null)
-                        {
-                            throw Exceptions.KnownTypeMethodReturnValueIsInvalid(knownTypeAttribute.MethodName, type);
-                        }
-
-                        foreach (Type knownType in knownTypesList)
-                        {
-                            InternalWalkType(knownType);
-                        }
-                    }
+                    InternalWalkType(knownType);
                 }
+          
             }
         }
     }

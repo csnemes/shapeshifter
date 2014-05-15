@@ -14,6 +14,11 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         {
             return new ShapeshifterSerializer<T>();
         }
+        
+        protected IShapeshifterSerializer<T> GetSerializer<T>(params IPackformatSurrogateConverter[] surrogateConverters)
+        {
+            return new ShapeshifterSerializer<T>(null, surrogateConverters);
+        }
 
         protected bool StringArrayEquals(string[] arr1, string[] arr2)
         {

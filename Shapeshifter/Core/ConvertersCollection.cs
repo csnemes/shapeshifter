@@ -12,14 +12,14 @@ namespace Shapeshifter.Core
     {
         private readonly List<IValueConverter> _converters = new List<IValueConverter>();
 
-        public ConvertersCollection(IEnumerable<ICustomPackformatConverter> customConverters)
+        public ConvertersCollection(IEnumerable<IPackformatSurrogateConverter> customConverters)
         {
             //built-in converters 
             _converters.Add(new GuidToStringConverter());
             _converters.Add(new EnumToStringConverter());
             _converters.Add(new KeyValuePairConverter());
             //and custom ones
-            _converters.AddRange(customConverters.Select(customConverter => new CustomConverterWrapper(customConverter)));
+            _converters.AddRange(customConverters.Select(customConverter => new SurrogateConverterWrapper(customConverter)));
         }
 
         public IValueConverter ResolveConverter(Type type)

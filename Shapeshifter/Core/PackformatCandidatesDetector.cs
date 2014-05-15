@@ -64,24 +64,35 @@ namespace Shapeshifter.Core
                 method));
         }
 
-        public static PackformatCandidatesDetector CreateFor(Type type)
+        public static PackformatCandidatesDetector CreateFor(Type rootType)
         {
             var builder = new PackformatCandidatesDetector();
-            builder.WalkRootType(type);
+            builder.WalkRootType(rootType);
             return builder;
         }
 
-        public static PackformatCandidatesDetector CreateFor(IEnumerable<Type> types)
+        public static PackformatCandidatesDetector CreateFor(IEnumerable<Type> rootTypes)
+        {
+            return CreateFor(rootTypes, new Type[0]);
+        }
+
+        public static PackformatCandidatesDetector CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Type> knownTypes)
         {
             var builder = new PackformatCandidatesDetector();
-            builder.WalkRootTypes(types);
+            builder.WalkRootTypes(rootTypes);
+            builder.WalkKnownTypes(knownTypes);
             return builder;
         }
 
         private void WalkRootType(Type type)
         {
             CheckIfSerializerAttributePresent(type);
-            Walker.WalkType(type);
+            Walker.WalkRootType(type);
+        }
+
+        private void WalkKnownType(Type type)
+        {
+            Walker.WalkKnownType(type);
         }
 
         private void WalkRootTypes(IEnumerable<Type> types)
@@ -92,10 +103,18 @@ namespace Shapeshifter.Core
             }
         }
 
+        private void WalkKnownTypes(IEnumerable<Type> types)
+        {
+            foreach (Type type in types)
+            {
+                WalkKnownType(type);
+            }
+        }
+
         private void CheckIfSerializerAttributePresent(Type type)
         {
             var ti = new TypeInspector(type);
-            if (ti.IsSerializable && ! ti.HasSerializerAttribute)
+            if (ti.HasDataContractAttribute && ! ti.HasSerializerAttribute)
             {
                 throw Exceptions.SerializerAttributeMissing(type);
             }
