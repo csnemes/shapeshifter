@@ -70,6 +70,22 @@ namespace Shapeshifter.Core
                 }
             }
 
+            //handle generic IEnumerables
+            if (targetType.IsEnumerable())
+            {
+                var source = value as List<object>;
+                if (source != null)
+                {
+                    Type arrayElementType = targetType.GetGenericArguments().First();
+                    Array resultArray = Array.CreateInstance(arrayElementType, source.Count);
+                    for (int idx = 0; idx < source.Count; idx++)
+                    {
+                        resultArray.SetValue(ConvertValueToTargetType(arrayElementType, source[idx]), idx);
+                    }
+                    return resultArray;
+                }
+            }
+
             //handle generic list  //TODO a more efficient way, also refactor such items to internal converters
             if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof (List<>))
             {

@@ -250,16 +250,17 @@ namespace Shapeshifter.Core
 
         private static List<SerializableTypeMemberInfo> GetSerializableItemCandidatesForType(Type type)
         {
+            const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
+
             var candidates = new List<SerializableTypeMemberInfo>();
 
-            FieldInfo[] allFields = type.GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var allFields = type.GetFieldsRecursive(flags);
 
             candidates.AddRange(allFields.Where(
                 fld => ContainsAttributeSpecifyingCandidates(fld.GetCustomAttributes(true))).
                 Select(fld => new SerializableTypeMemberInfo(fld)));
 
-            PropertyInfo[] allProperties =
-                type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            var allProperties = type.GetPropertiesRecursive(flags);
 
             candidates.AddRange(allProperties.Where(
                 prop => ContainsAttributeSpecifyingCandidates(prop.GetCustomAttributes(true))).

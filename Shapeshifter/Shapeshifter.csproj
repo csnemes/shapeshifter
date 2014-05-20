@@ -73,6 +73,7 @@
     <Compile Include="Core\PackformatCandidatesDetector.cs" />
     <Compile Include="Core\SerializationStructureWalker.cs" />
     <Compile Include="Core\SerializerCandidate.cs" />
+    <Compile Include="Core\TypeExtensions.cs" />
     <Compile Include="Core\TypeInfo.cs" />
     <Compile Include="History\DeserializerInfo.cs" />
     <Compile Include="History\MissingDeserializerInfo.cs" />
