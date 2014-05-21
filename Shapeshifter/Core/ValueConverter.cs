@@ -5,18 +5,17 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
-using System.Runtime.Remoting.Services;
 
 namespace Shapeshifter.Core
 {
     /// <summary>
     ///     Class containing helper functions for conversion between type of JSON returned data and the target type
     /// </summary>
-    internal class ConversionHelpers
+    internal class ValueConverter
     {
         private readonly ConvertersCollection _converters;
 
-        public ConversionHelpers(ConvertersCollection converters)
+        public ValueConverter(ConvertersCollection converters)
         {
             _converters = converters;
         }
@@ -154,67 +153,7 @@ namespace Shapeshifter.Core
             }
 
             //fix well known type conversions
-            if (value is long)
-            {
-                if (targetType == typeof (int)) //JSON stores int as long
-                {
-                    return Convert.ToInt32(value);
-                }
-                if (targetType == typeof (short))
-                {
-                    return Convert.ToInt16(value);
-                }
-                if (targetType == typeof (uint))
-                {
-                    return Convert.ToUInt32(value);
-                }
-                if (targetType == typeof (ushort))
-                {
-                    return Convert.ToUInt16(value);
-                }
-                if (targetType == typeof (byte))
-                {
-                    return Convert.ToByte(value);
-                }
-                if (targetType == typeof (sbyte))
-                {
-                    return Convert.ToSByte(value);
-                }
-            }
-            else if (value is double)
-            {
-                if (targetType == typeof (float))
-                {
-                    return Convert.ToSingle(value);
-                }
-                if (targetType == typeof (decimal))
-                {
-                    return Convert.ToDecimal(value);
-                }
-            }
-            else if (value is BigInteger)
-            {
-                if (targetType == typeof (ulong))
-                {
-                    return (ulong) (BigInteger) value;
-                }
-            }
-            else if (value is string)
-            {
-                if (targetType == typeof (char))
-                {
-                    return Convert.ToChar(value);
-                }
-            }
-            else if (value is DateTime)
-            {
-                if (targetType == typeof (DateTimeOffset))
-                {
-                    return new DateTimeOffset((DateTime) value);
-                }
-            }
-
-            return value; //no conversion
+            return ImplicitConversionHelper.ConvertValue(targetType, value);
         }
 
 

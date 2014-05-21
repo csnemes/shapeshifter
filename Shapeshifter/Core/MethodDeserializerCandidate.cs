@@ -13,7 +13,7 @@ namespace Shapeshifter.Core
             _methodInfo = methodInfo;
         }
 
-        public override Func<ObjectProperties, ConversionHelpers, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc()
         {
             return
                 (objects, convHelp) =>

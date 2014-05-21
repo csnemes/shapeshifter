@@ -25,7 +25,7 @@ namespace Shapeshifter.Core
             _packItemCandidates = packItemCandidates.ToDictionary(item => item.Name);
         }
 
-        public object Deserialize(ObjectProperties packItems, ConversionHelpers conversionHelpers)
+        public object Deserialize(ObjectProperties packItems, ValueConverter valueConverter)
         {
             object result = FormatterServices.GetUninitializedObject(_targetType);
 
@@ -35,7 +35,7 @@ namespace Shapeshifter.Core
                 SerializableTypeMemberInfo target;
                 if (_packItemCandidates.TryGetValue(packItem.Key, out target))
                 {
-                    target.SetValueFor(result, conversionHelpers.ConvertValueToTargetType(target.Type, packItem.Value));
+                    target.SetValueFor(result, valueConverter.ConvertValueToTargetType(target.Type, packItem.Value));
                 }
             }
 

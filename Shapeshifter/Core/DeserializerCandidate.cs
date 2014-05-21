@@ -36,9 +36,9 @@ namespace Shapeshifter.Core
 
         /// <summary>
         ///     Override should return a function which based on the given <see cref="ObjectProperties" />, using the given
-        ///     <see cref="ConversionHelpers" />
+        ///     <see cref="ValueConverter" />
         ///     builds up the deserialized value.
         /// </summary>
-        public abstract Func<ObjectProperties, ConversionHelpers, object> GetDeserializerFunc();
+        public abstract Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc();
     }
 }

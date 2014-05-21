@@ -8,7 +8,7 @@ namespace Shapeshifter.Core
     internal class DefaultDeserializerCandidate : DeserializerCandidate
     {
         private readonly TypeInfo _typeInfo;
-        private Func<ObjectProperties, ConversionHelpers, object> _unpackerFunc;
+        private Func<ObjectProperties, ValueConverter, object> _unpackerFunc;
 
         public DefaultDeserializerCandidate(string packformatName, uint version, TypeInfo typeInfo)
             : base(packformatName, version)
@@ -16,7 +16,7 @@ namespace Shapeshifter.Core
             _typeInfo = typeInfo;
         }
 
-        public override Func<ObjectProperties, ConversionHelpers, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc()
         {
             if (_unpackerFunc == null)
             {

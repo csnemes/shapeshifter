@@ -28,7 +28,7 @@ namespace Shapeshifter.Core.Converters
             return typeInfo.IsSerializable;
         }
 
-        public object ConvertFromPackformat(ConversionHelpers conversionHelpers, Type targetType, object value)
+        public object ConvertFromPackformat(ValueConverter valueConverter, Type targetType, object value)
         {
             return _surrogateConverter.ConvertFromSurrogate(targetType, value);
         }

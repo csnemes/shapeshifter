@@ -15,11 +15,11 @@ namespace Shapeshifter.Core
         /// <summary>
         ///     Converts the serialized value to targetType
         /// </summary>
-        /// <param name="conversionHelpers">Helper functions for conversions</param>
+        /// <param name="valueConverter">Helper functions for conversions</param>
         /// <param name="targetType">the destination type</param>
         /// <param name="value">the value read (surrogate)</param>
         /// <returns></returns>
-        object ConvertFromPackformat(ConversionHelpers conversionHelpers, Type targetType, object value);
+        object ConvertFromPackformat(ValueConverter valueConverter, Type targetType, object value);
 
         /// <summary>
         ///     Should return true if the implementation supports the given type

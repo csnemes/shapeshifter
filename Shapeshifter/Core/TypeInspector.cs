@@ -254,13 +254,13 @@ namespace Shapeshifter.Core
 
             var candidates = new List<SerializableTypeMemberInfo>();
 
-            var allFields = type.GetFieldsRecursive(flags);
+            var allFields = type.GetAllFieldsRecursive(flags);
 
             candidates.AddRange(allFields.Where(
                 fld => ContainsAttributeSpecifyingCandidates(fld.GetCustomAttributes(true))).
                 Select(fld => new SerializableTypeMemberInfo(fld)));
 
-            var allProperties = type.GetPropertiesRecursive(flags);
+            var allProperties = type.GetAllPropertiesRecursive(flags);
 
             candidates.AddRange(allProperties.Where(
                 prop => ContainsAttributeSpecifyingCandidates(prop.GetCustomAttributes(true))).

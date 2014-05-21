@@ -13,7 +13,7 @@ namespace Shapeshifter.Core.Converters
             return guidVal.ToString();
         }
 
-        public object ConvertFromPackformat(ConversionHelpers conversionHelpers, Type targetType, object value)
+        public object ConvertFromPackformat(ValueConverter valueConverter, Type targetType, object value)
         {
             return Guid.Parse((string) value);
         }

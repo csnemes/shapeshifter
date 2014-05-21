@@ -48,7 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\ConversionHelpers.cs" />
+    <Compile Include="Core\ImplicitConversionHelper.cs" />
+    <Compile Include="Core\ValueConverter.cs" />
     <Compile Include="Core\ConvertersCollection.cs" />
     <Compile Include="Core\Converters\SurrogateConverterWrapper.cs" />
     <Compile Include="Core\Converters\EnumToStringConverter.cs" />

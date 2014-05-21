@@ -13,7 +13,7 @@ namespace Shapeshifter.Core
     /// </summary>
     internal class PackformatWriter : IDisposable, IPackformatWriter
     {
-        private readonly ConversionHelpers _conversionHelpers;
+        private readonly ValueConverter _valueConverter;
         private readonly SerializationCandidatesCollection _typeContext;
         private readonly JsonWriter _writer;
 
@@ -27,7 +27,7 @@ namespace Shapeshifter.Core
         {
             _writer = new JsonTextWriter(writer);
             _typeContext = typeContext;
-            _conversionHelpers = new ConversionHelpers(new ConvertersCollection(customConverters));
+            _valueConverter = new ValueConverter(new ConvertersCollection(customConverters));
         }
 
         void IPackformatWriter.WriteProperty(string propertyKey, object propertyValue)
@@ -75,7 +75,7 @@ namespace Shapeshifter.Core
 
         private void WriteValue(object obj)
         {
-            obj = _conversionHelpers.ConvertValueToPackformatType(obj);
+            obj = _valueConverter.ConvertValueToPackformatType(obj);
 
             if (obj == null)
             {
