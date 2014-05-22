@@ -52,14 +52,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\TypeInspectorTests.cs" />
     <Compile Include="History\SnapshotDetectorTests.cs" />
     <Compile Include="History\SnapshotHistoryTests.cs" />
     <Compile Include="History\SnapshotTests.cs" />
     <Compile Include="History\TestClasses.cs" />
     <Compile Include="New\CustomSerializerTests.cs" />
     <Compile Include="New\DefaultRoundtripTests.cs" />
-    <Compile Include="PackformatWriterTests.cs" />
+    <Compile Include="Core\PackformatWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundtripTests\AdvancedVersioningTests.cs" />
     <Compile Include="RoundtripTests\ArraySupportTests.cs" />
@@ -79,9 +78,9 @@
     <Compile Include="RoundtripTests\NullableSupportTests.cs" />
     <Compile Include="RoundtripTests\BasicVersioningTests.cs" />
     <Compile Include="RoundtripTests\TestsBase.cs" />
-    <Compile Include="SerializationCandidatesDetectorTests.cs" />
-    <Compile Include="TypeInspectorTests.cs" />
-    <Compile Include="PackformatReaderTests.cs" />
+    <Compile Include="Core\SerializationCandidatesDetectorTests.cs" />
+    <Compile Include="Core\TypeInspectorTests.cs" />
+    <Compile Include="Core\PackformatReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shapeshifter\Shapeshifter.csproj">
