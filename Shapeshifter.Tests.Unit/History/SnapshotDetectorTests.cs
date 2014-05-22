@@ -1,12 +1,9 @@
-﻿using System;
+﻿using FluentAssertions;
+using NUnit.Framework;
+using Shapeshifter.SchemaComparison;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using NUnit.Framework;
-using Shapeshifter.History;
 
 namespace Shapeshifter.Tests.Unit.History
 {
@@ -57,13 +54,13 @@ namespace Shapeshifter.Tests.Unit.History
         private class ConverterClass
         {
             [Deserializer(typeof(InnerClass), 100)]
-            public static object Deserializer(IPackformatValueReader reader)
+            public static object Deserializer(IShapeshifterReader reader)
             {
                 return null;
             }
 
             [Serializer(typeof(InnerClass), 100)]
-            public static void Serializer(IPackformatValueWriter writer, InnerClass item)
+            public static void Serializer(IShapeshifterWriter writer, InnerClass item)
             {
             }
         }

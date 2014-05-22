@@ -1,8 +1,7 @@
-﻿using System;
-using System.Reflection;
-using System.Runtime.Serialization;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
+using System;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
@@ -130,7 +129,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeString
         {
             [DataMember]
@@ -138,7 +137,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeBool
         {
             [DataMember]
@@ -146,7 +145,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeIntegers
         {
             [DataMember]
@@ -160,7 +159,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeUnsignedIntegers
         {
             [DataMember]
@@ -174,7 +173,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeFloats
         {
             [DataMember]
@@ -188,7 +187,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithNativeBytes
         {
             [DataMember]
@@ -202,7 +201,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         public class ClassWithDateTypes
         {
             [DataMember]

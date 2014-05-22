@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
+﻿using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Shapeshifter.Core;
+using Shapeshifter.Core.Detection;
+using Shapeshifter.Core.Serialization;
 
-namespace Shapeshifter.Tests.Unit
+namespace Shapeshifter.Tests.Unit.Core
 {
     [TestFixture]
     public class PackformatWriterTests
@@ -55,16 +52,16 @@ namespace Shapeshifter.Tests.Unit
 
         private string Serialize(object toPack)
         {
-            var typeContext = PackformatCandidatesDetector.CreateFor(typeof(TestClass)).SerializationCandidates;
+            var typeContext = MetadataExplorer.CreateFor(typeof(TestClass)).Serializers;
 
             var sb = new StringBuilder();
-            var engine = new PackformatWriter(new StringWriter(sb), typeContext);
+            var engine = new InternalPackformatWriter(new StringWriter(sb), typeContext);
             engine.Pack(toPack);
             return sb.ToString();
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class TestClass
         {
             [DataMember]

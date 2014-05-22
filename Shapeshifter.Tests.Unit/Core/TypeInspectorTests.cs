@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Shapeshifter.Core;
+using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.Tests.Unit
+namespace Shapeshifter.Tests.Unit.Core
 {
     [TestFixture]
     public class TypeInspectorTests

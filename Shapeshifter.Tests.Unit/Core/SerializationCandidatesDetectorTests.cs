@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Shapeshifter.Core;
+using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.Tests.Unit
+namespace Shapeshifter.Tests.Unit.Core
 {
     [TestFixture]
     public class SerializationCandidatesDetectorTests
@@ -16,34 +13,34 @@ namespace Shapeshifter.Tests.Unit
         [Test]
         public void ShouldDetectMemberTypesWithDataMemberAttribute()
         {
-            var result = PackformatCandidatesDetector.CreateFor(typeof (ExternalClass)).SerializationCandidates;
+            var result = MetadataExplorer.CreateFor(typeof (ExternalClass)).Serializers;
             result.ResolveSerializer(typeof (InnerClass)).Should().NotBeNull();
         }
 
         [Test]
         public void ShouldDetectItemTypeOfListMembersWithDataMemberAttribute()
         {
-            var result = PackformatCandidatesDetector.CreateFor(typeof(ClassWithList)).SerializationCandidates;
+            var result = MetadataExplorer.CreateFor(typeof(ClassWithList)).Serializers;
             result.ResolveSerializer(typeof(InnerClass)).Should().NotBeNull();
         }
         
         [Test]
         public void ShouldDetectKnownTypesAddedDirectly()
         {
-            var result = PackformatCandidatesDetector.CreateFor(typeof(ClassWithKnownTypes)).SerializationCandidates;
+            var result = MetadataExplorer.CreateFor(typeof(ClassWithKnownTypes)).Serializers;
             result.ResolveSerializer(typeof(InnerClass)).Should().NotBeNull();
         }
 
         [Test]
         public void ShouldDetectKnownTypesAddedByMethod()
         {
-            var result = PackformatCandidatesDetector.CreateFor(typeof(ClassWithKnownTypesMethod)).SerializationCandidates;
+            var result = MetadataExplorer.CreateFor(typeof(ClassWithKnownTypesMethod)).Serializers;
             result.ResolveSerializer(typeof(InnerClass)).Should().NotBeNull();
         }
 
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ExternalClass
         {
             [DataMember]
@@ -54,7 +51,7 @@ namespace Shapeshifter.Tests.Unit
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithList
         {
             [DataMember]
@@ -68,7 +65,7 @@ namespace Shapeshifter.Tests.Unit
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         [KnownType(typeof(InnerClass))]
         private class ClassWithKnownTypes
         {
@@ -77,7 +74,7 @@ namespace Shapeshifter.Tests.Unit
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         [KnownType("GetKnownTypes")]
         private class ClassWithKnownTypesMethod
         {

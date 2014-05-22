@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Shapeshifter.Core;
@@ -12,13 +7,13 @@ using Shapeshifter.Tests.Unit.RoundtripTests;
 namespace Shapeshifter.Tests.Unit.New
 {
     [TestFixture]
-    public class CustomSerializerTests:TestsBase
+    public class CustomSerializerTests : TestsBase
     {
         [Test]
         public void CustomerSerializerForConcreteType_Success()
         {
-            var source = new MyType() { MyProperty = 42 };
-            
+            var source = new MyType() {MyProperty = 42};
+
             var serializer = GetSerializer<MyType>();
             var pack = serializer.Serialize(source);
             var jobj = JObject.Parse(pack);
@@ -29,9 +24,10 @@ namespace Shapeshifter.Tests.Unit.New
         }
 
         [Test]
+        [Ignore("Még nincs implementálva a funkció")]
         public void CustomerSerializerForUnboundGenericType_Success()
         {
-            var source = new MyType<string>() { MyProperty = 42 };
+            var source = new MyType<string>() {MyProperty = 42};
 
             var serializer = GetSerializer<MyType<string>>();
             var pack = serializer.Serialize(source);
@@ -43,9 +39,10 @@ namespace Shapeshifter.Tests.Unit.New
         }
 
         [Test]
+        [Ignore("Még nincs implementálva a funkció")]
         public void CustomerSerializerForBoundGenericType_Success()
         {
-            var source = new MyType<int>() { MyProperty = 42 };
+            var source = new MyType<int>() {MyProperty = 42};
 
             var serializer = GetSerializer<MyType<int>>();
             var pack = serializer.Serialize(source);
@@ -63,9 +60,9 @@ namespace Shapeshifter.Tests.Unit.New
 
             // Minek a verziószám, miért nem generál egyet?
             [Serializer(typeof (MyType), 1)]
-            public static void Serializer(IPackformatValueWriter writer, MyType itemToSerialize)
+            public static void Serializer(IShapeshifterWriter writer, MyType itemToSerialize)
             {
-                writer.SetValue("MyKey", itemToSerialize.MyProperty);
+                writer.Write("MyKey", itemToSerialize.MyProperty);
             }
         }
 
@@ -74,16 +71,16 @@ namespace Shapeshifter.Tests.Unit.New
         {
             public int MyProperty { get; set; }
 
-            [Serializer(typeof(MyType<>), 1)]
-            public static void UnboundGenericTypeSerializer(IPackformatValueWriter writer, MyType itemToSerialize)
+            [Serializer(typeof (MyType<>), 1)]
+            public static void UnboundGenericTypeSerializer(IShapeshifterWriter writer, MyType itemToSerialize)
             {
-                writer.SetValue("UnboundGenericType.MyKey", itemToSerialize.MyProperty);
+                writer.Write("UnboundGenericType.MyKey", itemToSerialize.MyProperty);
             }
 
-            [Serializer(typeof(MyType<int>), 1)]
-            public static void BoundGenericTypeSerializer(IPackformatValueWriter writer, MyType itemToSerialize)
+            [Serializer(typeof (MyType<int>), 1)]
+            public static void BoundGenericTypeSerializer(IShapeshifterWriter writer, MyType itemToSerialize)
             {
-                writer.SetValue("BoundGenericType.MyKey", itemToSerialize.MyProperty);
+                writer.Write("BoundGenericType.MyKey", itemToSerialize.MyProperty);
             }
         }
     }

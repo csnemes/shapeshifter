@@ -34,7 +34,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithIEnumerableField
         {
             [DataMember] 

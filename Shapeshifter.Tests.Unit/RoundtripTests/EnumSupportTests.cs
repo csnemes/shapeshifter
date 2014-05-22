@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
+using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
+    [Ignore("Nincs implementálva az Enum támogatás")]
     public class EnumSupportTests : TestsBase
     {
         [Test]
@@ -29,7 +25,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithEnum
         {
             [DataMember]

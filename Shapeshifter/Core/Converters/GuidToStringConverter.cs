@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Shapeshifter.Core.Deserialization;
 
 namespace Shapeshifter.Core.Converters
 {
-    internal class GuidToStringConverter : IValueConverter
+    internal class GuidToStringConverter
     {
         public object ConvertToPackformat(object value)
         {

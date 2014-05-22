@@ -1,11 +1,12 @@
 ﻿using System;
+using Shapeshifter.Core.Deserialization;
 
 namespace Shapeshifter.Core.Converters
 {
     /// <summary>
     ///     An <see cref="IValueConverter" /> implementation for converting Enumerables to JSON format and back
     /// </summary>
-    internal class EnumToStringConverter : IValueConverter
+    internal class EnumToStringConverter
     {
         public object ConvertToPackformat(object value)
         {

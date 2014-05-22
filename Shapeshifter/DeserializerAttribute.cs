@@ -12,7 +12,7 @@ namespace Shapeshifter
     ///     be used (good for name changes).
     ///     If it applied to a static method it means that for the defined name and version this method will be called during
     ///     deserialization.
-    ///     The method must be static and the signature must conform to object MyMethod(IPackformatValueReader reader).
+    ///     The method must be static and the signature must conform to object MyMethod(IShapeshifterReader reader).
     ///     Multiple DeserializerAttributes can be applied to a single class or method
     ///     For the attribute a name and a version can be specified. The name is the name of the class in the serialized data
     ///     and the version is its serialized version
@@ -35,10 +35,10 @@ namespace Shapeshifter
     ///     {
     ///     [Deserializer("MyOldClass", 32456)]
     ///     [Deserializer("MyOldClass", 67890)]
-    ///     public object DeserializerForOldVersions(IPackformatValueReader reader)
+    ///     public object DeserializerForOldVersions(IShapeshifterReader reader)
     ///     {}
     ///     [Deserializer("MyVeryOldClass")]
-    ///     public object DeserializerForVeryOldVersions(IPackformatValueReader reader)
+    ///     public object DeserializerForVeryOldVersions(IShapeshifterReader reader)
     ///     {}
     ///     }
     /// </example>

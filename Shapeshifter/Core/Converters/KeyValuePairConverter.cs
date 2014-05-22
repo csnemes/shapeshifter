@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using Shapeshifter.Core.Deserialization;
 
 namespace Shapeshifter.Core.Converters
 {
@@ -9,7 +10,7 @@ namespace Shapeshifter.Core.Converters
     ///     An <see cref="IValueConverter" /> implementation for converting <see cref="KeyValuePair{TKey,TValue}" /> to JSON
     ///     format and back
     /// </summary>
-    internal class KeyValuePairConverter : IValueConverter
+    internal class KeyValuePairConverter
     {
         public object ConvertToPackformat(object value)
         {

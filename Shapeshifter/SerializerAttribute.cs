@@ -6,7 +6,7 @@ namespace Shapeshifter
     /// </summary>
     /// <example>
     ///     [Serializer(typeof(MyClass), 1]
-    ///     public static void SerializeMyClass(IPackformatValueWriter writer, MyClass itemToSerialize)
+    ///     public static void SerializeMyClass(IShapeshifterWriter writer, MyClass itemToSerialize)
     ///     { ... }
     ///     Can also applied with version number only on classes to specify the used version number explicitly
     ///     [Serializer(1)]

@@ -1,14 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
-using Microsoft.SqlServer.Server;
+﻿using FluentAssertions;
 using NUnit.Framework;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
@@ -118,7 +110,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithNumericArrays
         {
             [DataMember]
@@ -129,7 +121,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithStringArray
         {
             [DataMember]
@@ -137,7 +129,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithObjectArray
         {
             [DataMember]
@@ -145,7 +137,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithNestedArrays
         {
             [DataMember]

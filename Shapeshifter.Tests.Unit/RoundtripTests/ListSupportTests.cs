@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
@@ -63,7 +59,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithNumericLists
         {
             [DataMember]
@@ -71,7 +67,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Serializer]
+        [ShapeshifterRoot]
         private class ClassWithObjectList
         {
             [DataMember]

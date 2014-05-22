@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Newtonsoft.Json;
+using Shapeshifter.Core.Deserialization;
 
 namespace Shapeshifter.Core
 {
@@ -46,11 +47,11 @@ namespace Shapeshifter.Core
                                 type.Name)));
         }
 
-        public static Exception SerializerAttributeMissing(Type type)
+        public static Exception ShapeshifterRootAttributeMissing(Type type)
         {
             return
                 SafeCreateException(
-                    () => new ShapeshifterException(String.Format("SerializerAttribute is missing from class {0}.",
+                    () => new ShapeshifterException(String.Format("ShapeshifterRootAttribute is missing from class {0}.",
                         type.Name)));
         }
 

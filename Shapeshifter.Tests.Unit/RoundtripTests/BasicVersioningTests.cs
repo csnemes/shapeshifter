@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using Shapeshifter.Core;
+using Shapeshifter.Core.Detection;
+using System;
+using System.Diagnostics;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
@@ -55,7 +51,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
     
     [DataContract]
-    [Serializer]
+    [ShapeshifterRoot]
     public class MyClassVersionOne
     {
         [DataMember]
@@ -63,39 +59,39 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
 
     [DataContract]
-    [Serializer]
+    [ShapeshifterRoot]
     public class MyClassVersionTwo //example for switching property type
     {
         [DataMember]
         public int Id { get; set; }
 
         [Deserializer("MyClassVersionOne", 1098654145)]
-        private static object TransformVersionOne(IPackformatValueReader reader)
+        private static object TransformVersionOne(IShapeshifterReader reader)
         {
-            var oldFormatValue = reader.GetValue<string>("Id");
+            var oldFormatValue = reader.Read<string>("Id");
             var newFormatValue = Int32.Parse(oldFormatValue);
             return new MyClassVersionTwo() {Id = newFormatValue};
         }
     }
 
     [DataContract]
-    [Serializer]
+    [ShapeshifterRoot]
     public class MyClassVersionThree //example for switching property name
     {
         [DataMember]
         public string UserId { get; set; }
 
         [Deserializer("MyClassVersionOne", 1098654145)]
-        private static object TransformVersionOne(IPackformatValueReader reader)
+        private static object TransformVersionOne(IShapeshifterReader reader)
         {
-            var value = reader.GetValue<string>("Id");
+            var value = reader.Read<string>("Id");
             return new MyClassVersionThree() { UserId = value };
         }
 
         [Deserializer("MyClassVersionTwo", 2143954606)]
-        private static object TransformVersionTwo(IPackformatValueReader reader)
+        private static object TransformVersionTwo(IShapeshifterReader reader)
         {
-            var value = reader.GetValue<int>("Id");
+            var value = reader.Read<int>("Id");
             return new MyClassVersionThree() { UserId = value.ToString() };
         }
     }

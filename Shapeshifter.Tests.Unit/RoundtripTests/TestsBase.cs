@@ -1,23 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     public abstract class TestsBase
     {
-        protected IShapeshifterSerializer<T> GetSerializer<T>()
+        protected IShapeshifter<T> GetSerializer<T>()
         {
-            return new ShapeshifterSerializer<T>();
-        }
-        
-        protected IShapeshifterSerializer<T> GetSerializer<T>(params IPackformatSurrogateConverter[] surrogateConverters)
-        {
-            return new ShapeshifterSerializer<T>(null, surrogateConverters);
+            return new Shapeshifter<T>();
         }
 
         protected bool StringArrayEquals(string[] arr1, string[] arr2)

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
-using Shapeshifter.History;
+using Shapeshifter.SchemaComparison;
+using System.Linq;
 
 namespace Shapeshifter.Tests.Unit.History
 {

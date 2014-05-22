@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.Serialization;
 using FluentAssertions;
 using NUnit.Framework;
-using Shapeshifter.Core;
+using Shapeshifter.Core.Deserialization;
+using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.Tests.Unit
+namespace Shapeshifter.Tests.Unit.Core
 {
     [TestFixture]
     public class PackformatReaderTests
@@ -76,12 +71,13 @@ namespace Shapeshifter.Tests.Unit
 
         private T Deserialize<T>(string input)
         {
-            var typeContext = PackformatCandidatesDetector.CreateFor(typeof (T)).DeserializationCandidates;
-            var engine = new PackformatReader(input, typeContext);
+            var typeContext = MetadataExplorer.CreateFor(typeof (T)).Deserializers;
+            var engine = new InternalPackformatReader(input, typeContext);
             return (T)engine.Unpack<T>();
         }
 
         [DataContract]
+        [ShapeshifterRoot]
         [Serializer(Version=2)]
         private class OwnedItem
         {
@@ -91,17 +87,18 @@ namespace Shapeshifter.Tests.Unit
             public string Item { get; set; }
 
             [Deserializer("OwnedItem", 1)]
-            private static object TransformVersion1To2(IPackformatValueReader reader)
+            private static object TransformVersion1To2(IShapeshifterReader reader)
             {
                 return new OwnedItem()
                 {
-                    Item = reader.GetValue<string>("OldItem"),
-                    Owner = reader.GetValue<PersonInfo>("Owner")
+                    Item = reader.Read<string>("OldItem"),
+                    Owner = reader.Read<PersonInfo>("Owner")
                 };
             }
         }
         
         [DataContract]
+        [ShapeshifterRoot]
         [Serializer(1)]
         private class PersonInfo
         {

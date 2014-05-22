@@ -62,7 +62,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundtripTests\AdvancedVersioningTests.cs" />
     <Compile Include="RoundtripTests\ArraySupportTests.cs" />
-    <Compile Include="RoundtripTests\CustomPackformatConverterTests.cs" />
     <Compile Include="RoundtripTests\CustomSerializationTests.cs" />
     <Compile Include="RoundtripTests\DictionarySupportTests.cs" />
     <Compile Include="RoundtripTests\EnumSupportTests.cs" />
@@ -74,7 +73,6 @@
     </Compile>
     <Compile Include="RoundtripTests\ListSupportTests.cs" />
     <Compile Include="RoundtripTests\NativeTypesSupportTests.cs" />
-    <Compile Include="RoundtripTests\NestingPackformatConvertersTests.cs" />
     <Compile Include="RoundtripTests\NullableSupportTests.cs" />
     <Compile Include="RoundtripTests\BasicVersioningTests.cs" />
     <Compile Include="RoundtripTests\TestsBase.cs" />
