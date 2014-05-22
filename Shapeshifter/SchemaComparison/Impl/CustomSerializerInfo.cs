@@ -8,12 +8,12 @@ namespace Shapeshifter.SchemaComparison.Impl
         [DataMember]
         private readonly string _methodName;
         [DataMember]
-        private readonly string _ownerTypeFullName;
+        private readonly string _declaringTypeFullName;
 
-        public CustomSerializerInfo(string packformatName, uint version, string methodName, string ownerTypeFullName) : base(packformatName, version)
+        public CustomSerializerInfo(string packformatName, uint version, string methodName, string declaringTypeFullName) : base(packformatName, version)
         {
             _methodName = methodName;
-            _ownerTypeFullName = ownerTypeFullName;
+            _declaringTypeFullName = declaringTypeFullName;
         }
 
         public string MethodName
@@ -21,9 +21,9 @@ namespace Shapeshifter.SchemaComparison.Impl
             get { return _methodName; }
         }
 
-        public string OwnerTypeFullName
+        public string DeclaringTypeFullName
         {
-            get { return _ownerTypeFullName; }
+            get { return _declaringTypeFullName; }
         }
     }
 }

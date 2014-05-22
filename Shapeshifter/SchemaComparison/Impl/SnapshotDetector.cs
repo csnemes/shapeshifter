@@ -37,7 +37,7 @@ namespace Shapeshifter.SchemaComparison.Impl
 
         void ISerializableTypeVisitor.VisitDeserializerOnClass(DeserializerAttribute attribute, TypeInfo typeInfo)
         {
-            _deserializers.Add(new DefaultDeserializerInfo(attribute.PackformatName, attribute.Version));
+            _deserializers.Add(new DefaultDeserializerInfo(attribute.PackformatName, attribute.Version, typeInfo.Type.FullName));
         }
 
         void ISerializableTypeVisitor.VisitSerializerOnClass(TypeInfo typeInfo)
@@ -47,7 +47,7 @@ namespace Shapeshifter.SchemaComparison.Impl
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo method)
         {
-            _deserializers.Add(new CustomDeserializerInfo(attribute.PackformatName, attribute.Version));
+            _deserializers.Add(new CustomDeserializerInfo(attribute.PackformatName, attribute.Version, method.Name, method.DeclaringType.FullName));
         }
 
         void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo method)
