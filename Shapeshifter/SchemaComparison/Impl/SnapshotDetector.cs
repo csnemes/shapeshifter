@@ -4,7 +4,7 @@ using System.Reflection;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.SchemaComparison
+namespace Shapeshifter.SchemaComparison.Impl
 {
     /// <summary>
     ///     Detects all involved classes and methods to create a snapshot
@@ -37,18 +37,17 @@ namespace Shapeshifter.SchemaComparison
 
         void ISerializableTypeVisitor.VisitDeserializerOnClass(DeserializerAttribute attribute, TypeInfo typeInfo)
         {
-            _deserializers.Add(new DeserializerInfo(attribute.PackformatName, attribute.Version));
+            _deserializers.Add(new DefaultDeserializerInfo(attribute.PackformatName, attribute.Version));
         }
 
         void ISerializableTypeVisitor.VisitSerializerOnClass(TypeInfo typeInfo)
         {
-            _serializers.Add(new SerializerInfo(typeInfo.PackformatName, typeInfo.Version, typeInfo.Type.FullName,
-                String.Empty));
+            _serializers.Add(new DefaultSerializerInfo(typeInfo.PackformatName, typeInfo.Version, typeInfo.Type.FullName));
         }
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo method)
         {
-            _deserializers.Add(new DeserializerInfo(attribute.PackformatName, attribute.Version));
+            _deserializers.Add(new CustomDeserializerInfo(attribute.PackformatName, attribute.Version));
         }
 
         void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo method)
@@ -57,8 +56,8 @@ namespace Shapeshifter.SchemaComparison
             {
                 throw new ArgumentNullException("method");
             }
-            _serializers.Add(new SerializerInfo(attribute.PackformatName, attribute.Version,
-                method.DeclaringType.FullName, method.Name));
+            _serializers.Add(new CustomSerializerInfo(attribute.PackformatName, attribute.Version, method.Name,
+                method.DeclaringType.FullName));
         }
 
         public static SnapshotDetector CreateFor(Type type)

@@ -4,6 +4,7 @@ using Shapeshifter.SchemaComparison;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Shapeshifter.SchemaComparison.Impl;
 
 namespace Shapeshifter.Tests.Unit.History
 {

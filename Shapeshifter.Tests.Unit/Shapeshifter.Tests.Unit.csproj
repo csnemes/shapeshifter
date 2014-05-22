@@ -52,10 +52,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="History\SnapshotDetectorTests.cs" />
-    <Compile Include="History\SnapshotHistoryTests.cs" />
-    <Compile Include="History\SnapshotTests.cs" />
-    <Compile Include="History\TestClasses.cs" />
+    <Compile Include="SchemaComparison\SnapshotDetectorTests.cs" />
+    <Compile Include="SchemaComparison\SnapshotHistoryTests.cs" />
+    <Compile Include="SchemaComparison\SnapshotTests.cs" />
+    <Compile Include="SchemaComparison\TestClasses.cs" />
     <Compile Include="New\CustomSerializerTests.cs" />
     <Compile Include="New\DefaultRoundtripTests.cs" />
     <Compile Include="Core\PackformatWriterTests.cs" />
