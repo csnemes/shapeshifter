@@ -13,11 +13,11 @@ namespace Shapeshifter.Core.Deserialization
             _methodInfo = methodInfo;
         }
 
-        public override Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, object> GetDeserializerFunc()
         {
             return
-                (objects, convHelp) =>
-                    _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects, convHelp)});
+                (objects) =>
+                    _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects)});
         }
     }
 }

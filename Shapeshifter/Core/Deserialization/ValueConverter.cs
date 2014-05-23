@@ -10,15 +10,15 @@ namespace Shapeshifter.Core.Deserialization
     /// <summary>
     ///     Class containing helper functions for conversion between type of JSON returned data and the target type
     /// </summary>
-    internal class ValueConverter
+    internal static class ValueConverter
     {
-        public T ConvertValueToTargetType<T>(object value)
+        public static T ConvertValueToTargetType<T>(object value)
         {
             return (T) ConvertValueToTargetType(typeof (T), value);
         }
 
         //TODO refactor, split into methods of manageable size
-        public object ConvertValueToTargetType(Type targetType, object value)
+        public static object ConvertValueToTargetType(Type targetType, object value)
         {
             var packedForm = value as ObjectInPackedForm;
             if (packedForm != null)

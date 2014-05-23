@@ -23,7 +23,7 @@ namespace Shapeshifter.Core.Converters
             return new[] {keyVal, valueVal};
         }
 
-        public object ConvertFromPackformat(ValueConverter valueConverter, Type targetType, object value)
+        public object ConvertFromPackformat(Type targetType, object value)
         {
             var valArray = value as IList;
             if (valArray == null)
@@ -37,8 +37,8 @@ namespace Shapeshifter.Core.Converters
             Type valueType = targetType.GetGenericArguments()[1];
             object result = constructor.Invoke(new[]
             {
-                valueConverter.ConvertValueToTargetType(keyType, valArray[0]),
-                valueConverter.ConvertValueToTargetType(valueType, valArray[1])
+                ValueConverter.ConvertValueToTargetType(keyType, valArray[0]),
+                ValueConverter.ConvertValueToTargetType(valueType, valArray[1])
             });
             return result;
         }
