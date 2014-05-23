@@ -36,11 +36,26 @@ namespace Shapeshifter.Core.Serialization
 
             public void Add(Serializer serializer)
             {
-                if (_serializers.ContainsKey(serializer.Type))
+                Serializer alreadyRegisteredSerializer;
+                if (_serializers.TryGetValue(serializer.Type, out alreadyRegisteredSerializer))
                 {
-                    throw Exceptions.OnlyOneSerializerAllowedForAType(serializer.Type);
+                    if (serializer.GetType() == alreadyRegisteredSerializer.GetType())
+                        throw Exceptions.OnlyOneSerializerAllowedForAType(serializer.Type);
+
+                    if (NewSerializerCanOverrideAlreadyRegisteredSerializer(serializer, alreadyRegisteredSerializer))
+                    {
+                        _serializers[serializer.Type] = serializer;
+                    }
                 }
-                _serializers.Add(serializer.Type, serializer);
+                else
+                {
+                    _serializers.Add(serializer.Type, serializer);
+                }
+            }
+
+            private static bool NewSerializerCanOverrideAlreadyRegisteredSerializer(Serializer newSerializer, Serializer alreadyRegisteredSerializer)
+            {
+                return newSerializer is CustomSerializer && alreadyRegisteredSerializer is DefaultSerializer;
             }
 
             public static implicit operator SerializerCollection(SerializerCollectionBuilder builder)

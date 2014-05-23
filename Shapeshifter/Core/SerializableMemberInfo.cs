@@ -9,17 +9,17 @@ namespace Shapeshifter.Core
     /// <remarks>
     ///     It can be used for both fields and properties, internally it will use the correct Info
     /// </remarks>
-    internal class SerializableTypeMemberInfo
+    internal class SerializableMemberInfo
     {
         private readonly FieldInfo _fieldInfo;
         private readonly PropertyInfo _propertyInfo;
 
-        public SerializableTypeMemberInfo(FieldInfo fieldInfo)
+        public SerializableMemberInfo(FieldInfo fieldInfo)
         {
             _fieldInfo = fieldInfo;
         }
 
-        public SerializableTypeMemberInfo(PropertyInfo propertyInfo)
+        public SerializableMemberInfo(PropertyInfo propertyInfo)
         {
             _propertyInfo = propertyInfo;
         }

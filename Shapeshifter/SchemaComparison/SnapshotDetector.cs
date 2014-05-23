@@ -35,30 +35,26 @@ namespace Shapeshifter.SchemaComparison
             get { return _walker; }
         }
 
-        void ISerializableTypeVisitor.VisitDeserializerOnClass(DeserializerAttribute attribute, TypeInfo typeInfo)
+        void ISerializableTypeVisitor.VisitSerializableClass(SerializableTypeInfo serializableTypeInfo)
         {
-            _deserializers.Add(new DeserializerInfo(attribute.PackformatName, attribute.Version));
-        }
-
-        void ISerializableTypeVisitor.VisitSerializerOnClass(TypeInfo typeInfo)
-        {
-            _serializers.Add(new SerializerInfo(typeInfo.PackformatName, typeInfo.Version, typeInfo.Type.FullName,
+            _serializers.Add(new SerializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName,
                 String.Empty));
+            _deserializers.Add(new DeserializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version));
         }
 
-        void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo method)
+        void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
             _deserializers.Add(new DeserializerInfo(attribute.PackformatName, attribute.Version));
         }
 
-        void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo method)
+        void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo methodInfo)
         {
-            if (method == null)
+            if (methodInfo == null)
             {
-                throw new ArgumentNullException("method");
+                throw new ArgumentNullException("methodInfo");
             }
             _serializers.Add(new SerializerInfo(attribute.PackformatName, attribute.Version,
-                method.DeclaringType.FullName, method.Name));
+                methodInfo.DeclaringType.FullName, methodInfo.Name));
         }
 
         public static SnapshotDetector CreateFor(Type type)

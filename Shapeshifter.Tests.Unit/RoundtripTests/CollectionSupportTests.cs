@@ -60,7 +60,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class ClassWithNumericCollections
         {
             [DataMember]
@@ -68,7 +68,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class ClassWithObjectCollections
         {
             [DataMember]

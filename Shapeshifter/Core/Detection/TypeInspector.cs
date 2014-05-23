@@ -19,10 +19,9 @@ namespace Shapeshifter.Core.Detection
     internal class TypeInspector
     {
         private readonly Lazy<bool> _hasDataContractAttribute;
-        private readonly Lazy<List<SerializableTypeMemberInfo>> _itemCandidates;
+        private readonly Lazy<List<SerializableMemberInfo>> _itemCandidates;
         private readonly Lazy<List<KnownTypeAttribute>> _knownTypeAttributes;
-        private readonly Lazy<SerializerAttribute> _serializerAttribute;
-        private readonly Lazy<ShapeshifterRootAttribute> _shapeshifterRootAttribute;
+        private readonly Lazy<ShapeshifterAttribute> _shapeshifterAttribute;
         private readonly Type _type;
 
         private uint _version;
@@ -32,18 +31,15 @@ namespace Shapeshifter.Core.Detection
             _type = type;
             _hasDataContractAttribute = new Lazy<bool>(() => _type.GetCustomAttributes(typeof (DataContractAttribute), false).Any());
             
-            _itemCandidates = new Lazy<List<SerializableTypeMemberInfo>>(() => GetSerializableItemCandidatesForType(_type));
+            _itemCandidates = new Lazy<List<SerializableMemberInfo>>(() => GetSerializableItemCandidatesForType(_type));
 
             _knownTypeAttributes = new Lazy<List<KnownTypeAttribute>>(GetKnownTypeAttributes);
         
-            _serializerAttribute = new Lazy<SerializerAttribute>(
-                () => _type.GetCustomAttributes(typeof (SerializerAttribute), false).FirstOrDefault() as SerializerAttribute);
-
-            _shapeshifterRootAttribute = new Lazy<ShapeshifterRootAttribute>(
-                () => _type.GetCustomAttributes(typeof(ShapeshifterRootAttribute), false).FirstOrDefault() as ShapeshifterRootAttribute);
+            _shapeshifterAttribute = new Lazy<ShapeshifterAttribute>(
+                () => _type.GetCustomAttributes(typeof(ShapeshifterAttribute), false).FirstOrDefault() as ShapeshifterAttribute);
         }
 
-        public IEnumerable<SerializableTypeMemberInfo> SerializableItemCandidates
+        public IEnumerable<SerializableMemberInfo> SerializableItemCandidates
         {
             get { return _itemCandidates.Value; }
         }
@@ -53,19 +49,14 @@ namespace Shapeshifter.Core.Detection
             get { return _hasDataContractAttribute.Value; }
         }
 
-        public bool HasSerializerAttribute
+        public bool HasShapeshifterAttribute
         {
-            get { return SerializerAttribute != null; }
-        }
-
-        public bool HasShapeshifterRootAttribute
-        {
-            get { return ShapeshifterRootAttribute != null; }
+            get { return ShapeshifterAttribute != null; }
         }
 
         public bool IsSerializable
         {
-            get { return HasDataContractAttribute || HasSerializerAttribute || IsNativeType; }
+            get { return HasDataContractAttribute || HasShapeshifterAttribute || IsNativeType; }
         }
 
         public bool IsNativeType
@@ -83,14 +74,9 @@ namespace Shapeshifter.Core.Detection
             get { return _knownTypeAttributes.Value; }
         }
 
-        private SerializerAttribute SerializerAttribute
+        private ShapeshifterAttribute ShapeshifterAttribute
         {
-            get { return _serializerAttribute.Value; }
-        }
-
-        private ShapeshifterRootAttribute ShapeshifterRootAttribute
-        {
-            get { return _shapeshifterRootAttribute.Value; }
+            get { return _shapeshifterAttribute.Value; }
         }
 
         public uint Version
@@ -99,7 +85,7 @@ namespace Shapeshifter.Core.Detection
             {
                 if (_version == default(uint))
                 {
-                    _version = GetVersionFromSerializerAttribute() ?? GetHashVersion();
+                    _version = GetVersionFromShapeshifterAttribute() ?? GetHashVersion();
                 }
                 return _version;
             }
@@ -107,7 +93,7 @@ namespace Shapeshifter.Core.Detection
 
         public string PackformatName
         {
-            get { return GetPackformatNameFromSerializerAttribute() ?? GetTypePrettyShortName(_type); }
+            get { return GetPackformatNameFromShapeshifterAttribute() ?? GetTypePrettyShortName(_type); }
         }
 
         internal Type Type
@@ -176,7 +162,7 @@ namespace Shapeshifter.Core.Detection
             {
                 var writer = new StreamWriter(stream);
 
-                foreach (SerializableTypeMemberInfo candidate in SerializableItemCandidates.OrderBy(item => item.Name))
+                foreach (SerializableMemberInfo candidate in SerializableItemCandidates.OrderBy(item => item.Name))
                 {
                     writer.Write(candidate.Name);
                     writer.Write(GetTypePrettyShortName(candidate.Type));
@@ -187,88 +173,82 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private string GetPackformatNameFromSerializerAttribute()
+        private string GetPackformatNameFromShapeshifterAttribute()
         {
-            return SerializerAttribute != null ? SerializerAttribute.PackformatName : null;
+            return ShapeshifterAttribute != null ? ShapeshifterAttribute.PackformatName : null;
         }
 
-        private uint? GetVersionFromSerializerAttribute()
+        private uint? GetVersionFromShapeshifterAttribute()
         {
-            return SerializerAttribute != null && SerializerAttribute.HasVersion
-                ? (uint?) SerializerAttribute.Version
+            return ShapeshifterAttribute != null && ShapeshifterAttribute.IsVersionSpecified
+                ? (uint?)ShapeshifterAttribute.Version
                 : null;
         }
 
-        /// <summary>
-        ///     Detects all deserializer candidates defined on a type. Deserializer candidates are static methods with an
-        ///     <see cref="DeserializerAttribute" /> attribute.
-        /// </summary>
-        /// <param name="visitor"></param>
-        /// <returns></returns>
+        public void AcceptOnNonStaticMethods(ISerializableTypeVisitor visitor)
+        {
+            var nonStaticMethods = _type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+
+            foreach (var nonStaticMethod in nonStaticMethods)
+            {
+                ProcessAttributes<SerializerAttribute>(nonStaticMethod, ThrowInvalidAttributeUsage);
+                ProcessAttributes<DeserializerAttribute>(nonStaticMethod, ThrowInvalidAttributeUsage);
+            }
+        }
+
+        private static void ThrowInvalidAttributeUsage(Attribute attribute, MethodInfo methodInfo)
+        {
+            throw Exceptions.InvalidUsageOfAttributeOnInstanceMethod(attribute, methodInfo);
+        }
+
         public void AcceptOnStaticMethods(ISerializableTypeVisitor visitor)
         {
             var staticMethods = _type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
 
             foreach (var staticMethod in staticMethods)
             {
-                var serializerAttributes = staticMethod.GetCustomAttributes(typeof (SerializerAttribute), false).EmptyIfNull().OfType<SerializerAttribute>();
+                ProcessAttributes<SerializerAttribute>(staticMethod, visitor.VisitSerializerMethod);
+                ProcessAttributes<DeserializerAttribute>(staticMethod, visitor.VisitDeserializerMethod);
+            }
+        }
 
-                foreach (var serializerAttribute in serializerAttributes)
-                {
-                    if (!serializerAttribute.ValidOnMethod)
-                        throw Exceptions.InvalidUseOfSerializerAttributeOnMethod(staticMethod);
-                    visitor.VisitSerializerMethod(serializerAttribute, staticMethod);
-                }
-
-                var deserializerAttributes = staticMethod.GetCustomAttributes(typeof (DeserializerAttribute), false).EmptyIfNull().OfType<DeserializerAttribute>();
-                foreach (var deserializerAttribute in deserializerAttributes)
-                {
-                    if (!deserializerAttribute.ValidOnMethod)
-                        throw Exceptions.InvalidUseOfDeserializerAttributeOnMethod(staticMethod);
-                    visitor.VisitDeserializerMethod(deserializerAttribute, staticMethod);
-                }
+        private static void ProcessAttributes<T>(MethodInfo staticMethod, Action<T, MethodInfo> processorMethod)
+            where T: Attribute
+        {
+            var attributes = staticMethod.GetCustomAttributes(typeof(T), false).EmptyIfNull().OfType<T>();
+            foreach (var attribute in attributes)
+            {
+                processorMethod.Invoke(attribute, staticMethod);
             }
         }
 
         public void AcceptOnType(ISerializableTypeVisitor visitor)
         {
-            Type type = Type;
-            var typeInfo = new TypeInfo(Type, PackformatName, Version, SerializableItemCandidates);
+            var typeInfo = new SerializableTypeInfo(Type, PackformatName, Version, SerializableItemCandidates);
 
-            if (HasDataContractAttribute)
+            if (HasDataContractAttribute || HasShapeshifterAttribute)
             {
-                visitor.VisitSerializerOnClass(typeInfo);
-                //add default deserializer with current version
-                visitor.VisitDeserializerOnClass(new DeserializerAttribute(PackformatName, Version), typeInfo);
-            }
-
-            var deserializerAttributes = type.GetCustomAttributes(typeof (DeserializerAttribute), false).EmptyIfNull().OfType<DeserializerAttribute>();
-
-            foreach (var deserializerAttribute in deserializerAttributes)
-            {
-                if (!deserializerAttribute.ValidOnClass)
-                    throw Exceptions.InvalidUseOfDeserializerAttributeOnClass(type);
-                visitor.VisitDeserializerOnClass(deserializerAttribute, typeInfo);
+                visitor.VisitSerializableClass(typeInfo);
             }
         }
 
-        private static List<SerializableTypeMemberInfo> GetSerializableItemCandidatesForType(Type type)
+        private static List<SerializableMemberInfo> GetSerializableItemCandidatesForType(Type type)
         {
             const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
-            var candidates = new List<SerializableTypeMemberInfo>();
+            var candidates = new List<SerializableMemberInfo>();
 
             var allFields = type.GetAllFieldsRecursive(flags);
 
             candidates.AddRange(allFields
                 .Where(fieldInfo => ContainsAttributeSpecifyingCandidates(fieldInfo.GetCustomAttributes(true)))
-                .Select(fieldInfo => new SerializableTypeMemberInfo(fieldInfo)));
+                .Select(fieldInfo => new SerializableMemberInfo(fieldInfo)));
 
             var allProperties = type.GetAllPropertiesRecursive(flags);
 
             candidates.AddRange(allProperties
                 .Where(propertyInfo => ContainsAttributeSpecifyingCandidates(propertyInfo.GetCustomAttributes(true)))
-                .Select(propertyInfo => new SerializableTypeMemberInfo(propertyInfo)));
+                .Select(propertyInfo => new SerializableMemberInfo(propertyInfo)));
 
             return candidates;
         }

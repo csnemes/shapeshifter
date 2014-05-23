@@ -36,7 +36,7 @@ namespace Shapeshifter.Tests.Unit.History
 
 
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         private class InnerClass
         {
             [DataMember]
@@ -44,7 +44,7 @@ namespace Shapeshifter.Tests.Unit.History
         }
 
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         private class ExternalClass
         {
             [DataMember]

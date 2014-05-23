@@ -6,19 +6,19 @@ namespace Shapeshifter.Core
     /// <summary>
     ///     Data holder for type related basic info
     /// </summary>
-    internal class TypeInfo
+    internal class SerializableTypeInfo
     {
-        private readonly List<SerializableTypeMemberInfo> _items;
+        private readonly List<SerializableMemberInfo> _items;
         private readonly string _packformatName;
         private readonly Type _type;
         private readonly uint _version;
 
-        public TypeInfo(Type type, string packformatName, uint version, IEnumerable<SerializableTypeMemberInfo> items)
+        public SerializableTypeInfo(Type type, string packformatName, uint version, IEnumerable<SerializableMemberInfo> items)
         {
             _type = type;
             _packformatName = packformatName;
             _version = version;
-            _items = new List<SerializableTypeMemberInfo>(items);
+            _items = new List<SerializableMemberInfo>(items);
         }
 
         public Type Type
@@ -36,7 +36,7 @@ namespace Shapeshifter.Core
             get { return _version; }
         }
 
-        public IEnumerable<SerializableTypeMemberInfo> Items
+        public IEnumerable<SerializableMemberInfo> Items
         {
             get { return _items; }
         }

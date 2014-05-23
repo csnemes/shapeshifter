@@ -82,7 +82,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         public class ClassWithNullableNumerics
         {
             [DataMember]
@@ -93,7 +93,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         public class ClassWithNullableDateTime
         {
             [DataMember]
@@ -101,7 +101,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         public class ClassWithNullableBool
         {
             [DataMember]

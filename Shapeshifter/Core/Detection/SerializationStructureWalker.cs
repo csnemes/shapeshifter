@@ -48,7 +48,8 @@ namespace Shapeshifter.Core.Detection
             if (typeInspector.IsNativeType || _typesVisited.Contains(type)) return;
 
             _typesVisited.Add(type);
-            
+
+            typeInspector.AcceptOnNonStaticMethods(_visitor);
             typeInspector.AcceptOnStaticMethods(_visitor);
 
             if (!typeInspector.IsSerializable) return;

@@ -2,15 +2,14 @@
 using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Shapeshifter.Core;
-using Shapeshifter.Tests.Unit.RoundtripTests;
 
-namespace Shapeshifter.Tests.Unit.New
+namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
-    public class CustomSerializerTests : TestsBase
+    public class CustomSerializerForGenericsTests : TestsBase
     {
         [Test]
-        public void CustomerSerializerForConcreteType_Success()
+        public void CustomSerializerForConcreteType_Success()
         {
             var source = new MyType() {MyProperty = 42};
 
@@ -25,7 +24,7 @@ namespace Shapeshifter.Tests.Unit.New
 
         [Test]
         [Ignore("Még nincs implementálva a funkció")]
-        public void CustomerSerializerForUnboundGenericType_Success()
+        public void CustomSerializerForUnboundGenericType_Success()
         {
             var source = new MyType<string>() {MyProperty = 42};
 
@@ -40,7 +39,7 @@ namespace Shapeshifter.Tests.Unit.New
 
         [Test]
         [Ignore("Még nincs implementálva a funkció")]
-        public void CustomerSerializerForBoundGenericType_Success()
+        public void CustomSerializerForBoundGenericType_Success()
         {
             var source = new MyType<int>() {MyProperty = 42};
 
@@ -53,7 +52,7 @@ namespace Shapeshifter.Tests.Unit.New
             jobj["BoundGenericType.MyKey"].Value<int>().Should().Be(42);
         }
 
-        [Serializer]
+        [Shapeshifter]
         public class MyType
         {
             public int MyProperty { get; set; }
@@ -66,7 +65,7 @@ namespace Shapeshifter.Tests.Unit.New
             }
         }
 
-        [Serializer]
+        [Shapeshifter]
         public class MyType<T>
         {
             public int MyProperty { get; set; }

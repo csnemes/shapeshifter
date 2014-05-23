@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Serialization;
@@ -37,24 +38,57 @@ namespace Shapeshifter.Core.Detection
             get { return _walker; }
         }
 
-        void ISerializableTypeVisitor.VisitDeserializerOnClass(DeserializerAttribute attribute, TypeInfo typeInfo)
+        void ISerializableTypeVisitor.VisitSerializableClass(SerializableTypeInfo serializableTypeInfo)
         {
-            _deserializers.Add(new DefaultDeserializer(attribute.PackformatName, attribute.Version, typeInfo));
+            _serializers.Add(new DefaultSerializer(serializableTypeInfo));
+            _deserializers.Add(new DefaultDeserializer(serializableTypeInfo));
         }
 
-        void ISerializableTypeVisitor.VisitSerializerOnClass(TypeInfo typeInfo)
+        void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo methodInfo)
         {
-            _serializers.Add(new DefaultSerializer(typeInfo));
+            if (!IsCorrectSignatureForCustomSerializer(methodInfo, attribute.TargetType))
+                throw Exceptions.InvalidSerializerMethodSignature(attribute, methodInfo, attribute.TargetType);
+
+            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.Version, methodInfo));
+
+            if (attribute.ForAllDescendants)
+            {
+                var descendants = GetAllDescendants(attribute.TargetType);
+                foreach (var descendant in descendants)
+                {
+                    _serializers.Add(new CustomSerializer(descendant, attribute.Version, methodInfo, attribute.TargetType));
+                }
+            }
         }
 
-        void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo method)
+        void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
-            _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, method));
+            _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo));
+
+            if (attribute.ForAllDescendants)
+            {
+                if (attribute.TargeType == null)
+                    throw Exceptions.DeserializerAttributeTargetTypeMustBeSpecifiedForAllDescendants(attribute, methodInfo);
+
+                if (!IsCorrectSignatureForCustomDeserializerForAllDescendants(methodInfo))
+                    throw Exceptions.InvalidDeserializerMethodSignatureForAllDescendants(attribute, methodInfo);
+
+                var descendants = GetAllDescendants(attribute.TargeType);
+                foreach (var descendant in descendants)
+                {
+                    _deserializers.Add(new CustomDeserializer(descendant.Name, attribute.Version, methodInfo, descendant));
+                }
+            }
+            else
+            {
+                if (!IsCorrectSignatureForCustomDeserializer(methodInfo))
+                    throw Exceptions.InvalidDeserializerMethodSignature(attribute, methodInfo);
+            }
         }
 
-        void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo method)
+        private static IEnumerable<Type> GetAllDescendants(Type type)
         {
-            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.Version, method));
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(i => i.GetTypes()).Where(i => i.IsSubclassOf(type));
         }
 
         public static MetadataExplorer CreateFor(Type rootType)
@@ -77,7 +111,7 @@ namespace Shapeshifter.Core.Detection
 
         private void WalkRootType(Type type)
         {
-            CheckIfShapeshifterRootAttributePresent(type);
+            CheckIfShapeshifterAttributePresent(type);
             Walker.WalkRootType(type);
         }
 
@@ -102,13 +136,45 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static void CheckIfShapeshifterRootAttributePresent(Type type)
+        private static void CheckIfShapeshifterAttributePresent(Type type)
         {
             var ti = new TypeInspector(type);
-            if (ti.HasDataContractAttribute && ! ti.HasShapeshifterRootAttribute)
+            if (ti.HasDataContractAttribute && ! ti.HasShapeshifterAttribute)
             {
-                throw Exceptions.ShapeshifterRootAttributeMissing(type);
+                throw Exceptions.ShapeshifterAttributeMissing(type);
             }
+        }
+
+        private static bool IsCorrectSignatureForCustomSerializer(MethodInfo methodInfo, Type targetType)
+        {
+            var parameters = methodInfo.GetParameters();
+
+            return methodInfo.ReturnParameter != null
+                   && methodInfo.ReturnParameter.ParameterType == typeof(void)
+                   && parameters.Length == 2
+                   && parameters[0].ParameterType == typeof(IShapeshifterWriter)
+                   && parameters[1].ParameterType == targetType;
+        }
+
+        private static bool IsCorrectSignatureForCustomDeserializer(MethodInfo methodInfo)
+        {
+            var parameters = methodInfo.GetParameters();
+
+            return methodInfo.ReturnParameter != null
+                   && methodInfo.ReturnParameter.ParameterType != typeof(void)
+                   && parameters.Length == 1
+                   && parameters[0].ParameterType == typeof(IShapeshifterReader);
+        }
+
+        private static bool IsCorrectSignatureForCustomDeserializerForAllDescendants(MethodInfo methodInfo)
+        {
+            var parameters = methodInfo.GetParameters();
+
+            return methodInfo.ReturnParameter != null
+                   && methodInfo.ReturnParameter.ParameterType != typeof(void)
+                   && parameters.Length == 2
+                   && parameters[0].ParameterType == typeof(IShapeshifterReader)
+                   && parameters[1].ParameterType == typeof(Type);
         }
     }
 }

@@ -5,46 +5,44 @@ namespace Shapeshifter
     /// <summary>
     /// </summary>
     /// <example>
-    ///     [Serializer(typeof(MyClass), 1]
+    ///     Specifies that this method serializes MyClass.
+    ///     [Serializer(typeof(MyClass))]
     ///     public static void SerializeMyClass(IShapeshifterWriter writer, MyClass itemToSerialize)
     ///     { ... }
-    ///     Can also applied with version number only on classes to specify the used version number explicitly
-    ///     [Serializer(1)]
-    ///     public class MyClass
+    ///
+    ///     You can also specify the typename to be used in the serialized format and/or the schema version number.
+    ///     [Serializer(typeof(MyClass), "MyTypename", 1)]
+    ///     public static void SerializeMyClass(IShapeshifterWriter writer, MyClass itemToSerialize)
     ///     { ... }
-    ///     Or use to specify explicitly the packformat name used in serialized form
-    ///     [Serializer("MonClass")]
-    ///     public class MyClass
+    /// 
+    ///     [Serializer(typeof(MyClass), "MyTypename")]
+    ///     public static void SerializeMyClass(IShapeshifterWriter writer, MyClass itemToSerialize)
+    ///     { ... }
+    ///
+    ///     [Serializer(typeof(MyClass), 1)]
+    ///     public static void SerializeMyClass(IShapeshifterWriter writer, MyClass itemToSerialize)
     ///     { ... }
     /// </example>
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public class SerializerAttribute : Attribute
     {
         private readonly string _packformatName;
         private readonly Type _targetType;
         private uint? _version;
-
-        public SerializerAttribute()
-        {
-        }
-
-        public SerializerAttribute(Type targetType) : this(targetType, null, null)
-        {
-        }
-
-        public SerializerAttribute(Type targetType, uint version) : this(targetType, targetType.Name, version)
-        {
-        }
+        private bool _forAllDescendants = false;
 
         public SerializerAttribute(Type targetType, string packformatName, uint version)
-            : this(targetType, packformatName, (uint?) version)
+            :this(targetType, packformatName, (uint?) version)
         {
         }
 
-        public SerializerAttribute(uint version) : this(null, null, version)
+        public SerializerAttribute(Type targetType, string packformatName = null)
+            : this(targetType, packformatName, null)
         {
         }
 
-        public SerializerAttribute(string packformatName) : this(null, packformatName, null)
+        public SerializerAttribute(Type targetType, uint version) 
+            : this(targetType, null, version)
         {
         }
 
@@ -62,10 +60,10 @@ namespace Shapeshifter
 
         public string PackformatName
         {
-            get { return _packformatName; }
+            get { return _packformatName ?? _targetType.Name; }
         }
 
-        public bool HasVersion
+        public bool IsVersionSpecified
         {
             get { return _version.HasValue; }
         }
@@ -76,14 +74,10 @@ namespace Shapeshifter
             set { _version = value; }
         }
 
-        internal bool ValidOnClass
+        public bool ForAllDescendants
         {
-            get { return true; }
-        }
-
-        internal bool ValidOnMethod
-        {
-            get { return _targetType != null && _version != null; }
+            get { return _forAllDescendants; }
+            set { _forAllDescendants = value; }
         }
     }
 }

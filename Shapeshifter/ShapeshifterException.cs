@@ -7,21 +7,22 @@ namespace Shapeshifter
     [Serializable]
     public class ShapeshifterException : ApplicationException
     {
-        public ShapeshifterException()
+        private readonly string _id;
+        
+        public ShapeshifterException(string id, string message, Exception innerException = null)
+            : base(message, innerException)
         {
-        }
-
-        public ShapeshifterException(string message) : base(message)
-        {
-        }
-
-        public ShapeshifterException(string message, Exception innerException) : base(message, innerException)
-        {
+            _id = id;
         }
 
         protected ShapeshifterException([NotNull] SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
+        }
+
+        public string Id
+        {
+            get { return _id; }
         }
     }
 }

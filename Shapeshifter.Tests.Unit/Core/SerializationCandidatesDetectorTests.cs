@@ -40,7 +40,7 @@ namespace Shapeshifter.Tests.Unit.Core
 
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class ExternalClass
         {
             [DataMember]
@@ -51,7 +51,7 @@ namespace Shapeshifter.Tests.Unit.Core
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class ClassWithList
         {
             [DataMember]
@@ -65,7 +65,7 @@ namespace Shapeshifter.Tests.Unit.Core
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         [KnownType(typeof(InnerClass))]
         private class ClassWithKnownTypes
         {
@@ -74,7 +74,7 @@ namespace Shapeshifter.Tests.Unit.Core
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         [KnownType("GetKnownTypes")]
         private class ClassWithKnownTypesMethod
         {

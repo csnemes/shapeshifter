@@ -10,14 +10,14 @@ namespace Shapeshifter.Core.Deserialization
     /// </summary>
     internal class DefaultDeserializer : Deserializer
     {
-        private readonly TypeInfo _typeInfo;
-        private readonly Dictionary<string, SerializableTypeMemberInfo> _packItemCandidates;
+        private readonly SerializableTypeInfo _serializableTypeInfo;
+        private readonly Dictionary<string, SerializableMemberInfo> _packItemCandidates;
 
-        public DefaultDeserializer(string packformatName, uint version, TypeInfo typeInfo)
-            : base(packformatName, version)
+        public DefaultDeserializer(SerializableTypeInfo serializableTypeInfo)
+            : base(serializableTypeInfo.PackformatName, serializableTypeInfo.Version)
         {
-            _typeInfo = typeInfo;
-            _packItemCandidates = typeInfo.Items.ToDictionary(item => item.Name);
+            _serializableTypeInfo = serializableTypeInfo;
+            _packItemCandidates = serializableTypeInfo.Items.ToDictionary(item => item.Name);
         }
 
         public override Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc()
@@ -27,12 +27,12 @@ namespace Shapeshifter.Core.Deserialization
 
         private object Deserialize(ObjectProperties packItems, ValueConverter valueConverter)
         {
-            object result = FormatterServices.GetUninitializedObject(_typeInfo.Type);
+            object result = FormatterServices.GetUninitializedObject(_serializableTypeInfo.Type);
 
             //try to find a target for each packItem, if not found skip it
             foreach (var packItem in packItems)
             {
-                SerializableTypeMemberInfo target;
+                SerializableMemberInfo target;
                 if (_packItemCandidates.TryGetValue(packItem.Key, out target))
                 {
                     target.SetValueFor(result, valueConverter.ConvertValueToTargetType(target.Type, packItem.Value));

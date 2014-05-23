@@ -70,7 +70,7 @@
     <Compile Include="Core\Detection\SerializationStructureWalker.cs" />
     <Compile Include="Core\Serialization\Serializer.cs" />
     <Compile Include="Core\TypeExtensions.cs" />
-    <Compile Include="Core\TypeInfo.cs" />
+    <Compile Include="Core\SerializableTypeInfo.cs" />
     <Compile Include="SchemaComparison\DeserializerInfo.cs" />
     <Compile Include="SchemaComparison\MissingDeserializerInfo.cs" />
     <Compile Include="SchemaComparison\SerializerInfo.cs" />
@@ -80,15 +80,14 @@
     <Compile Include="SchemaComparison\SnapshotHistory.cs" />
     <Compile Include="IShapeshifterWriter.cs" />
     <Compile Include="Properties\Annotations.cs" />
-    <Compile Include="ShapshifterRootAttribute.cs" />
+    <Compile Include="ShapeshifterAttribute.cs" />
     <Compile Include="SerializerAttribute.cs" />
     <Compile Include="ShapeshifterException.cs" />
     <Compile Include="Shapeshifter.cs" />
     <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\MurMurHash3.cs" />
     <Compile Include="Core\Serialization\InternalPackformatWriter.cs" />
-    <Compile Include="Core\SerializableTypeMemberInfo.cs" />
-    <Compile Include="Core\Deserialization\ReflectionInstanceDeserializer.cs" />
+    <Compile Include="Core\SerializableMemberInfo.cs" />
     <Compile Include="Core\Detection\TypeInspector.cs" />
     <Compile Include="Core\Serialization\SerializerCollection.cs" />
     <Compile Include="Core\Deserialization\Deserializer.cs" />
@@ -97,7 +96,6 @@
     <Compile Include="IShapeshifter.cs" />
     <Compile Include="IShapeshifterReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Core\Deserialization\UnexpectedEndOfTokenStreamException.cs" />
     <Compile Include="DeserializerAttribute.cs" />
   </ItemGroup>
   <ItemGroup>

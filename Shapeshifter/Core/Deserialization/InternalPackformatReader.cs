@@ -44,7 +44,7 @@ namespace Shapeshifter.Core.Deserialization
         {
             if (!skipRead)
             {
-                if (!_reader.Read()) throw new UnexpectedEndOfTokenStreamException();
+                if (!_reader.Read()) throw Exceptions.UnexpectedEndOfTokenStream();
             }
 
             //TODO skip comments

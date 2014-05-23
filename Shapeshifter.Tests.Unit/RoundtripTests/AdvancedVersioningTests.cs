@@ -27,7 +27,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class PersonVersionOne
         {
             [DataMember]
@@ -37,7 +37,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [ShapeshifterRoot]
+        [Shapeshifter]
         private class PersonVersionTwo //droping a class 
         {
             [DataMember]

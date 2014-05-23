@@ -1,41 +1,49 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" Layout="Sugiyama" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="@10" Category="CodeSchema_Class" Bounds="64,6,161.413333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="SerializerCollection" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SerializerCollection" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/SerializerCollection.cs StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" UseManualLocation="True" />
-    <Node Id="@3" Category="CodeSchema_Class" Bounds="217.07,170.0625,149.273333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="CustomSerializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CustomSerializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/CustomSerializer.cs StartLineNumber=5 StartCharacterOffset=4 EndLineNumber=5 EndCharacterOffset=4)" />
-    <Node Id="@4" Category="CodeSchema_Class" Bounds="-60.715,177.0625,146.843333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="DefaultSerializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DefaultSerializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/DefaultSerializer.cs StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" UseManualLocation="True" />
-    <Node Id="@5" Category="CodeSchema_Class" Bounds="44.7500000000001,-93.3125,193.913333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="InternalPackformatWriter" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="InternalPackformatWriter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/InternalPackformatWriter.cs StartLineNumber=12 StartCharacterOffset=4 EndLineNumber=12 EndCharacterOffset=4)" UseManualLocation="True" />
-    <Node Id="@8" Category="CodeSchema_Class" Bounds="337.7,58.375,188.013333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="ShapeshifterWriterWrap" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ShapeshifterWriterWrap" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/ShapeshifterWriterWrap.cs StartLineNumber=2 StartCharacterOffset=4 EndLineNumber=2 EndCharacterOffset=4)" UseManualLocation="True" />
-    <Node Id="@9" Category="CodeSchema_Class" Bounds="93.4433333333334,96.375,108.526666666667,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsInternal="True" CommonLabel="Serializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Serializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/Serializer.cs StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="(@1 Namespace=Shapeshifter Type=IShapeshifterWriter)" Category="CodeSchema_Interface" Bounds="212.09,-108.24995,162.663333333333,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="IShapeshifterWriter" UseManualLocation="True" />
+    <Node Id="@10" Category="CodeSchema_Class" Bounds="-38.285,-1,161.413333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="SerializerCollection" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="SerializerCollection" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/SerializerCollection.cs StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@11" Category="CodeSchema_Class" Bounds="213.686666666667,8.74995,159.47,25" CodeSchemaProperty_IsInternal="True" CommonLabel="ShapeshifterWriter" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="ShapeshifterWriter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/ShapeshifterWriter.cs StartLineNumber=2 StartCharacterOffset=4 EndLineNumber=2 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@3" Category="CodeSchema_Class" Bounds="141.785,155,149.273333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="CustomSerializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="CustomSerializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/CustomSerializer.cs StartLineNumber=5 StartCharacterOffset=4 EndLineNumber=5 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@4" Category="CodeSchema_Class" Bounds="-198,163,146.843333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="DefaultSerializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="DefaultSerializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/DefaultSerializer.cs StartLineNumber=8 StartCharacterOffset=4 EndLineNumber=8 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@5" Category="CodeSchema_Class" Bounds="-58.535,-105,193.913333333333,25" CodeSchemaProperty_IsInternal="True" CommonLabel="InternalPackformatWriter" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="InternalPackformatWriter" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/InternalPackformatWriter.cs StartLineNumber=12 StartCharacterOffset=4 EndLineNumber=12 EndCharacterOffset=4)" UseManualLocation="True" />
+    <Node Id="@9" Category="CodeSchema_Class" Bounds="-9.84166666666665,93.5289255993183,108.526666666667,25" CodeSchemaProperty_IsAbstract="True" CodeSchemaProperty_IsInternal="True" CommonLabel="Serializer" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Icon="CodeSchema_Class" Label="Serializer" Language="{B5E9BD34-6D3E-4B5D-925E-8A43B79820B4}" SourceLocation="(Assembly=file:///C:/Work/GitHub/shapeshifter/Shapeshifter/Core/Serialization/Serializer.cs StartLineNumber=7 StartCharacterOffset=4 EndLineNumber=7 EndCharacterOffset=4)" UseManualLocation="True" />
   </Nodes>
   <Links>
-    <Link Source="@10" Target="@9" Category="References" Bounds="145.121604426003,31,1.87153375927403,56.3799544981305" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="13">
+    <Link Source="@10" Target="@9" Category="References" Bounds="42.686135979541,24,1.280686074177,60.5309393109801" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="13">
       <Category Ref="CodeSchema_Calls" />
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@3" Target="@5" Category="References" Bounds="164.220504760742,-62.664249420166,123.775802612305,232.726749420166" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
+    <Link Source="@11" Target="(@1 Namespace=Shapeshifter Type=IShapeshifterWriter)" Category="Implements" Bounds="293.421666666667,-73.74995,0,82.4999" Weight="1" />
+    <Link Source="@11" Target="@5" Category="References" Bounds="74.662969474639,-76.33354359866,190.736706852691,85.08349359866" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@3" Target="@9" Category="InheritsFrom" Bounds="180.591193588536,125.7026290108,86.6879921620999,44.3598709891996" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4">
+    <Link Source="@3" Target="@11" Category="CodeSchema_Calls" Bounds="223.002860997882,41.7136239225432,59.6447724835934,113.286376077457" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@3" Target="@5" Category="References" Bounds="60.0519676208496,-74.1840438842773,150.609119415283,229.184043884277" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@4" Target="@5" Category="References" Bounds="15.3181686401367,-62.4410209655762,105.046096801758,239.503520965576" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="6">
+    <Link Source="@3" Target="@9" Category="InheritsFrom" Bounds="88.3433143529739,121.726081836095,93.1025523791442,33.2739181639054" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="4">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@4" Target="@9" Category="InheritsFrom" Bounds="33.6206868060935,126.248823056878,85.0174610357429,50.8136769431222" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
+    <Link Source="@4" Target="@5" Category="References" Bounds="-119.531318664551,-73.891227722168,137.819486618042,236.891227722168" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="6">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@5" Target="@10" Category="References" Bounds="142.084262638976,-68.3125,1.97306291128459,65.3166034589842" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3">
+    <Link Source="@4" Target="@9" Category="InheritsFrom" Bounds="-94.169994060848,122.140839798652,99.3967364633133,40.8591602013479" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="2">
       <Category Ref="CodeSchema_Calls" />
     </Link>
-    <Link Source="@5" Target="@9" Category="CodeSchema_Calls" Bounds="163.424682617188,-68.3125,82.7460632324219,159.951469421387" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
-    <Link Source="@9" Target="@5" Category="References" Bounds="159.538040161133,-62.9533958435059,80.6400909423828,159.328395843506" IsSourceVirtualized="True" Weight="1" />
+    <Link Source="@5" Target="@10" Category="References" Bounds="38.9024358974359,-80,2.69256343955068,70.0066494283182" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="3">
+      <Category Ref="CodeSchema_Calls" />
+    </Link>
+    <Link Source="@5" Target="@9" Category="CodeSchema_Calls" Bounds="-41.2956886291504,-80,78.8173141479492,168.347366333008" IsSourceVirtualized="True" IsTargetVirtualized="True" Weight="1" />
+    <Link Source="@9" Target="@5" Category="References" Bounds="-47.0736351013184,-73.9165496826172,77.2022533416748,167.445472717285" IsSourceVirtualized="True" Weight="1" />
   </Links>
   <Categories>
     <Category Id="CodeSchema_Calls" Label="Calls" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Called By" OutgoingActionLabel="Calls" />
     <Category Id="CodeSchema_Class" Label="Class" BasedOn="CodeSchema_Type" CanBeDataDriven="True" DefaultAction="Node:Both:CodeSchema_Member" Icon="CodeSchema_Class" NavigationActionLabel="Classes" />
+    <Category Id="CodeSchema_Interface" Label="Interface" BasedOn="CodeSchema_Type" CanBeDataDriven="True" DefaultAction="Node:Both:CodeSchema_Member" Icon="CodeSchema_Interface" NavigationActionLabel="Interfaces" />
     <Category Id="CodeSchema_ReturnTypeLink" Label="Return" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Return types" OutgoingActionLabel="Return types" />
     <Category Id="CodeSchema_Type" Label="Type" CanBeDataDriven="True" DefaultAction="Node:Both:CodeSchema_Member" Icon="CodeSchema_Class" NavigationActionLabel="Types" />
+    <Category Id="Implements" Label="Implements" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Implemented by" OutgoingActionLabel="Implements" />
     <Category Id="InheritsFrom" Label="Inherits From" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Inherited By" OutgoingActionLabel="Inherits From" />
     <Category Id="References" Label="References" CanBeDataDriven="True" CanLinkedNodesBeDataDriven="True" IncomingActionLabel="Referenced By" OutgoingActionLabel="References" />
   </Categories>
@@ -45,6 +53,7 @@
     <Property Id="CanLinkedNodesBeDataDriven" Label="CanLinkedNodesBeDataDriven" Description="CanLinkedNodesBeDataDriven" DataType="System.Boolean" />
     <Property Id="CodeSchemaProperty_IsAbstract" Label="Is Abstract" Description="Flag to indicate member is 'Abstract' does not provide a full implementation" DataType="System.Boolean" />
     <Property Id="CodeSchemaProperty_IsInternal" Label="Is Internal" Description="Flag to indicate the method is 'Internal'" DataType="System.Boolean" />
+    <Property Id="CodeSchemaProperty_IsPublic" Label="Is Public" Description="Flag to indicate the scope is Public" DataType="System.Boolean" />
     <Property Id="CommonLabel" DataType="System.String" />
     <Property Id="DataVirtualized" Label="Data Virtualized" Description="If true, the graph can contain nodes and links that represent data for virtualized nodes/links (i.e. not actually created in the graph)." DataType="System.Boolean" />
     <Property Id="DefaultAction" Label="DefaultAction" Description="DefaultAction" DataType="System.String" />
@@ -82,9 +91,9 @@
     <Alias n="3" Id="(@1 @2 Type=CustomSerializer)" />
     <Alias n="4" Id="(@1 @2 Type=DefaultSerializer)" />
     <Alias n="5" Id="(@1 @2 Type=InternalPackformatWriter)" />
-    <Alias n="8" Id="(@1 @2 Type=ShapeshifterWriterWrap)" />
     <Alias n="9" Id="(@1 @2 Type=Serializer)" />
     <Alias n="10" Id="(@1 @2 Type=SerializerCollection)" />
+    <Alias n="11" Id="(@1 @2 Type=ShapeshifterWriter)" />
   </IdentifierAliases>
   <Styles>
     <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">

@@ -5,7 +5,7 @@ namespace Shapeshifter.Tests.Unit.History
 {
 
     [DataContract]
-    [Serializer]
+    [Shapeshifter]
     internal class Order
     {
         [DataMember]
@@ -36,7 +36,7 @@ namespace Shapeshifter.Tests.Unit.History
     //New Version 
 
     [DataContract]
-    [Serializer]
+    [Shapeshifter]
     internal class NewOrder
     {
         [DataMember]
@@ -49,7 +49,7 @@ namespace Shapeshifter.Tests.Unit.History
     namespace NewerVersion  //namespace used to enable using the same class name 
     {
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         internal class NewOrder
         {
             [DataMember]
@@ -73,7 +73,7 @@ namespace Shapeshifter.Tests.Unit.History
     namespace Version1
     {
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         internal class TestClass
         {
             [DataMember]
@@ -84,7 +84,7 @@ namespace Shapeshifter.Tests.Unit.History
     namespace Version2
     {
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         internal class TestClass
         {
             [DataMember]
@@ -98,7 +98,7 @@ namespace Shapeshifter.Tests.Unit.History
     namespace Version3
     {
         [DataContract]
-        [Serializer]
+        [Shapeshifter]
         internal class TestClass
         {
             [DataMember]

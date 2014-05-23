@@ -8,12 +8,12 @@ namespace Shapeshifter.Core.Serialization
     /// </summary>
     internal class DefaultSerializer : Serializer
     {
-        private readonly TypeInfo _typeInfo;
+        private readonly SerializableTypeInfo _serializableTypeInfo;
 
-        public DefaultSerializer(TypeInfo typeInfo)
-            : base(typeInfo.Type, typeInfo.Version)
+        public DefaultSerializer(SerializableTypeInfo serializableTypeInfo)
+            : base(serializableTypeInfo.Type, serializableTypeInfo.Version)
         {
-            _typeInfo = typeInfo;
+            _serializableTypeInfo = serializableTypeInfo;
         }
 
         public override Action<InternalPackformatWriter, object> GetSerializerFunc()
@@ -33,17 +33,17 @@ namespace Shapeshifter.Core.Serialization
                 throw new ArgumentNullException("writer");
             }
 
-            if (_typeInfo.Type != objToWrite.GetType())
+            if (_serializableTypeInfo.Type != objToWrite.GetType())
             {
-                throw Exceptions.InstanceTypeDoesNotMatchSerializerType(_typeInfo.Type, objToWrite.GetType());
+                throw Exceptions.InstanceTypeDoesNotMatchSerializerType(_serializableTypeInfo.Type, objToWrite.GetType());
             }
 
             //write type and version
-            writer.WriteProperty(Constants.TypeNameKey, _typeInfo.PackformatName);
-            writer.WriteProperty(Constants.VersionKey, Convert.ToInt64(_typeInfo.Version));
+            writer.WriteProperty(Constants.TypeNameKey, _serializableTypeInfo.PackformatName);
+            writer.WriteProperty(Constants.VersionKey, Convert.ToInt64(_serializableTypeInfo.Version));
 
             //write fields one-by-one
-            foreach (var packItemCandidate in _typeInfo.Items)
+            foreach (var packItemCandidate in _serializableTypeInfo.Items)
             {
                 writer.WriteProperty(packItemCandidate.Name, packItemCandidate.GetValueFor(objToWrite));
             }

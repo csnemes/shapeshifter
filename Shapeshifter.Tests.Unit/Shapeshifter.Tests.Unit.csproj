@@ -56,13 +56,15 @@
     <Compile Include="History\SnapshotHistoryTests.cs" />
     <Compile Include="History\SnapshotTests.cs" />
     <Compile Include="History\TestClasses.cs" />
-    <Compile Include="New\CustomSerializerTests.cs" />
-    <Compile Include="New\DefaultRoundtripTests.cs" />
+    <Compile Include="RoundtripTests\CustomSerializerTests.cs" />
+    <Compile Include="RoundtripTests\CustomSerializerForDescendantsTests.cs" />
+    <Compile Include="RoundtripTests\CustomSerializerForGenericsTests.cs" />
+    <Compile Include="RoundtripTests\DefaultSerializerTests.cs" />
     <Compile Include="Core\PackformatWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundtripTests\AdvancedVersioningTests.cs" />
     <Compile Include="RoundtripTests\ArraySupportTests.cs" />
-    <Compile Include="RoundtripTests\CustomSerializationTests.cs" />
+    <Compile Include="RoundtripTests\CustomSerializerForVersioningTests.cs" />
     <Compile Include="RoundtripTests\DictionarySupportTests.cs" />
     <Compile Include="RoundtripTests\EnumSupportTests.cs" />
     <Compile Include="RoundtripTests\CollectionSupportTests.cs" />
@@ -89,6 +91,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

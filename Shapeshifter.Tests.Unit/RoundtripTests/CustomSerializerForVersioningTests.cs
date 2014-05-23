@@ -5,7 +5,7 @@ using System;
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
-    public class CustomSerializationTests
+    public class CustomSerializerForVersioningTests
     {
         [Test]
         public void SameVersionWriteAndReadBack_OriginalVersion()
