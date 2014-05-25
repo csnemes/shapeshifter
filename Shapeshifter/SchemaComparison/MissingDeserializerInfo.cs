@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
+using Shapeshifter.SchemaComparison.Impl;
 
 namespace Shapeshifter.SchemaComparison
 {

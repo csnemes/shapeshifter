@@ -14,7 +14,7 @@ namespace Shapeshifter.Core.Converters
             return enumVal.ToString("G");
         }
 
-        public object ConvertFromPackformat(ValueConverter valueConverter, Type targetType, object value)
+        public object ConvertFromPackformat(Type targetType, object value)
         {
             return Enum.Parse(targetType, value.ToString(), true);
         }

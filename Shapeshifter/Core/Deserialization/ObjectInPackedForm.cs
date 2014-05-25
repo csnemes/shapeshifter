@@ -9,16 +9,14 @@ namespace Shapeshifter.Core.Deserialization
     /// </summary>
     internal class ObjectInPackedForm
     {
-        private readonly ValueConverter _valueConverter;
-        private readonly Func<ObjectProperties, ValueConverter, object> _deserializer;
+        private readonly Func<ObjectProperties, object> _deserializer;
         private readonly ObjectProperties _internalElements;
 
         public ObjectInPackedForm(ObjectProperties internalElements,
-            Func<ObjectProperties, ValueConverter, object> deserializer, ValueConverter valueConverter)
+            Func<ObjectProperties, object> deserializer)
         {
             _internalElements = internalElements;
             _deserializer = deserializer;
-            _valueConverter = valueConverter;
         }
 
         public string PackedTypeName
@@ -38,7 +36,7 @@ namespace Shapeshifter.Core.Deserialization
 
         public object Deserialize()
         {
-            return _deserializer(_internalElements, _valueConverter);
+            return _deserializer(_internalElements);
         }
     }
 }

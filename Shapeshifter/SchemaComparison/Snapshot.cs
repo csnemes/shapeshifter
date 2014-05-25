@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
+using Shapeshifter.SchemaComparison.Impl;
 
 namespace Shapeshifter.SchemaComparison
 {

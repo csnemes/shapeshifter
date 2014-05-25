@@ -1,11 +1,11 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using Shapeshifter.SchemaComparison;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using FluentAssertions;
+using NUnit.Framework;
+using Shapeshifter.SchemaComparison.Impl;
 
-namespace Shapeshifter.Tests.Unit.History
+namespace Shapeshifter.Tests.Unit.SchemaComparison
 {
     [TestFixture]
     public class SnapshotDetectorTests

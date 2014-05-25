@@ -15,12 +15,12 @@ namespace Shapeshifter.Core.Deserialization
             _targetType = targetType;
         }
 
-        public override Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, object> GetDeserializerFunc()
         {
-            return (objects, valueConverter) =>
+            return (objects) =>
                 _targetType == null
-                    ? _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects, valueConverter)})
-                    : _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects, valueConverter), _targetType});
+                    ? _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects)})
+                    : _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects), _targetType});
         }
     }
 }

@@ -4,7 +4,7 @@ using System.Reflection;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.SchemaComparison
+namespace Shapeshifter.SchemaComparison.Impl
 {
     /// <summary>
     ///     Detects all involved classes and methods to create a snapshot
@@ -37,14 +37,13 @@ namespace Shapeshifter.SchemaComparison
 
         void ISerializableTypeVisitor.VisitSerializableClass(SerializableTypeInfo serializableTypeInfo)
         {
-            _serializers.Add(new SerializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName,
-                String.Empty));
-            _deserializers.Add(new DeserializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version));
+            _serializers.Add(new DefaultSerializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName));
+            _deserializers.Add(new DefaultDeserializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName));
         }
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
-            _deserializers.Add(new DeserializerInfo(attribute.PackformatName, attribute.Version));
+            _deserializers.Add(new CustomDeserializerInfo(attribute.PackformatName, attribute.Version, methodInfo.Name, methodInfo.DeclaringType.FullName));
         }
 
         void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo methodInfo)
@@ -53,8 +52,8 @@ namespace Shapeshifter.SchemaComparison
             {
                 throw new ArgumentNullException("methodInfo");
             }
-            _serializers.Add(new SerializerInfo(attribute.PackformatName, attribute.Version,
-                methodInfo.DeclaringType.FullName, methodInfo.Name));
+            _serializers.Add(new CustomSerializerInfo(attribute.PackformatName, attribute.Version, methodInfo.Name,
+                methodInfo.DeclaringType.FullName));
         }
 
         public static SnapshotDetector CreateFor(Type type)

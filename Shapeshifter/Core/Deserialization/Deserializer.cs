@@ -39,6 +39,6 @@ namespace Shapeshifter.Core.Deserialization
         ///     <see cref="ValueConverter" />
         ///     builds up the deserialized value.
         /// </summary>
-        public abstract Func<ObjectProperties, ValueConverter, object> GetDeserializerFunc();
+        public abstract Func<ObjectProperties, object> GetDeserializerFunc();
     }
 }

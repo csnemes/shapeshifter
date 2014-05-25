@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace Shapeshifter.Tests.Unit.History
+namespace Shapeshifter.Tests.Unit.SchemaComparison
 {
 
     [DataContract]

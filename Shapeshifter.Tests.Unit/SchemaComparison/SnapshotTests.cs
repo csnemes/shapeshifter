@@ -1,9 +1,10 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.SchemaComparison;
-using System.Linq;
+using Shapeshifter.Tests.Unit.SchemaComparison.Version1;
 
-namespace Shapeshifter.Tests.Unit.History
+namespace Shapeshifter.Tests.Unit.SchemaComparison
 {
     [TestFixture]
     public class SnapshotTests
@@ -95,7 +96,7 @@ namespace Shapeshifter.Tests.Unit.History
         [Test]
         public void CompareToBase_MultipleBases_MultipleVersionChangesOnTheSameClass_AreDetected()
         {
-            var snapshot1 = Snapshot.Create("Base", typeof(Version1.TestClass));
+            var snapshot1 = Snapshot.Create("Base", typeof(TestClass));
             var snapshot2 = Snapshot.Create("New", typeof(Version2.TestClass));
             var snapshot3 = Snapshot.Create("Newer", typeof(Version3.TestClass));
 

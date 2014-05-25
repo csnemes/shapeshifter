@@ -12,7 +12,6 @@ namespace Shapeshifter.Core.Deserialization
     /// </summary>
     internal class InternalPackformatReader : IDisposable
     {
-        private readonly ValueConverter _valueConverter;
         private readonly JsonReader _reader;
         private readonly DeserializerCollection _deserializers;
 
@@ -20,7 +19,6 @@ namespace Shapeshifter.Core.Deserialization
         {
             _reader = new JsonTextReader(reader);
             _deserializers = deserializers;
-            _valueConverter = new ValueConverter();
         }
 
         public InternalPackformatReader(string source, DeserializerCollection deserializers)
@@ -31,13 +29,13 @@ namespace Shapeshifter.Core.Deserialization
         public object Unpack<T>()
         {
             object result = MatchValue();
-            return _valueConverter.ConvertValueToTargetType<T>(result);
+            return ValueConverter.ConvertValueToTargetType<T>(result);
         }
 
         public object Unpack(Type targetType)
         {
             object result = MatchValue();
-            return _valueConverter.ConvertValueToTargetType(targetType, result);
+            return ValueConverter.ConvertValueToTargetType(targetType, result);
         }
 
         private object MatchValue(bool skipRead = false)
@@ -117,13 +115,13 @@ namespace Shapeshifter.Core.Deserialization
                     objectProperties.Version);
 
                 //if we don't have a real builder we'll throw an exception when someone tries to get the data
-                Func<ObjectProperties, ValueConverter, object> builderFunc = (typeUnpacker == null
+                Func<ObjectProperties, object> builderFunc = (typeUnpacker == null
                     ? null
-                    : typeUnpacker.GetDeserializerFunc()) ?? ((inp, conv) =>{
+                    : typeUnpacker.GetDeserializerFunc()) ?? ((inp) =>{
                                                                                 throw Exceptions.CannotFindDeserializer(objectProperties);
                                                                             });
 
-                return new ObjectInPackedForm(objectProperties, builderFunc, _valueConverter);
+                return new ObjectInPackedForm(objectProperties, builderFunc);
             }
             //TODO handle the case when no name and/or version is present  - some JSON not serialized with shapeshifter
             throw Exceptions.InvalidInput();
