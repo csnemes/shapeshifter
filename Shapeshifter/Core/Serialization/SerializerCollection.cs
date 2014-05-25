@@ -34,28 +34,44 @@ namespace Shapeshifter.Core.Serialization
             private readonly Dictionary<Type, Serializer> _serializers =
                 new Dictionary<Type, Serializer>();
 
-            public void Add(Serializer serializer)
+            public SerializerCollectionBuilder Add(Serializer serializer)
             {
-                Serializer alreadyRegisteredSerializer;
-                if (_serializers.TryGetValue(serializer.Type, out alreadyRegisteredSerializer))
-                {
-                    if (serializer.GetType() == alreadyRegisteredSerializer.GetType())
-                        throw Exceptions.OnlyOneSerializerAllowedForAType(serializer.Type);
+                if (serializer == null)
+                    throw new ArgumentNullException("serializer");
 
-                    if (NewSerializerCanOverrideAlreadyRegisteredSerializer(serializer, alreadyRegisteredSerializer))
-                    {
-                        _serializers[serializer.Type] = serializer;
-                    }
-                }
-                else
+                var alreadyRegisteredSerializer = GetAlreadyRegisteredSerializer(serializer.Type);
+                if (alreadyRegisteredSerializer == null)
                 {
                     _serializers.Add(serializer.Type, serializer);
                 }
+                else
+                {
+                    _serializers[serializer.Type] = CombineSerializers(serializer, alreadyRegisteredSerializer);
+                }
+
+                return this;
             }
 
-            private static bool NewSerializerCanOverrideAlreadyRegisteredSerializer(Serializer newSerializer, Serializer alreadyRegisteredSerializer)
+            private static Serializer CombineSerializers(Serializer serializer, Serializer otherSerializer)
             {
-                return newSerializer is CustomSerializer && alreadyRegisteredSerializer is DefaultSerializer;
+                if (serializer is CustomSerializer && otherSerializer is DefaultSerializer)
+                {
+                    return serializer;
+                }
+
+                if (serializer is DefaultSerializer && otherSerializer is CustomSerializer)
+                {
+                    return otherSerializer;
+                }
+
+                throw Exceptions.SerializerAlreadyExists(serializer);
+            }
+
+            private Serializer GetAlreadyRegisteredSerializer(Type type)
+            {
+                Serializer alreadyRegisteredSerializer;
+                _serializers.TryGetValue(type, out alreadyRegisteredSerializer);
+                return alreadyRegisteredSerializer;
             }
 
             public static implicit operator SerializerCollection(SerializerCollectionBuilder builder)

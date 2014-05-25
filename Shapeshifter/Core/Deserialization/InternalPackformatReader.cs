@@ -111,15 +111,13 @@ namespace Shapeshifter.Core.Deserialization
             //build up object 
             if (objectProperties.IsInPackformat)
             {
-                Deserializer typeUnpacker = _deserializers.ResolveDeserializer(objectProperties.TypeName,
-                    objectProperties.Version);
+                var deserializerKey = new DeserializerKey(objectProperties.TypeName, objectProperties.Version);
+                var typeUnpacker = _deserializers.ResolveDeserializer(deserializerKey);
 
                 //if we don't have a real builder we'll throw an exception when someone tries to get the data
-                Func<ObjectProperties, object> builderFunc = (typeUnpacker == null
-                    ? null
-                    : typeUnpacker.GetDeserializerFunc()) ?? ((inp) =>{
-                                                                                throw Exceptions.CannotFindDeserializer(objectProperties);
-                                                                            });
+                var builderFunc =
+                    (typeUnpacker == null ? null : typeUnpacker.GetDeserializerFunc())
+                    ?? (i => { throw Exceptions.CannotFindDeserializer(i); });
 
                 return new ObjectInPackedForm(objectProperties, builderFunc);
             }

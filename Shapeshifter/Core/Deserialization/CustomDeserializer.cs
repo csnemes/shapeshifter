@@ -5,10 +5,10 @@ namespace Shapeshifter.Core.Deserialization
 {
     internal class CustomDeserializer : Deserializer
     {
-        private readonly MethodInfo _methodInfo;
+        private readonly MethodBase _methodInfo;
         private readonly Type _targetType;
 
-        public CustomDeserializer(string packformatName, uint version, MethodInfo methodInfo, Type targetType = null)
+        public CustomDeserializer(string packformatName, uint version, MethodBase methodInfo, Type targetType = null)
             : base(packformatName, version)
         {
             _methodInfo = methodInfo;

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Shapeshifter.Core.Deserialization
 {
@@ -9,9 +8,9 @@ namespace Shapeshifter.Core.Deserialization
     /// </summary>
     internal class DeserializerCollection
     {
-        private readonly Dictionary<string, List<Deserializer>> _deserializers;
+        private readonly Dictionary<DeserializerKey, Deserializer> _deserializers;
 
-        private DeserializerCollection(Dictionary<string, List<Deserializer>> deserializers)
+        private DeserializerCollection(Dictionary<DeserializerKey, Deserializer> deserializers)
         {
             _deserializers = deserializers;
         }
@@ -21,67 +20,75 @@ namespace Shapeshifter.Core.Deserialization
             get { return new DeserializerCollectionBuilder(); }
         }
 
-        public Deserializer ResolveDeserializer(string typeName, uint version)
+        public Deserializer ResolveDeserializer(DeserializerKey deserializerKey)
         {
-            if (typeName == null)
+            if (deserializerKey == null)
             {
-                throw new ArgumentNullException("typeName");
+                throw new ArgumentNullException("deserializerKey");
             }
 
-            if (!_deserializers.ContainsKey(typeName))
+            Deserializer result;
+            if (_deserializers.TryGetValue(deserializerKey, out result))
             {
-                return null;
+                return result;
             }
 
-            var deserializers = _deserializers[typeName];
+            var versionNeutralDeserializerKey = new DeserializerKey(deserializerKey.PackedName);
+            if (_deserializers.TryGetValue(versionNeutralDeserializerKey, out result))
+            {
+                return result;
+            }
 
-            var result = deserializers.FirstOrDefault(item => item.Version == version)
-                         ?? deserializers.FirstOrDefault(item => item.Version == 0);
-
-            return result;
+            return null;
         }
-
 
         internal class DeserializerCollectionBuilder
         {
-            private readonly Dictionary<string, List<Deserializer>> _deserializers = new Dictionary<string, List<Deserializer>>();
+            private readonly Dictionary<DeserializerKey, Deserializer> _deserializers = new Dictionary<DeserializerKey, Deserializer>();
 
-            public void Add(Deserializer deserializer)
+            public DeserializerCollectionBuilder Add(Deserializer deserializer)
             {
                 if (deserializer == null)
-                {
                     throw new ArgumentNullException("deserializer");
+
+                var alreadyRegisteredDeserializer = GetAlreadyRegisteredDeserializer(deserializer.Key);
+                if (alreadyRegisteredDeserializer == null)
+                {
+                    _deserializers.Add(deserializer.Key, deserializer);
+                }
+                else
+                {
+                    _deserializers[deserializer.Key] = CombineDeserializers(deserializer, alreadyRegisteredDeserializer);
                 }
 
-                if (!_deserializers.ContainsKey(deserializer.PackformatName))
+                return this;
+            }
+
+            private static Deserializer CombineDeserializers(Deserializer deserializer, Deserializer otherDeserializer)
+            {
+                if (deserializer is CustomDeserializer && otherDeserializer is DefaultDeserializer)
                 {
-                    _deserializers[deserializer.PackformatName] = new List<Deserializer>();
+                    return deserializer;
                 }
 
-                if (!_deserializers[deserializer.PackformatName].Contains(deserializer, DeserializerNameAndVersionComparer.Instance))
+                if (deserializer is DefaultDeserializer && otherDeserializer is CustomDeserializer)
                 {
-                    _deserializers[deserializer.PackformatName].Add(deserializer);
+                    return otherDeserializer;
                 }
+
+                throw Exceptions.DeserializerAlreadyExists(deserializer);
+            }
+
+            private Deserializer GetAlreadyRegisteredDeserializer(DeserializerKey deserializerKey)
+            {
+                Deserializer alreadyRegisteredDeserializer;
+                _deserializers.TryGetValue(deserializerKey, out alreadyRegisteredDeserializer);
+                return alreadyRegisteredDeserializer;
             }
 
             public static implicit operator DeserializerCollection(DeserializerCollectionBuilder builder)
             {
                 return new DeserializerCollection(builder._deserializers);
-            }
-
-            private class DeserializerNameAndVersionComparer : IEqualityComparer<Deserializer>
-            {
-                public static readonly DeserializerNameAndVersionComparer Instance = new DeserializerNameAndVersionComparer();
-
-                public bool Equals(Deserializer x, Deserializer y)
-                {
-                    return Equals(x.Key, y.Key);
-                }
-
-                public int GetHashCode(Deserializer obj)
-                {
-                    return obj.Key.GetHashCode();
-                }
             }
         }
     }

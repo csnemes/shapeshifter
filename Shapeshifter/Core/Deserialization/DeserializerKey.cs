@@ -58,5 +58,10 @@ namespace Shapeshifter.Core.Deserialization
         {
             return !left.Equals(right);
         }
+
+        public override string ToString()
+        {
+            return string.Format("({0},{1})", _packedName, _version);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Reflection;
 using Newtonsoft.Json;
 using Shapeshifter.Core.Deserialization;
+using Shapeshifter.Core.Serialization;
 
 namespace Shapeshifter.Core
 {
@@ -69,11 +70,18 @@ namespace Shapeshifter.Core
                 String.Format("The value for the key {0} is not an object.", key)));
         }
 
-        public const string OnlyOneSerializerAllowedForATypeId = "OnlyOneSerializerAllowedForAType";
-        public static Exception OnlyOneSerializerAllowedForAType(Type type)
+        public const string SerializerAlreadyExistsId = "SerializerAlreadyExists";
+        public static Exception SerializerAlreadyExists(Serializer serializer)
         {
-            return SafeCreateException(() => new ShapeshifterException(OnlyOneSerializerAllowedForATypeId,
-                String.Format("A serializer already exists for type {0}.", type.Name)));
+            return SafeCreateException(() => new ShapeshifterException(SerializerAlreadyExistsId,
+                String.Format("A {0} serializer already exists for type {1}.", serializer.GetType().Name, serializer.Type.Name)));
+        }
+
+        public const string DeserializerAlreadyExistsId = "DeserializerAlreadyExists";
+        public static Exception DeserializerAlreadyExists(Deserializer deserializer)
+        {
+            return SafeCreateException(() => new ShapeshifterException(DeserializerAlreadyExistsId,
+                String.Format("A {0} deserializer already exists for key {1}.", deserializer.GetType().Name, deserializer.Key)));
         }
 
         public const string UnexpectedTokenEncounteredId = "UnexpectedTokenEncountered";

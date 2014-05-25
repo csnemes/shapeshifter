@@ -52,6 +52,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Deserialization\DeserializerCollectionTests.cs" />
+    <Compile Include="Core\Serialization\SerializerCollectionTests.cs" />
     <Compile Include="SchemaComparison\SnapshotDetectorTests.cs" />
     <Compile Include="SchemaComparison\SnapshotHistoryTests.cs" />
     <Compile Include="SchemaComparison\SnapshotTests.cs" />
