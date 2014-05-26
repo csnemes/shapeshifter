@@ -4,10 +4,10 @@ using NUnit.Framework;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.Tests.Unit.Core
+namespace Shapeshifter.Tests.Unit.Core.Deserialization
 {
     [TestFixture]
-    public class PackformatReaderTests
+    public class InternalPackformatReaderTests
     {
         [Test]
         public void ClassDeserializationTest()
@@ -69,7 +69,7 @@ namespace Shapeshifter.Tests.Unit.Core
             result.Item.Should().Be("Intel PC");
         }
 
-        private T Deserialize<T>(string input)
+        private static T Deserialize<T>(string input)
         {
             var typeContext = MetadataExplorer.CreateFor(typeof (T)).Deserializers;
             var engine = new InternalPackformatReader(input, typeContext);

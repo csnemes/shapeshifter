@@ -8,17 +8,24 @@ namespace Shapeshifter.Core.Serialization
     internal abstract class Serializer
     {
         private readonly Type _type;
+        private readonly string _packformatName;
         private readonly uint _version;
 
-        protected Serializer(Type type, uint version)
+        protected Serializer(Type type, string packformatName, uint version)
         {
             _type = type;
+            _packformatName = packformatName;
             _version = version;
         }
 
         public Type Type
         {
             get { return _type; }
+        }
+
+        public string PackformatName
+        {
+            get { return _packformatName ?? _type.GetPrettyName(); }
         }
 
         public uint Version

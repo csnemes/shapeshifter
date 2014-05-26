@@ -62,7 +62,7 @@
     <Compile Include="RoundtripTests\CustomSerializerTests.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForDescendantsTests.cs" />
     <Compile Include="RoundtripTests\DefaultSerializerTests.cs" />
-    <Compile Include="Core\PackformatWriterTests.cs" />
+    <Compile Include="Core\Serialization\InternalPackformatWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RoundtripTests\AdvancedVersioningTests.cs" />
     <Compile Include="RoundtripTests\ArraySupportTests.cs" />
@@ -80,9 +80,9 @@
     <Compile Include="RoundtripTests\NullableSupportTests.cs" />
     <Compile Include="RoundtripTests\BasicVersioningTests.cs" />
     <Compile Include="RoundtripTests\TestsBase.cs" />
-    <Compile Include="Core\SerializationCandidatesDetectorTests.cs" />
-    <Compile Include="Core\TypeInspectorTests.cs" />
-    <Compile Include="Core\PackformatReaderTests.cs" />
+    <Compile Include="Core\Detection\MetadataExplorerTests.cs" />
+    <Compile Include="Core\Detection\TypeInspectorTests.cs" />
+    <Compile Include="Core\Deserialization\InternalPackformatReaderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Shapeshifter\Shapeshifter.csproj">

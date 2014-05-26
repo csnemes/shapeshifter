@@ -1,4 +1,5 @@
 ﻿using System;
+using Shapeshifter.Core;
 
 namespace Shapeshifter
 {
@@ -42,8 +43,8 @@ namespace Shapeshifter
         private uint _version;
         private bool _forAllDescendants = false;
 
-        public DeserializerAttribute(Type targetType, uint version = 0) 
-            : this(targetType.Name, version)
+        public DeserializerAttribute(Type targetType, uint version = 0)
+            : this(targetType.GetPrettyName(), version)
         {
             _targeType = targetType;
         }

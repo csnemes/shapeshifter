@@ -99,7 +99,7 @@ namespace Shapeshifter.Core.Detection
 
         public string PackformatName
         {
-            get { return GetPackformatNameFromShapeshifterAttribute() ?? GetTypePrettyShortName(_type); }
+            get { return GetPackformatNameFromShapeshifterAttribute() ?? _type.GetPrettyName(); }
         }
 
         internal Type Type
@@ -137,26 +137,6 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static string GetTypePrettyShortName(Type type)
-        {
-            if (!type.IsGenericType) return type.Name;
-
-            Type[] genericArguments = type.GetGenericArguments();
-            var sb = new StringBuilder(type.Name.Substring(0, type.Name.IndexOf('`')));
-            sb.Append("<");
-            for (int idx = 0; idx < genericArguments.Length; idx++)
-            {
-                Type argType = genericArguments[idx];
-                sb.Append(GetTypePrettyShortName(argType));
-                if (idx < genericArguments.Length - 1)
-                {
-                    sb.Append(",");
-                }
-            }
-            sb.Append(">");
-            return sb.ToString();
-        }
-
         private List<KnownTypeAttribute> GetKnownTypeAttributes()
         {
             return _type.GetCustomAttributes(typeof (KnownTypeAttribute), false).OfType<KnownTypeAttribute>().ToList();
@@ -171,7 +151,7 @@ namespace Shapeshifter.Core.Detection
                 foreach (SerializableMemberInfo candidate in SerializableItemCandidates.OrderBy(item => item.Name))
                 {
                     writer.Write(candidate.Name);
-                    writer.Write(GetTypePrettyShortName(candidate.Type));
+                    writer.Write(candidate.Type.GetPrettyName());
                 }
                 writer.Flush();
                 stream.Position = 0;

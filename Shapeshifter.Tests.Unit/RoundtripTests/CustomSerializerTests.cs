@@ -45,7 +45,6 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [Ignore("Ez bug vagy feature?")]
         public void CustomSerializerWithCustomPackformatName_Success()
         {
             var source = new MyTypeWithCustomPackName() { MyProperty = 42 };
@@ -77,6 +76,75 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             public static object Deserializer(IShapeshifterReader reader)
             {
                 return new MyTypeWithCustomPackName() { MyProperty = reader.Read<int>("MyKey") };
+            }
+        }
+
+        [Test]
+        public void ConstructedGeneric_SerializedAndDeserializedCorrectly()
+        {
+            var source = new Generic<int> {MyProperty = 42};
+            var serializer = GetSerializer<Generic<int>>();
+            var pack = serializer.Serialize(source);
+            var target = serializer.Deserialize(pack);
+
+            target.MyProperty.Should().Be(42);
+        }
+
+        [Test]
+        public void ConstructedGeneric_TypeNameIsPrettyInThePackformat()
+        {
+            var source = new Generic<int>();
+            var serializer = GetSerializer<Generic<int>>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.TypeNameKey].Value<string>().Should().Be("Generic<Int32>");
+        }
+
+        [Shapeshifter]
+        private class Generic<T>
+        {
+            public T MyProperty { get; set; }
+
+            [Serializer(typeof(Generic<int>), 1)]
+            public static void Serializer(IShapeshifterWriter writer, Generic<int> itemToSerialize)
+            {
+                writer.Write("MyKey", itemToSerialize.MyProperty);
+            }
+
+            [Deserializer("Generic<Int32>", 1)]
+            public static Generic<int> Deserializer(IShapeshifterReader reader)
+            {
+                return new Generic<int>() { MyProperty = reader.Read<int>("MyKey") };
+            }
+        }
+
+        [Test]
+        public void ConstructedGeneric_CustomerDeserializerCanBeGivenWithTypeName()
+        {
+            var source = new GenericDeserializedWithTypeName<int> { MyProperty = 42 };
+            var serializer = GetSerializer<GenericDeserializedWithTypeName<int>>();
+            var pack = serializer.Serialize(source);
+            var target = serializer.Deserialize(pack);
+
+            target.MyProperty.Should().Be(42);
+        }
+
+        [Shapeshifter]
+        private class GenericDeserializedWithTypeName<T>
+        {
+            public T MyProperty { get; set; }
+
+            [Serializer(typeof(GenericDeserializedWithTypeName<int>), 1)]
+            public static void Serializer(IShapeshifterWriter writer, GenericDeserializedWithTypeName<int> itemToSerialize)
+            {
+                writer.Write("MyKey", itemToSerialize.MyProperty);
+            }
+
+            [Deserializer(typeof(GenericDeserializedWithTypeName<int>), 1)]
+            public static GenericDeserializedWithTypeName<int> Deserializer(IShapeshifterReader reader)
+            {
+                return new GenericDeserializedWithTypeName<int>() { MyProperty = reader.Read<int>("MyKey") };
             }
         }
 

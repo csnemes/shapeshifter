@@ -5,10 +5,10 @@ using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Core.Detection;
 
-namespace Shapeshifter.Tests.Unit.Core
+namespace Shapeshifter.Tests.Unit.Core.Detection
 {
     [TestFixture]
-    public class SerializationCandidatesDetectorTests
+    public class MetadataExplorerTests
     {
         [Test]
         public void ShouldDetectMemberTypesWithDataMemberAttribute()

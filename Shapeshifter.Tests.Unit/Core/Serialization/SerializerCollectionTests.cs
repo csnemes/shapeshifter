@@ -22,7 +22,7 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         [Test]
         public void Add_Resolve_Success()
         {
-            var mySerializer = new CustomSerializer(typeof(int), 1, null);
+            var mySerializer = new CustomSerializer(typeof(int), null, 1, null);
 
             var serializerCollection = (SerializerCollection) SerializerCollection.New.Add(mySerializer);
 
@@ -33,7 +33,7 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         public void AddCustomAndDefaultSerializer_InAnyOrder_Resolve_CustomSerializerIsReturned()
         {
             var myDefaultSerializer = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
-            var myCustomSerializer = new CustomSerializer(typeof(int), 1, null);
+            var myCustomSerializer = new CustomSerializer(typeof(int), null, 1, null);
 
             {
                 var serializerCollection = (SerializerCollection) SerializerCollection.New
@@ -54,8 +54,8 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         [Test]
         public void AddTwoCustomSerializers_Throws()
         {
-            var myCustomSerializer1 = new CustomSerializer(typeof(int), 1, null);
-            var myCustomSerializer2 = new CustomSerializer(typeof(int), 1, null);
+            var myCustomSerializer1 = new CustomSerializer(typeof(int), null, 1, null);
+            var myCustomSerializer2 = new CustomSerializer(typeof(int), null, 1, null);
 
             Action action = () =>
             {
@@ -79,6 +79,28 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
                 .Add(myDefaultSerializer2);
             };
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.SerializerAlreadyExistsId);
+        }
+
+        [Test]
+        public void AddCustomSerializerForDerivedType_OverridesCustomSerializerCreatedFromBaseTypeForAllDescendants_WorksInAnyOrder()
+        {
+            var explicitSerializer = new CustomSerializer(typeof (int), null, 1, null, CustomSerializerCreationReason.Explicit);
+            var implicitSerializer = new CustomSerializer(typeof (int), null, 1, null, CustomSerializerCreationReason.ImplicitByBaseType);
+
+            {
+                var serializerCollection = (SerializerCollection) SerializerCollection.New
+                    .Add(explicitSerializer)
+                    .Add(implicitSerializer);
+
+                serializerCollection.ResolveSerializer(typeof (int)).Should().Be(explicitSerializer);
+            }
+            {
+                var serializerCollection = (SerializerCollection) SerializerCollection.New
+                    .Add(implicitSerializer)
+                    .Add(explicitSerializer);
+
+                serializerCollection.ResolveSerializer(typeof (int)).Should().Be(explicitSerializer);
+            }
         }
     }
 }

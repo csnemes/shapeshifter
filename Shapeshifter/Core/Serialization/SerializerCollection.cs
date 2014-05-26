@@ -73,7 +73,29 @@ namespace Shapeshifter.Core.Serialization
                     return otherSerializer;
                 }
 
+                if (serializer is CustomSerializer && otherSerializer is CustomSerializer)
+                {
+                    return CombineCustomSerializers(serializer as CustomSerializer, otherSerializer as CustomSerializer);
+                }
+
                 throw Exceptions.SerializerAlreadyExists(serializer);
+            }
+
+            private static CustomSerializer CombineCustomSerializers(CustomSerializer customSerializer, CustomSerializer otherCustomSerializer)
+            {
+                if (customSerializer.CreationReason == CustomSerializerCreationReason.Explicit
+                    && otherCustomSerializer.CreationReason == CustomSerializerCreationReason.ImplicitByBaseType)
+                {
+                    return customSerializer;
+                }
+
+                if (customSerializer.CreationReason == CustomSerializerCreationReason.ImplicitByBaseType
+                    && otherCustomSerializer.CreationReason == CustomSerializerCreationReason.Explicit)
+                {
+                    return otherCustomSerializer;
+                }
+
+                throw Exceptions.SerializerAlreadyExists(customSerializer);
             }
 
             private Serializer GetAlreadyRegisteredSerializer(Type type)

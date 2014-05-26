@@ -8,10 +8,10 @@ using Shapeshifter.Core;
 using Shapeshifter.Core.Detection;
 using Shapeshifter.Core.Serialization;
 
-namespace Shapeshifter.Tests.Unit.Core
+namespace Shapeshifter.Tests.Unit.Core.Serialization
 {
     [TestFixture]
-    public class PackformatWriterTests
+    public class InternalPackformatWriterTests
     {
         [Test]
         public void VersionNumber_ShouldBePresent()
@@ -50,7 +50,7 @@ namespace Shapeshifter.Tests.Unit.Core
         }
 
 
-        private string Serialize(object toPack)
+        private static string Serialize(object toPack)
         {
             var typeContext = MetadataExplorer.CreateFor(typeof(TestClass)).Serializers;
 

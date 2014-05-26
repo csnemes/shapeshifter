@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 
 namespace Shapeshifter.Core
 {
@@ -75,6 +76,26 @@ namespace Shapeshifter.Core
         public static bool IsSameAsOrConstructedFrom(this Type type, Type otherType)
         {
             return type == otherType || type.IsConstructedFromOpenGeneric(otherType);
+        }
+
+        public static string GetPrettyName(this Type type)
+        {
+            if (!type.IsGenericType) return type.Name;
+
+            Type[] genericArguments = type.GetGenericArguments();
+            var sb = new StringBuilder(type.Name.Substring(0, type.Name.IndexOf('`')));
+            sb.Append("<");
+            for (int idx = 0; idx < genericArguments.Length; idx++)
+            {
+                Type argType = genericArguments[idx];
+                sb.Append(argType.GetPrettyName());
+                if (idx < genericArguments.Length - 1)
+                {
+                    sb.Append(",");
+                }
+            }
+            sb.Append(">");
+            return sb.ToString();
         }
     }
 }

@@ -91,5 +91,27 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
             };
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DeserializerAlreadyExistsId);
         }
+
+        [Test]
+        public void AddCustoDeserializerForDerivedType_OverridesCustomDeserializerCreatedFromBaseTypeForAllDescendants_WorksInAnyOrder()
+        {
+            var explicitDeserializer = new CustomDeserializer("MyPackformatName", 1, null, CustomSerializerCreationReason.Explicit);
+            var implicitDeserializer = new CustomDeserializer("MyPackformatName", 1, null, CustomSerializerCreationReason.ImplicitByBaseType, typeof(int));
+
+            {
+                var deserializerCollection = (DeserializerCollection)DeserializerCollection.New
+                    .Add(explicitDeserializer)
+                    .Add(implicitDeserializer);
+
+                deserializerCollection.ResolveDeserializer(new DeserializerKey("MyPackformatName", 1)).Should().Be(explicitDeserializer);
+            }
+            {
+                var deserializerCollection = (DeserializerCollection)DeserializerCollection.New
+                    .Add(implicitDeserializer)
+                    .Add(explicitDeserializer);
+
+                deserializerCollection.ResolveDeserializer(new DeserializerKey("MyPackformatName", 1)).Should().Be(explicitDeserializer);
+            }
+        }
     }
 }

@@ -11,7 +11,7 @@ namespace Shapeshifter.Core.Serialization
         private readonly SerializableTypeInfo _serializableTypeInfo;
 
         public DefaultSerializer(SerializableTypeInfo serializableTypeInfo)
-            : base(serializableTypeInfo.Type, serializableTypeInfo.Version)
+            : base(serializableTypeInfo.Type, serializableTypeInfo.PackformatName, serializableTypeInfo.Version)
         {
             _serializableTypeInfo = serializableTypeInfo;
         }

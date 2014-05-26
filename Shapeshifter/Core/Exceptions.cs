@@ -137,6 +137,13 @@ namespace Shapeshifter.Core
                     methodInfo.DeclaringType == null ? null : methodInfo.DeclaringType.FullName, methodInfo.Name)));
         }
 
+        public const string IllegalUsageOfOpenGenericAsKnownTypeId = "IllegalUsageOfOpenGenericAsKnownType";
+        public static Exception IllegalUsageOfOpenGenericAsKnownType(Type type)
+        {
+            return SafeCreateException(() => new ShapeshifterException(IllegalUsageOfOpenGenericAsKnownTypeId,
+                String.Format("Open generic type {0} cannot be used as known type.", type.Name)));
+        }
+
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {
             try

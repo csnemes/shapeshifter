@@ -49,21 +49,23 @@ namespace Shapeshifter.Core.Detection
             if (!IsCorrectSignatureForCustomSerializer(methodInfo, attribute.TargetType))
                 throw Exceptions.InvalidSerializerMethodSignature(attribute, methodInfo, attribute.TargetType);
 
-            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.Version, methodInfo));
+            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.PackformatName, attribute.Version, methodInfo, 
+                CustomSerializerCreationReason.Explicit));
 
             if (attribute.ForAllDescendants)
             {
                 var descendants = GetAllDescendants(attribute.TargetType);
                 foreach (var descendant in descendants)
                 {
-                    _serializers.Add(new CustomSerializer(descendant, attribute.Version, methodInfo));
+                    _serializers.Add(new CustomSerializer(descendant, attribute.PackformatName, attribute.Version, methodInfo,
+                        CustomSerializerCreationReason.ImplicitByBaseType));
                 }
             }
         }
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
-            _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo));
+            _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo, CustomSerializerCreationReason.Explicit));
 
             if (attribute.ForAllDescendants)
             {
@@ -73,10 +75,11 @@ namespace Shapeshifter.Core.Detection
                 if (!IsCorrectSignatureForCustomDeserializerForAllDescendants(methodInfo))
                     throw Exceptions.InvalidDeserializerMethodSignatureForAllDescendants(attribute, methodInfo);
 
-                var descendants = GetAllDescendants(attribute.TargeType);
-                foreach (var descendant in descendants)
+                var descendantTypes = GetAllDescendants(attribute.TargeType);
+                foreach (var descendantType in descendantTypes)
                 {
-                    _deserializers.Add(new CustomDeserializer(descendant.Name, attribute.Version, methodInfo, descendant));
+                    _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), attribute.Version, methodInfo,
+                        CustomSerializerCreationReason.ImplicitByBaseType, descendantType));
                 }
             }
             else

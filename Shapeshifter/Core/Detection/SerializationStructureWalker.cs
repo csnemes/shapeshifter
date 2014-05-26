@@ -23,23 +23,26 @@ namespace Shapeshifter.Core.Detection
 
         public void WalkRootType(Type type)
         {
-            InternalWalkType(type, false);
+            InternalWalkType(type);
         }
 
         public void WalkKnownType(Type type)
         {
-            InternalWalkType(type, true);
+            if (type.IsGenericTypeDefinition)
+                throw Exceptions.IllegalUsageOfOpenGenericAsKnownType(type);
+
+            InternalWalkType(type);
         }
 
         public void WalkRootTypes(IEnumerable<Type> types)
         {
             foreach (Type type in types)
             {
-                InternalWalkType(type, false);
+                InternalWalkType(type);
             }
         }
 
-        private void InternalWalkType(Type type, bool isKnownType = false)
+        private void InternalWalkType(Type type)
         {
             //TODO cache typeInspectors statically?
             var typeInspector = new TypeInspector(type);
@@ -85,7 +88,7 @@ namespace Shapeshifter.Core.Detection
             {
                 foreach (var knownType in typeInspector.GetKnownTypes())
                 {
-                    InternalWalkType(knownType);
+                    WalkKnownType(knownType);
                 }
             }
         }

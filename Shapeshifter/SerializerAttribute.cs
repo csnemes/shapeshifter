@@ -60,7 +60,7 @@ namespace Shapeshifter
 
         public string PackformatName
         {
-            get { return _packformatName ?? _targetType.Name; }
+            get { return _packformatName; }
         }
 
         public bool IsVersionSpecified
