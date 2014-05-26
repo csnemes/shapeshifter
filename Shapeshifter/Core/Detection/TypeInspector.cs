@@ -18,6 +18,12 @@ namespace Shapeshifter.Core.Detection
     /// </remarks>
     internal class TypeInspector
     {
+        private const BindingFlags BindingFlagsForInstanceMembers = 
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public;
+
+        private const BindingFlags BindingFlagsForStaticMembers = 
+            BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+
         private readonly Lazy<bool> _hasDataContractAttribute;
         private readonly Lazy<List<SerializableMemberInfo>> _itemCandidates;
         private readonly Lazy<List<KnownTypeAttribute>> _knownTypeAttributes;
@@ -56,7 +62,7 @@ namespace Shapeshifter.Core.Detection
 
         public bool IsSerializable
         {
-            get { return HasDataContractAttribute || HasShapeshifterAttribute || IsNativeType; }
+            get { return HasDataContractAttribute || IsNativeType; }
         }
 
         public bool IsNativeType
@@ -111,7 +117,7 @@ namespace Shapeshifter.Core.Detection
                 }
                 else
                 {
-                    var methodToCall = this.Type.GetMethod(knownTypeAttribute.MethodName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+                    var methodToCall = this.Type.GetMethod(knownTypeAttribute.MethodName, BindingFlagsForStaticMembers);
                     if (methodToCall == null)
                     {
                         throw Exceptions.KnownTypeMethodNotFound(knownTypeAttribute.MethodName, this.Type);
@@ -187,7 +193,7 @@ namespace Shapeshifter.Core.Detection
 
         public void AcceptOnNonStaticMethods(ISerializableTypeVisitor visitor)
         {
-            var nonStaticMethods = _type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
+            var nonStaticMethods = _type.GetMethods(BindingFlagsForInstanceMembers);
 
             foreach (var nonStaticMethod in nonStaticMethods)
             {
@@ -203,7 +209,7 @@ namespace Shapeshifter.Core.Detection
 
         public void AcceptOnStaticMethods(ISerializableTypeVisitor visitor)
         {
-            var staticMethods = _type.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+            var staticMethods = _type.GetMethods(BindingFlagsForStaticMembers);
 
             foreach (var staticMethod in staticMethods)
             {
@@ -226,7 +232,7 @@ namespace Shapeshifter.Core.Detection
         {
             var typeInfo = new SerializableTypeInfo(Type, PackformatName, Version, SerializableItemCandidates);
 
-            if (HasDataContractAttribute || HasShapeshifterAttribute)
+            if (HasDataContractAttribute)
             {
                 visitor.VisitSerializableClass(typeInfo);
             }
@@ -234,17 +240,15 @@ namespace Shapeshifter.Core.Detection
 
         private static List<SerializableMemberInfo> GetSerializableItemCandidatesForType(Type type)
         {
-            const BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
-
             var candidates = new List<SerializableMemberInfo>();
 
-            var allFields = type.GetAllFieldsRecursive(flags);
+            var allFields = type.GetAllFieldsRecursive(BindingFlagsForInstanceMembers);
 
             candidates.AddRange(allFields
                 .Where(fieldInfo => ContainsAttributeSpecifyingCandidates(fieldInfo.GetCustomAttributes(true)))
                 .Select(fieldInfo => new SerializableMemberInfo(fieldInfo)));
 
-            var allProperties = type.GetAllPropertiesRecursive(flags);
+            var allProperties = type.GetAllPropertiesRecursive(BindingFlagsForInstanceMembers);
 
             candidates.AddRange(allProperties
                 .Where(propertyInfo => ContainsAttributeSpecifyingCandidates(propertyInfo.GetCustomAttributes(true)))

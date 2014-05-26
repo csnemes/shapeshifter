@@ -54,13 +54,13 @@
   <ItemGroup>
     <Compile Include="Core\Deserialization\DeserializerCollectionTests.cs" />
     <Compile Include="Core\Serialization\SerializerCollectionTests.cs" />
+    <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />
     <Compile Include="SchemaComparison\SnapshotDetectorTests.cs" />
     <Compile Include="SchemaComparison\SnapshotHistoryTests.cs" />
     <Compile Include="SchemaComparison\SnapshotTests.cs" />
     <Compile Include="SchemaComparison\TestClasses.cs" />
     <Compile Include="RoundtripTests\CustomSerializerTests.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForDescendantsTests.cs" />
-    <Compile Include="RoundtripTests\CustomSerializerForGenericsTests.cs" />
     <Compile Include="RoundtripTests\DefaultSerializerTests.cs" />
     <Compile Include="Core\PackformatWriterTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

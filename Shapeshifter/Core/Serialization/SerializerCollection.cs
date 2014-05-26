@@ -22,17 +22,26 @@ namespace Shapeshifter.Core.Serialization
 
         public Serializer ResolveSerializer(Type type)
         {
-            if (!_serializers.ContainsKey(type))
+            Serializer serializer;
+            if (_serializers.TryGetValue(type, out serializer))
             {
-                throw Exceptions.SerializerResolutionFailed(type);
+                return serializer;
             }
-            return _serializers[type];
+
+            if (type.IsGenericType)
+            {
+                if (_serializers.TryGetValue(type.GetGenericTypeDefinition(), out serializer))
+                {
+                    return serializer;
+                }
+            }
+
+            throw Exceptions.SerializerResolutionFailed(type);
         }
 
         internal class SerializerCollectionBuilder
         {
-            private readonly Dictionary<Type, Serializer> _serializers =
-                new Dictionary<Type, Serializer>();
+            private readonly Dictionary<Type, Serializer> _serializers = new Dictionary<Type, Serializer>();
 
             public SerializerCollectionBuilder Add(Serializer serializer)
             {

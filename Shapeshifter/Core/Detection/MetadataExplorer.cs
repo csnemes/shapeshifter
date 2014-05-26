@@ -56,7 +56,7 @@ namespace Shapeshifter.Core.Detection
                 var descendants = GetAllDescendants(attribute.TargetType);
                 foreach (var descendant in descendants)
                 {
-                    _serializers.Add(new CustomSerializer(descendant, attribute.Version, methodInfo, attribute.TargetType));
+                    _serializers.Add(new CustomSerializer(descendant, attribute.Version, methodInfo));
                 }
             }
         }
@@ -86,9 +86,11 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static IEnumerable<Type> GetAllDescendants(Type type)
+        private static IEnumerable<Type> GetAllDescendants(Type baseType)
         {
-            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(i => i.GetTypes()).Where(i => i.IsSubclassOf(type));
+            // TODO optimize this lookup ?
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(i => i.GetTypes())
+                .Where(i => i.GetBaseTypes().Any(b => b.IsSameAsOrConstructedFrom(baseType)));
         }
 
         public static MetadataExplorer CreateFor(Type rootType)
@@ -153,7 +155,7 @@ namespace Shapeshifter.Core.Detection
                    && methodInfo.ReturnParameter.ParameterType == typeof(void)
                    && parameters.Length == 2
                    && parameters[0].ParameterType == typeof(IShapeshifterWriter)
-                   && parameters[1].ParameterType == targetType;
+                   && parameters[1].ParameterType.IsSameAsOrConstructedFrom(targetType);
         }
 
         private static bool IsCorrectSignatureForCustomDeserializer(MethodInfo methodInfo)

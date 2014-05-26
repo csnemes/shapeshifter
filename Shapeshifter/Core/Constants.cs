@@ -6,7 +6,6 @@
     internal static class Constants
     {
         public const string TypeNameKey = "__typeName";
-        public const string BaseNameKey = "__baseName";
         public const string VersionKey = "__version";
     }
 }

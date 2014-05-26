@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Shapeshifter.Core;
 
@@ -10,25 +11,19 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     public class DefaultSerializerTests :TestsBase
     {
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "TypeWithDataContractWithoutShapeshifterAttribute_CheckExceptionId")]
         public void TypeWithDataContractWithoutShapeshifterAttribute_Throws()
         {
-            GetSerializer<TypeWithoutShapeshifterAttribute>().Serialize(null);
-        }
-
-        public void TypeWithDataContractWithoutShapeshifterAttribute_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.ShapeshifterAttributeMissingId);
+            Action action = () => GetSerializer<TypeWithoutShapeshifterAttribute>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
         }
 
         [Test]
-        public void TypeWithShapeshifterWithoutDataContractAttribute_NoErrorButNoPropertySerialized()
+        public void TypeWithShapeshifterWithoutDataContractAttribute_NoDefaultSerializerCreated()
         {
             var source = new TypeWithoutDataContractAttribute();
             var serializer = GetSerializer<TypeWithoutDataContractAttribute>();
-            var pack = serializer.Serialize(source);
-            var target = serializer.Deserialize(pack);
-            target.MyProperty.Should().Be(default(int));
+            Action action = () => serializer.Serialize(source);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.SerializerResolutionFailedId);
         }
 
         [Test]
@@ -37,6 +32,23 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var source = new TypeWithShapeshifterAndDataContractAttribute() {MyProperty = 42};
             var serializer = GetSerializer<TypeWithShapeshifterAndDataContractAttribute>();
             var pack = serializer.Serialize(source);
+            var target = serializer.Deserialize(pack);
+            target.MyProperty.Should().Be(42);
+        }
+
+        [Test]
+        public void TypeWithCustomPackformatNameAndVersion_SuccessfulRoundtrip()
+        {
+            var source = new TypeWithCustomPackformatName() { MyProperty = 42 };
+            var serializer = GetSerializer<TypeWithCustomPackformatName>();
+            var pack = serializer.Serialize(source);
+
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyPackformatName");
+            jobj[Constants.VersionKey].Value<uint>().Should().Be(1);
+            jobj["MyProperty"].Value<int>().Should().Be(42);
+
             var target = serializer.Deserialize(pack);
             target.MyProperty.Should().Be(42);
         }
@@ -57,6 +69,14 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Shapeshifter]
         [DataContract]
         public class TypeWithShapeshifterAndDataContractAttribute
+        {
+            [DataMember]
+            public int MyProperty { get; set; }
+        }
+
+        [Shapeshifter("MyPackformatName", 1)]
+        [DataContract]
+        public class TypeWithCustomPackformatName
         {
             [DataMember]
             public int MyProperty { get; set; }

@@ -24,7 +24,6 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var jobj = JObject.Parse(pack);
 
             jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyGrandchild");
-            jobj[Constants.BaseNameKey].Value<string>().Should().Be("MyBase");
             jobj[Constants.VersionKey].Value<uint>().Should().Be(1);
             jobj["MyKey"].Value<int>().Should().Be(42);
         }
@@ -79,15 +78,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "WrongDeserializerAttribute_CheckExceptionId")]
         public void WrongDeserializerAttribute_Throws()
         {
-            GetSerializer<MyBaseWithWrongDeserializerAttribute>().Serialize(null);
-        }
-
-        public void WrongDeserializerAttribute_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.DeserializerAttributeTargetTypeMustBeSpecifiedForAllDescendantsId);
+            Action action = () => GetSerializer<MyBaseWithWrongDeserializerAttribute>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DeserializerAttributeTargetTypeMustBeSpecifiedForAllDescendantsId);
         }
 
         [Shapeshifter]
@@ -101,15 +95,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "WrongDeserializerMethodSignature_CheckExceptionId")]
         public void WrongDeserializerMethodSignature_Throws()
         {
-            GetSerializer<MyBaseWithWrongDeserializerMethodSignature>().Serialize(null);
-        }
-
-        public void WrongDeserializerMethodSignature_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.InvalidDeserializerMethodSignatureForAllDescendantsId);
+            Action action = () => GetSerializer<MyBaseWithWrongDeserializerMethodSignature>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidDeserializerMethodSignatureForAllDescendantsId);
         }
 
         [Shapeshifter]

@@ -2,11 +2,11 @@
 using NUnit.Framework;
 using System;
 using System.Runtime.Serialization;
+using Shapeshifter.Core;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
-    [Ignore("Javításra vár ez a feature.")]
     public class GenericSupportTests:TestsBase
     {
         [Test]
@@ -34,7 +34,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var deserializer = GetSerializer<GenericNameDiffTest<string>>(); 
             var wireFormat = serializer.Serialize(new GenericNameDiffTest<int> { Value = 42 });
             Action action = () => deserializer.Deserialize(wireFormat);
-            action.ShouldThrow<ArgumentException>();
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CannotFindDeserializerId);
         }
 
 

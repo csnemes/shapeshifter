@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using Shapeshifter.Core;
 
@@ -9,15 +10,81 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     public class CustomSerializerTests : TestsBase
     {
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "CustomSerializerOnNonStaticMethod_CheckExceptionId")]
-        public void CustomSerializerOnNonStaticMethod_Throws()
+        public void CustomSerializerAndDeserializer_Success()
         {
-            GetSerializer<MyClassWithNonStaticSerializerMethod>().Serialize(null);
+            var source = new MyType() { MyProperty = 42 };
+
+            var serializer = GetSerializer<MyType>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyType");
+            jobj[Constants.VersionKey].Value<uint>().Should().Be(1);
+            jobj["MyKey"].Value<int>().Should().Be(42);
+
+            var target = serializer.Deserialize(pack);
+            target.MyProperty.Should().Be(42);
         }
 
-        public void CustomSerializerOnNonStaticMethod_CheckExceptionId(Exception exception)
+        [Shapeshifter]
+        public class MyType
         {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
+            public int MyProperty { get; set; }
+
+            [Serializer(typeof(MyType), 1)]
+            public static void Serializer(IShapeshifterWriter writer, MyType itemToSerialize)
+            {
+                writer.Write("MyKey", itemToSerialize.MyProperty);
+            }
+
+            [Deserializer("MyType", 1)]
+            public static object Deserializer(IShapeshifterReader reader)
+            {
+                return new MyType() {MyProperty = reader.Read<int>("MyKey")};
+            }
+        }
+
+        [Test]
+        [Ignore("Ez bug vagy feature?")]
+        public void CustomSerializerWithCustomPackformatName_Success()
+        {
+            var source = new MyTypeWithCustomPackName() { MyProperty = 42 };
+
+            var serializer = GetSerializer<MyTypeWithCustomPackName>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyPackType");
+            jobj[Constants.VersionKey].Value<uint>().Should().Be(1);
+            jobj["MyKey"].Value<int>().Should().Be(42);
+
+            var target = serializer.Deserialize(pack);
+            target.MyProperty.Should().Be(42);
+        }
+
+        [Shapeshifter()]
+        public class MyTypeWithCustomPackName
+        {
+            public int MyProperty { get; set; }
+
+            [Serializer(typeof(MyTypeWithCustomPackName), "MyPackType", 1)]
+            public static void Serializer(IShapeshifterWriter writer, MyTypeWithCustomPackName itemToSerialize)
+            {
+                writer.Write("MyKey", itemToSerialize.MyProperty);
+            }
+
+            [Deserializer("MyPackType", 1)]
+            public static object Deserializer(IShapeshifterReader reader)
+            {
+                return new MyTypeWithCustomPackName() { MyProperty = reader.Read<int>("MyKey") };
+            }
+        }
+
+        [Test]
+        public void CustomSerializerOnNonStaticMethod_Throws()
+        {
+            Action action = () => GetSerializer<MyClassWithNonStaticSerializerMethod>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
         }
 
         [Shapeshifter]
@@ -30,15 +97,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "CustomDeserializerOnNonStaticMethod_CheckExceptionId")]
         public void CustomDeserializerOnNonStaticMethod_Throws()
         {
-            GetSerializer<MyClassWithNonStaticDeserializerMethod>().Serialize(null);
-        }
-
-        public void CustomDeserializerOnNonStaticMethod_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
+            Action action = () => GetSerializer<MyClassWithNonStaticDeserializerMethod>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
         }
 
         [Shapeshifter]
@@ -51,15 +113,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "SerializerWithWrongSignature_CheckExceptionId")]
         public void SerializerWithWrongSignature_Throws()
         {
-            GetSerializer<MyClassWithInvalidSerializerMethodSignature>().Serialize(null);
-        }
-
-        public void SerializerWithWrongSignature_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.InvalidSerializerMethodSignatureId);
+            Action action = () => GetSerializer<MyClassWithInvalidSerializerMethodSignature>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidSerializerMethodSignatureId);
         }
 
         [Shapeshifter]
@@ -72,15 +129,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "DeserializerWithWrongSignature_CheckExceptionId")]
         public void DeserializerWithWrongSignature_Throws()
         {
-            GetSerializer<MyClassWithInvalidDeserializerMethodSignature>().Serialize(null);
-        }
-
-        public void DeserializerWithWrongSignature_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.InvalidDeserializerMethodSignatureId);
+            Action action = () => GetSerializer<MyClassWithInvalidDeserializerMethodSignature>().Serialize(null);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidDeserializerMethodSignatureId);
         }
 
         [Shapeshifter]

@@ -11,17 +11,12 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
     public class SerializerCollectionTests
     {
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "ResolveForNotAddedType_CheckExcpetionId")]
         public void ResolveForNotAddedType_Thrown()
         {
             var serializerCollection = (SerializerCollection)SerializerCollection.New;
 
-            serializerCollection.ResolveSerializer(typeof(int)).Should().BeNull();
-        }
-
-        private static void ResolveForNotAddedType_CheckExcpetionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.SerializerResolutionFailedId);
+            Action action = () => serializerCollection.ResolveSerializer(typeof(int));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.SerializerResolutionFailedId);
         }
 
         [Test]
@@ -57,32 +52,33 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "AddTwoSerializers_CheckExceptionId")]
         public void AddTwoCustomSerializers_Throws()
         {
             var myCustomSerializer1 = new CustomSerializer(typeof(int), 1, null);
             var myCustomSerializer2 = new CustomSerializer(typeof(int), 1, null);
 
-            var serializerCollection = (SerializerCollection) SerializerCollection.New
-                .Add(myCustomSerializer1)
-                .Add(myCustomSerializer2);
+            Action action = () =>
+            {
+                var serializerCollection = (SerializerCollection) SerializerCollection.New
+                    .Add(myCustomSerializer1)
+                    .Add(myCustomSerializer2);
+            };
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.SerializerAlreadyExistsId);
         }
 
         [Test]
-        [ExpectedException(typeof(ShapeshifterException), Handler = "AddTwoSerializers_CheckExceptionId")]
         public void AddTwoDefaultSerializers_Throws()
         {
             var myDefaultSerializer1 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
             var myDefaultSerializer2 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
 
+            Action action = () =>
+            {
             var serializerCollection = (SerializerCollection) SerializerCollection.New
                 .Add(myDefaultSerializer1)
                 .Add(myDefaultSerializer2);
-        }
-
-        private void AddTwoSerializers_CheckExceptionId(Exception exception)
-        {
-            (exception as ShapeshifterException).Id.Should().Be(Exceptions.SerializerAlreadyExistsId);
+            };
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.SerializerAlreadyExistsId);
         }
     }
 }

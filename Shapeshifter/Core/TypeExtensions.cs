@@ -57,5 +57,24 @@ namespace Shapeshifter.Core
         {
             return type != null && type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>);
         }
+
+        public static IEnumerable<Type> GetBaseTypes(this Type type)
+        {
+            return type.BaseType == null
+                ? Enumerable.Empty<Type>()
+                : type.BaseType.GetBaseTypes().Union(new[] {type.BaseType});
+        }
+
+        public static bool IsConstructedFromOpenGeneric(this Type type, Type openGenericType)
+        {
+            return openGenericType.IsGenericTypeDefinition &&
+                   type.IsGenericType &&
+                   type.GetGenericTypeDefinition() == openGenericType;
+        }
+
+        public static bool IsSameAsOrConstructedFrom(this Type type, Type otherType)
+        {
+            return type == otherType || type.IsConstructedFromOpenGeneric(otherType);
+        }
     }
 }
