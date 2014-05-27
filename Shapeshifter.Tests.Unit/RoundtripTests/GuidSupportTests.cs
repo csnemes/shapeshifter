@@ -7,24 +7,21 @@ using System.Runtime.Serialization;
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
-    [Ignore("Nincs implementálva a Guid support")]
     public class GuidSupportTests : TestsBase
     {
         [Test]
         public void StringBasedGuidTest()
         {
             var guid = Guid.NewGuid();
-            var machine = GetSerializer<ClassWithGuid>();
+            var serializer = GetSerializer<ClassWithGuid>();
             var source = new ClassWithGuid { GuidValue = guid };
-            string packed = machine.Serialize(source);
+            string packed = serializer.Serialize(source);
 
             Debug.Print(packed);
 
-            var unpacked = machine.Deserialize(packed);
-            unpacked.Should().NotBeNull();
+            var unpacked = serializer.Deserialize(packed);
             unpacked.GuidValue.Should().Be(guid);
         }
-
 
         [DataContract]
         [Shapeshifter]

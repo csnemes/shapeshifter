@@ -58,6 +58,10 @@ namespace Shapeshifter.Core.Deserialization
                 {
                     return Convert.ToChar(value);
                 }
+                if (targetType == typeof (Guid))
+                {
+                    return Guid.Parse((string) value);
+                }
             }
             else if (value is DateTime)
             {

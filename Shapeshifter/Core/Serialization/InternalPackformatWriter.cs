@@ -94,7 +94,8 @@ namespace Shapeshifter.Core.Serialization
                 obj is byte || 
                 obj is sbyte || 
                 obj is DateTime || 
-                obj is DateTimeOffset)
+                obj is DateTimeOffset ||
+                obj is Guid)
             {
                 _writer.WriteStartObject();
                 _writer.WritePropertyName(Constants.TypeNameKey);
@@ -185,6 +186,10 @@ namespace Shapeshifter.Core.Serialization
             else if (obj is DateTimeOffset)
             {
                 _writer.WriteValue((DateTimeOffset) obj);
+            }
+            else if (obj is Guid)
+            {
+                _writer.WriteValue(((Guid)obj).ToString());              
             }
             else if (obj is IEnumerable)
             {

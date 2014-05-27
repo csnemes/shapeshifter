@@ -70,6 +70,21 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             unpacked.Value.Should().BeOfType<DateTime>().And.Be(dateTime);
         }
 
+        [Test]
+        public void GuidTest()
+        {
+            var serializer = GetSerializer<DataHolder>();
+            var guid = Guid.NewGuid();
+            var input = new DataHolder() { Value = guid };
+
+            var packed = serializer.Serialize(input);
+            Debug.Print(packed);
+
+            var unpacked = serializer.Deserialize(packed);
+
+            unpacked.Value.Should().BeOfType<Guid>().And.Be(guid);
+        }
+
         [Shapeshifter]
         [DataContract]
         private class DataHolder
