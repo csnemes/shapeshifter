@@ -39,6 +39,26 @@ namespace Shapeshifter.Core.Deserialization
             }
         }
 
+        public bool IsBuiltInTypeInPackformat
+        {
+            get
+            {
+                return _properties.ContainsKey(Constants.TypeNameKey) && _properties.ContainsKey((Constants.ValueKey));
+            }
+        }
+
+        private object Value
+        {
+            get { return _properties[Constants.ValueKey]; }
+        }
+
+        public object GetBuiltInTypeUnpacked()
+        {
+            //TODO check if BuiltInType
+            var type = Type.GetType(TypeName);
+            return ImplicitConversionHelper.ConvertValue(type, Value);
+        }
+
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _properties.GetEnumerator();

@@ -108,6 +108,12 @@ namespace Shapeshifter.Core.Deserialization
 
             var objectProperties = new ObjectProperties(elements);
 
+            //check if wrapped built-in type
+            if (objectProperties.IsBuiltInTypeInPackformat)
+            {
+                return objectProperties.GetBuiltInTypeUnpacked();
+            }
+
             //build up object 
             if (objectProperties.IsInPackformat)
             {

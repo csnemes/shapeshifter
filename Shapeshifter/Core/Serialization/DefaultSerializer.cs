@@ -45,7 +45,7 @@ namespace Shapeshifter.Core.Serialization
             //write fields one-by-one
             foreach (var packItemCandidate in _serializableTypeInfo.Items)
             {
-                writer.WriteProperty(packItemCandidate.Name, packItemCandidate.GetValueFor(objToWrite));
+                writer.WriteProperty(packItemCandidate.Name, packItemCandidate.GetValueFor(objToWrite), packItemCandidate.Type);
             }
         }
     }

@@ -55,6 +55,7 @@
     <Compile Include="Builder\InstanceBuilderTests.cs" />
     <Compile Include="Core\Deserialization\DeserializerCollectionTests.cs" />
     <Compile Include="Core\Serialization\SerializerCollectionTests.cs" />
+    <Compile Include="RoundtripTests\BuiltInTypesAsObjectsTests.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />
     <Compile Include="SchemaComparison\SnapshotDetectorTests.cs" />
     <Compile Include="SchemaComparison\SnapshotHistoryTests.cs" />

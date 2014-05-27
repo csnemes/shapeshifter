@@ -21,10 +21,17 @@ namespace Shapeshifter.Core.Serialization
             _serializers = serializers;
         }
 
-        public void WriteProperty(string propertyKey, object propertyValue)
+        public void WriteProperty(string propertyKey, object propertyValue, Type declaredSourceType = null)
         {
             _writer.WritePropertyName(propertyKey);
-            WriteValue(propertyValue);
+            if (declaredSourceType == typeof (object))
+            {
+                WriteValueWithTypeInformation(propertyValue);
+            }
+            else
+            {
+                WriteValue(propertyValue);
+            }
         }
 
         #region IDisposable implementation
@@ -62,6 +69,49 @@ namespace Shapeshifter.Core.Serialization
         public void Pack(object objToPack)
         {
             WriteValue(objToPack);
+        }
+
+        private void WriteValueWithTypeInformation(object obj)
+        {
+            if (obj == null)
+            {
+                _writer.WriteNull();
+                return;
+            }
+
+            if (obj is string || 
+                obj is int ||
+                obj is long || 
+                obj is short || 
+                obj is uint || 
+                obj is ulong || 
+                obj is ushort || 
+                obj is bool || 
+                obj is float || 
+                obj is double || 
+                obj is decimal || 
+                obj is char || 
+                obj is byte || 
+                obj is sbyte || 
+                obj is DateTime || 
+                obj is DateTimeOffset)
+            {
+                _writer.WriteStartObject();
+                _writer.WritePropertyName(Constants.TypeNameKey);
+                _writer.WriteValue(obj.GetType().FullName);
+                _writer.WritePropertyName(Constants.ValueKey);
+                WriteValue(obj);
+                _writer.WriteEndObject();
+                //Will look like:
+                // myValue : { 
+                //              __type : System.String
+                //              __val : "dfsdfsdf"    
+                //           }
+            }
+            else
+            {
+                WriteObject(obj);
+            }
         }
 
         private void WriteValue(object obj)

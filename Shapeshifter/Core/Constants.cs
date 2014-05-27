@@ -7,5 +7,6 @@
     {
         public const string TypeNameKey = "__typeName";
         public const string VersionKey = "__version";
+        public const string ValueKey = "__value";
     }
 }
