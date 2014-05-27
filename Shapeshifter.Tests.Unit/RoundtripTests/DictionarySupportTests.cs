@@ -6,7 +6,6 @@ using System.Runtime.Serialization;
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     [TestFixture]
-    [Ignore("Nincs implementálva a KeyValuePair kezelés.")]
     public class DictionarySupportTests : TestsBase
     {
 
@@ -25,7 +24,11 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         public void Dictionary_MultiElementTest()
         {
             var machine = GetSerializer<ClassWithPrimitiveDictionary>();
-            var dict = new Dictionary<int, string>() {{1, "One"}, {2, "Two"}};
+            var dict = new Dictionary<int, string>()
+            {
+                {1, "One"},
+                {2, "Two"}
+            };
             var source = new ClassWithPrimitiveDictionary { Dictionary = dict};
             string packed = machine.Serialize(source);
             var unpacked = machine.Deserialize(packed);
@@ -37,8 +40,11 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         public void ObjectDictionary_MultiElementTest()
         {
             var machine = GetSerializer<ClassWithObjectDictionary>();
-            var dict = new Dictionary<KeyClass, ValueClass>() { { new KeyClass() {Value = 1}, new ValueClass() {Value = "One"}},
-            {new KeyClass() {Value = 2}, new ValueClass() {Value = "Two"}} };
+            var dict = new Dictionary<KeyClass, ValueClass>()
+            {
+                {new KeyClass() {Value = 1}, new ValueClass() {Value = "One"}},
+                {new KeyClass() {Value = 2}, new ValueClass() {Value = "Two"}}
+            };
             var source = new ClassWithObjectDictionary { Dictionary = dict };
             string packed = machine.Serialize(source);
             var unpacked = machine.Deserialize(packed);

@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
-using Newtonsoft.Json;
 
 namespace Shapeshifter.Core.Serialization
 {
@@ -191,6 +192,10 @@ namespace Shapeshifter.Core.Serialization
             {
                 _writer.WriteValue(((Guid)obj).ToString());              
             }
+            else if (obj.GetType().IsConstructedFromOpenGeneric(typeof (KeyValuePair<,>)))
+            {
+                WriteKeyValuePair(obj);
+            }
             else if (obj is IEnumerable)
             {
                 WriteArray((IEnumerable) obj);
@@ -199,6 +204,19 @@ namespace Shapeshifter.Core.Serialization
             {
                 WriteObject(obj);
             }
+        }
+
+        private void WriteKeyValuePair(object keyValuePair)
+        {
+            var type = keyValuePair.GetType();
+
+            var keyPropInfo = type.GetProperty("Key");
+            var keyVal = keyPropInfo.GetValue(keyValuePair, null);
+
+            var valuePropInfo = type.GetProperty("Value");
+            var valueVal = valuePropInfo.GetValue(keyValuePair, null);
+            
+            WriteArray(new[] {keyVal, valueVal});
         }
 
         private void WriteArray(IEnumerable arr)

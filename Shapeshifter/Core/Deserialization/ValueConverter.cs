@@ -30,11 +30,33 @@ namespace Shapeshifter.Core.Deserialization
 
             if (value == null) return null;
 
+            //handle Nullable<>
             if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof (Nullable<>))
             {
                 Type targetNullableType = Nullable.GetUnderlyingType(targetType);
                 object valueToWrapIntoNullable = ConvertValueToTargetType(targetNullableType, value);
                 return valueToWrapIntoNullable;
+            }
+
+            //handle KeyValuePair<,>
+            if (targetType.IsGenericType && targetType.GetGenericTypeDefinition() == typeof (KeyValuePair<,>))
+            {
+                var valArray = value as IList;
+                if (valArray == null)
+                {
+                    throw Exceptions.InvalidInputValueForConverter(value);
+                }
+
+                //TODO replace with generate code (speed opt)
+                var constructor = targetType.GetConstructors()[0];
+                var keyType = targetType.GetGenericArguments()[0];
+                var valueType = targetType.GetGenericArguments()[1];
+                var result = constructor.Invoke(new[]
+                {
+                    ConvertValueToTargetType(keyType, valArray[0]),
+                    ConvertValueToTargetType(valueType, valArray[1])
+                });
+                return result;
             }
 
             //handle arrays
