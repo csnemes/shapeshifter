@@ -14,12 +14,14 @@ namespace Shapeshifter.Core.Detection
     /// </summary>
     internal class MetadataExplorer : ISerializableTypeVisitor
     {
+        private readonly IEnumerable<Assembly> _descendantSearchScope; 
         private readonly DeserializerCollection.DeserializerCollectionBuilder _deserializers = DeserializerCollection.New;
         private readonly SerializerCollection.SerializerCollectionBuilder _serializers = SerializerCollection.New;
         private readonly SerializationStructureWalker _walker;
 
-        private MetadataExplorer()
+        private MetadataExplorer(IEnumerable<Assembly> descendantSearchScope = null)
         {
+            _descendantSearchScope = descendantSearchScope ?? Enumerable.Empty<Assembly>();
             _walker = new SerializationStructureWalker(this);
         }
 
@@ -89,26 +91,26 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static IEnumerable<Type> GetAllDescendants(Type baseType)
+        private IEnumerable<Type> GetAllDescendants(Type baseType)
         {
             // TODO optimize this lookup ?
-            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(i => i.GetTypes())
+            return _descendantSearchScope.SelectMany(i => i.GetTypes())
                 .Where(i => i.GetBaseTypes().Any(b => b.IsSameAsOrConstructedFrom(baseType)));
         }
 
-        public static MetadataExplorer CreateFor(Type rootType)
+        public static MetadataExplorer CreateFor(Type rootType, IEnumerable<Assembly> descendantSearchScope = null)
         {
-            return CreateFor(new[] {rootType});
+            return CreateFor(new[] {rootType}, descendantSearchScope);
         }
 
-        public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes)
+        public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
-            return CreateFor(rootTypes, new Type[0]);
+            return CreateFor(rootTypes, new Type[0], descendantSearchScope);
         }
 
-        public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Type> knownTypes)
+        public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
-            var builder = new MetadataExplorer();
+            var builder = new MetadataExplorer(descendantSearchScope);
             builder.WalkRootTypes(rootTypes);
             builder.WalkKnownTypes(knownTypes);
             return builder;

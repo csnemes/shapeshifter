@@ -22,7 +22,7 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
 
             var jobj = JObject.Parse(result);
             var version = jobj[Constants.VersionKey];
-            version.Value<uint>().Should().Be(2612302157);
+            version.Value<uint>().Should().NotBe(0);
         }
 
         [Test]

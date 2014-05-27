@@ -1,12 +1,13 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     public abstract class TestsBase
     {
-        protected IShapeshifter<T> GetSerializer<T>()
+        protected static IShapeshifter<T> GetSerializer<T>()
         {
-            return new Shapeshifter<T>();
+            return new Shapeshifter<T>(new[] {Assembly.GetExecutingAssembly()});
         }
 
         protected bool StringArrayEquals(string[] arr1, string[] arr2)

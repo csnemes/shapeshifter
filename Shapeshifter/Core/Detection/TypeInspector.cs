@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
-using System.Text;
 using Shapeshifter.Utils;
 
 namespace Shapeshifter.Core.Detection
@@ -23,6 +22,8 @@ namespace Shapeshifter.Core.Detection
 
         private const BindingFlags BindingFlagsForStaticMembers = 
             BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
+
+        private const char VersionStreamSeparator = ' ';
 
         private readonly Lazy<bool> _hasDataContractAttribute;
         private readonly Lazy<List<FieldOrPropertyMemberInfo>> _serializableMemberCandidates;
@@ -161,17 +162,36 @@ namespace Shapeshifter.Core.Detection
             return _type.GetCustomAttributes(typeof (KnownTypeAttribute), false).OfType<KnownTypeAttribute>().ToList();
         }
 
+        private IEnumerable<string> EnumValues
+        {
+            get
+            {
+                return _type.IsEnum
+                    ? _type.GetEnumNames()
+                    : Enumerable.Empty<string>();
+            }
+        }
+
         private uint GetHashVersion()
         {
             using (var stream = new MemoryStream())
             {
                 var writer = new StreamWriter(stream);
 
-                foreach (FieldOrPropertyMemberInfo candidate in SerializableMemberCandidates.OrderBy(item => item.Name))
+                foreach (var candidate in SerializableMemberCandidates.OrderBy(item => item.Name))
                 {
                     writer.Write(candidate.Name);
+                    writer.Write(VersionStreamSeparator);
                     writer.Write(candidate.Type.GetPrettyName());
+                    writer.Write(VersionStreamSeparator);
                 }
+
+                foreach (var enumValue in EnumValues)
+                {
+                    writer.Write(enumValue);
+                    writer.Write(VersionStreamSeparator);
+                }
+
                 writer.Flush();
                 stream.Position = 0;
                 return MurMurHash3.Hash(stream);

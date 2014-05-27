@@ -147,6 +147,19 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             ti1.Version.Should().NotBe(ti2.Version);
         }
 
+        [Test]
+        public void Version_DifferentEnumTypes_DifferentVersions()
+        {
+            var ti1 = new TypeInspector(typeof(MyEnumBaseline));
+            var ti2 = new TypeInspector(typeof(MyEnumValueAdded));
+            var ti3 = new TypeInspector(typeof(MyEnumValueModified));
+            var ti4 = new TypeInspector(typeof(MyEnumValueDeleted));
+
+            ti1.Version.Should().NotBe(ti2.Version);
+            ti1.Version.Should().NotBe(ti3.Version);
+            ti1.Version.Should().NotBe(ti4.Version);
+        }
+
         [DataContract]
         public abstract class MyBaseClass
         {
@@ -273,6 +286,30 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             public string Property { get; set; }
 
             public string NonMarkedProperty { get; set; }
+        }
+
+        private enum MyEnumBaseline
+        {
+            First,
+            Second
+        }
+
+        private enum MyEnumValueAdded
+        {
+            First,
+            Second,
+            Third
+        }
+
+        private enum MyEnumValueModified
+        {
+            First,
+            SecondModified,
+        }
+
+        private enum MyEnumValueDeleted
+        {
+            First,
         }
     }
 }

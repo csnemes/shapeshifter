@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Reflection;
 using System.Text;
+using Shapeshifter.Core.Converters;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Detection;
 using Shapeshifter.Core.Serialization;
@@ -17,11 +20,13 @@ namespace Shapeshifter
     /// </remarks>
     public class Shapeshifter<T> : Shapeshifter, IShapeshifter<T>
     {
-        public Shapeshifter() : base(typeof (T))
+        public Shapeshifter(IEnumerable<Assembly> descendantSearchScope = null) 
+            : base(typeof (T), descendantSearchScope)
         {
         }
 
-        public Shapeshifter(IEnumerable<Type> knownTypes) : base(typeof (T), knownTypes)
+        public Shapeshifter(IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
+            : base(typeof(T), knownTypes, descendantSearchScope)
         {
         }
 
@@ -38,21 +43,27 @@ namespace Shapeshifter
 
     public class Shapeshifter : IShapeshifter
     {
+        private readonly IEnumerable<Type> _builtInKnownTypes = new List<Type>
+        {
+           typeof (EnumConverter)
+        };
+
         private readonly Lazy<MetadataExplorer> _metadata;
         private readonly Type _targetType;
 
-        public Shapeshifter(Type type) : this(type, new Type[0])
+        public Shapeshifter(Type type, IEnumerable<Assembly> descendantSearchScope = null)
+            : this(type, new Type[0], descendantSearchScope)
         {
         }
 
-        public Shapeshifter(Type type, IEnumerable<Type> knownTypes)
+        public Shapeshifter(Type type, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
             _targetType = type;
 
-            var rootTypesToCheck = new List<Type>() { type };
-            var knownTypesToCheck = new List<Type>((knownTypes ?? new Type[0]));
+            var rootTypesToCheck = new List<Type> { type };
+            var knownTypesToCheck = _builtInKnownTypes.Union(knownTypes ?? Enumerable.Empty<Type>());
 
-            _metadata = new Lazy<MetadataExplorer>(() => MetadataExplorer.CreateFor(rootTypesToCheck, knownTypesToCheck));
+            _metadata = new Lazy<MetadataExplorer>(() => MetadataExplorer.CreateFor(rootTypesToCheck, knownTypesToCheck, descendantSearchScope));
         }
 
         private SerializerCollection Serializers

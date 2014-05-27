@@ -78,13 +78,13 @@ namespace Shapeshifter.Core.Deserialization
 
                 if (deserializer is CustomDeserializer && otherDeserializer is CustomDeserializer)
                 {
-                    return CombineCustomSerializers(deserializer as CustomDeserializer, otherDeserializer as CustomDeserializer);
+                    return CombineCustomDeserializers(deserializer as CustomDeserializer, otherDeserializer as CustomDeserializer);
                 }
 
                 throw Exceptions.DeserializerAlreadyExists(deserializer);
             }
 
-            private static CustomDeserializer CombineCustomSerializers(CustomDeserializer customDeserializer, CustomDeserializer otherCustomDeserializer)
+            private static CustomDeserializer CombineCustomDeserializers(CustomDeserializer customDeserializer, CustomDeserializer otherCustomDeserializer)
             {
                 if (customDeserializer.CreationReason == CustomSerializerCreationReason.Explicit
                     && otherCustomDeserializer.CreationReason == CustomSerializerCreationReason.ImplicitByBaseType)

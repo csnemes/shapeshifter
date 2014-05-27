@@ -51,7 +51,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
     
     [DataContract]
-    [Shapeshifter]
+    [Shapeshifter(1)]
     public class MyClassVersionOne
     {
         [DataMember]
@@ -59,13 +59,13 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
 
     [DataContract]
-    [Shapeshifter]
+    [Shapeshifter(2)]
     public class MyClassVersionTwo //example for switching property type
     {
         [DataMember]
         public int Id { get; set; }
 
-        [Deserializer("MyClassVersionOne", 1098654145)]
+        [Deserializer("MyClassVersionOne", 1)]
         private static object TransformVersionOne(IShapeshifterReader reader)
         {
             var oldFormatValue = reader.Read<string>("Id");
@@ -75,20 +75,20 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
 
     [DataContract]
-    [Shapeshifter]
+    [Shapeshifter(3)]
     public class MyClassVersionThree //example for switching property name
     {
         [DataMember]
         public string UserId { get; set; }
 
-        [Deserializer("MyClassVersionOne", 1098654145)]
+        [Deserializer("MyClassVersionOne", 1)]
         private static object TransformVersionOne(IShapeshifterReader reader)
         {
             var value = reader.Read<string>("Id");
             return new MyClassVersionThree() { UserId = value };
         }
 
-        [Deserializer("MyClassVersionTwo", 2143954606)]
+        [Deserializer("MyClassVersionTwo", 2)]
         private static object TransformVersionTwo(IShapeshifterReader reader)
         {
             var value = reader.Read<int>("Id");
