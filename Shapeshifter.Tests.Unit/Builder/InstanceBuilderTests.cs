@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Builder;
 using Shapeshifter.Core;
-using Shapeshifter.Tests.Unit.SchemaComparison.Version1;
+using System;
 
 namespace Shapeshifter.Tests.Unit.Builder
 {

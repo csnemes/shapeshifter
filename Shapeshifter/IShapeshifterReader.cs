@@ -1,4 +1,6 @@
-﻿namespace Shapeshifter
+﻿using System;
+
+namespace Shapeshifter
 {
     /// <summary>
     ///     Interface used by custom deserializer methods.
@@ -14,6 +16,11 @@
         ///     Returns the value corresponding to the given key as T
         /// </summary>
         T Read<T>(string key);
+
+        /// <summary>
+        ///     Returns the value corresponding to the given key
+        /// </summary>
+        object Read(Type type, string key);
 
         /// <summary>
         ///     Returns a <see cref="IShapeshifterReader" /> for the given key

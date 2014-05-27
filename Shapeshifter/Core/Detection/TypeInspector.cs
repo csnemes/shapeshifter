@@ -265,10 +265,11 @@ namespace Shapeshifter.Core.Detection
         private static List<FieldOrPropertyMemberInfo> GetAllFieldAndPropertyMembersForType(Type type)
         {
             var allFields = type.GetAllFieldsRecursive(BindingFlagsForInstanceMembers);
-            var allProperties = type.GetAllPropertiesRecursive(BindingFlagsForInstanceMembers);
+            var allProperties = type.GetAllPropertiesRecursive(BindingFlagsForInstanceMembers).ToList();
+            var allMostDerivedProperties = allProperties.Where(i => i.IsMostDerivedIn(allProperties));
 
             return allFields.Select(fieldInfo => new FieldOrPropertyMemberInfo(fieldInfo))
-                .Concat(allProperties.Select(propertyInfo => new FieldOrPropertyMemberInfo(propertyInfo))).ToList();
+                .Concat(allMostDerivedProperties.Select(propertyInfo => new FieldOrPropertyMemberInfo(propertyInfo))).ToList();
         }
 
     }

@@ -157,10 +157,11 @@ namespace Shapeshifter.Core.Detection
             var parameters = methodInfo.GetParameters();
 
             return methodInfo.ReturnParameter != null
-                   && methodInfo.ReturnParameter.ParameterType == typeof(void)
+                   && methodInfo.ReturnParameter.ParameterType == typeof (void)
                    && parameters.Length == 2
-                   && parameters[0].ParameterType == typeof(IShapeshifterWriter)
-                   && parameters[1].ParameterType.IsSameAsOrConstructedFrom(targetType);
+                   && parameters[0].ParameterType == typeof (IShapeshifterWriter)
+                   && (parameters[1].ParameterType == typeof (object)
+                       || parameters[1].ParameterType.IsSameAsOrConstructedFrom(targetType));
         }
 
         private static bool IsCorrectSignatureForCustomDeserializer(MethodInfo methodInfo)

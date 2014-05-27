@@ -138,7 +138,7 @@ namespace Shapeshifter.Core
         public static Exception InvalidSerializerMethodSignature(SerializerAttribute attribute, MethodInfo methodInfo, Type targetType)
         {
             return SafeCreateException(() => new ShapeshifterException(InvalidSerializerMethodSignatureId,
-                String.Format("Serializer method {0}.{1} must be Action<IShapeshifterWriter,{2}>.",
+                String.Format("Serializer method {0}.{1} must be Action<IShapeshifterWriter,{2}> or Action<IShapeshifterWriter,object>.",
                     methodInfo.DeclaringType == null ? null : methodInfo.DeclaringType.FullName, methodInfo.Name, targetType.Name)));
         }
 

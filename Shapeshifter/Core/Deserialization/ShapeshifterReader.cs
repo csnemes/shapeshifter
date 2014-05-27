@@ -1,4 +1,6 @@
-﻿namespace Shapeshifter.Core.Deserialization
+﻿using System;
+
+namespace Shapeshifter.Core.Deserialization
 {
     internal class ShapeshifterReader : IShapeshifterReader
     {
@@ -18,6 +20,12 @@
         {
             object jsonValue = _elements[key];
             return ValueConverter.ConvertValueToTargetType<T>(jsonValue);
+        }
+
+        public object Read(Type type, string key)
+        {
+            object jsonValue = _elements[key];
+            return ValueConverter.ConvertValueToTargetType(type, jsonValue);
         }
 
         public IShapeshifterReader GetReader(string key)

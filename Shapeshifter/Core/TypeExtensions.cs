@@ -44,6 +44,20 @@ namespace Shapeshifter.Core
                 : type.GetProperties(flagsWithDeclaredOnly).Concat(type.BaseType.GetAllPropertiesRecursive(flagsWithDeclaredOnly));
         }
 
+        public static bool IsMostDerivedIn(this PropertyInfo property, IEnumerable<PropertyInfo> properties)
+        {
+            return !properties.Any(property.IsBaseOf);
+        }
+
+        private static bool IsBaseOf(this PropertyInfo property, PropertyInfo otherProperty)
+        {
+            return property.Name == otherProperty.Name &&
+                   property != otherProperty &&
+                   property.DeclaringType != null &&
+                   otherProperty.DeclaringType != null &&
+                   otherProperty.DeclaringType.IsSubclassOf(property.DeclaringType);
+        }
+
         public static MethodInfo GetMethodRecursive(this Type type, string methodName, BindingFlags flags, Type[] parameterTypes)
         {
             var flagsWithDeclaredOnly = flags | BindingFlags.DeclaredOnly;

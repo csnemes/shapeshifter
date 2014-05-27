@@ -77,6 +77,14 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
         [Test]
+        public void DataHolderMembers_PropertyOverrides_ShouldNotCauseException()
+        {
+            var ti = new TypeInspector(typeof(ClassWithPropertyOverrride));
+            var result = ti.DataHolderMembers.ToList();
+            result.Count.Should().Be(1);
+        }
+
+        [Test]
         public void PackformatName_OfNormalClass_ShouldBeTheClassName()
         {
             var ti = new TypeInspector(typeof (VersionOne));
@@ -310,6 +318,23 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         private enum MyEnumValueDeleted
         {
             First,
+        }
+
+        [DataContract]
+        private abstract class ClassWithAbstractProperty
+        {
+            [DataMember]
+            protected abstract int MyProperty { get; }
+        }
+
+        [DataContract]
+        private class ClassWithPropertyOverrride : ClassWithAbstractProperty
+        {
+            [DataMember]
+            protected override int MyProperty
+            {
+                get { return 0; }
+            }
         }
     }
 }
