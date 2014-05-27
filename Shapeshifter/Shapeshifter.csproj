@@ -93,7 +93,7 @@
     <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\MurMurHash3.cs" />
     <Compile Include="Core\Serialization\InternalPackformatWriter.cs" />
-    <Compile Include="Core\SerializableMemberInfo.cs" />
+    <Compile Include="Core\FieldOrPropertyMemberInfo.cs" />
     <Compile Include="Core\Detection\TypeInspector.cs" />
     <Compile Include="Core\Serialization\SerializerCollection.cs" />
     <Compile Include="Core\Deserialization\Deserializer.cs" />

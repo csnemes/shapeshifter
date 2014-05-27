@@ -32,7 +32,7 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         [Test]
         public void AddCustomAndDefaultSerializer_InAnyOrder_Resolve_CustomSerializerIsReturned()
         {
-            var myDefaultSerializer = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
+            var myDefaultSerializer = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<FieldOrPropertyMemberInfo>()));
             var myCustomSerializer = new CustomSerializer(typeof(int), null, 1, null);
 
             {
@@ -69,8 +69,8 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         [Test]
         public void AddTwoDefaultSerializers_Throws()
         {
-            var myDefaultSerializer1 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
-            var myDefaultSerializer2 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<SerializableMemberInfo>()));
+            var myDefaultSerializer1 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<FieldOrPropertyMemberInfo>()));
+            var myDefaultSerializer2 = new DefaultSerializer(new SerializableTypeInfo(typeof(int), "MyInt", 1, new List<FieldOrPropertyMemberInfo>()));
 
             Action action = () =>
             {

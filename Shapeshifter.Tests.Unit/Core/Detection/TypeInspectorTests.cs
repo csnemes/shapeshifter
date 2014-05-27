@@ -28,7 +28,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldRecognize_DataMemberAttribute_OnPublicField()
         {
             var ti = new TypeInspector(typeof (ClassWithPublicField));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(1);
             result[0].Name.Should().Be("_field");
         }
@@ -37,7 +37,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldRecognize_DataMemberAttribute_OnPrivateField()
         {
             var ti = new TypeInspector(typeof(ClassWithPrivateField));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(1);
             result[0].Name.Should().Be("_field");
         }
@@ -46,7 +46,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldNotRecognize_DataMemberAttribute_OnStaticField()
         {
             var ti = new TypeInspector(typeof(ClassWithStaticField));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(0);
         }
 
@@ -54,7 +54,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldRecognize_DataMemberAttribute_OnPublicProperty()
         {
             var ti = new TypeInspector(typeof(ClassWithPublicProperty));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(1);
             result[0].Name.Should().Be("Property");
         }
@@ -63,7 +63,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldRecognize_DataMemberAttribute_OnPrivateProperty()
         {
             var ti = new TypeInspector(typeof(ClassWithPrivateProperty));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(1);
             result[0].Name.Should().Be("Property");
         }
@@ -72,7 +72,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ShouldRecognize_DataMemberAttribute_OnBaseClasses()
         {
             var ti = new TypeInspector(typeof(DerivedClassWithFields));
-            var result = ti.SerializableItemCandidates.ToList();
+            var result = ti.SerializableMemberCandidates.ToList();
             result.Count.Should().Be(2);
         }
 
@@ -133,7 +133,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public void SerializableItemCandidates_ContainsBaseClassPrivateFieldsAndPropertiesToo()
         {
             var typeInspector = new TypeInspector(typeof(MyClass));
-            var items = typeInspector.SerializableItemCandidates.ToList();
+            var items = typeInspector.SerializableMemberCandidates.ToList();
             items.Should().Contain(i => i.Name == "_myField");
             items.Should().Contain(i => i.Name == "MyProperty");
         }

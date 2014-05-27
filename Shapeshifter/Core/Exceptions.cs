@@ -8,6 +8,27 @@ namespace Shapeshifter.Core
 {
     internal static class Exceptions
     {
+        public const string InstanceAlreadyGivenAwayId = "InstanceAlreadyGivenAway";
+        public static Exception InstanceAlreadyGivenAway()
+        {
+            return new ShapeshifterException(InstanceAlreadyGivenAwayId, "Instance already given away. You cannot get two instances, use a new builder.");
+        }
+
+        public const string FailedToSetValueId = "FailedToSetValue";
+        public static Exception FailedToSetValue(string name, Type type, Exception innerException)
+        {
+            return SafeCreateException(() => new ShapeshifterException(FailedToSetValueId,
+                String.Format("Failed to set value on member {0} of type {1}.", name, type.FullName), innerException));
+        }
+        
+
+        public const string CannotFindFieldOrPropertyId = "CannotFindFieldOrProperty";
+        public static Exception CannotFindFieldOrProperty(string name, Type type)
+        {
+            return SafeCreateException(() => new ShapeshifterException(CannotFindFieldOrPropertyId,
+                String.Format("Field or property {0} not found on type {1}.", name, type.FullName)));
+        }
+
         public const string CannotFindDeserializerId = "CannotFindDeserializer";
         public static Exception CannotFindDeserializer(ObjectProperties properties)
         {

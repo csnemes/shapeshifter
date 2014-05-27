@@ -52,6 +52,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\InstanceBuilderTests.cs" />
     <Compile Include="Core\Deserialization\DeserializerCollectionTests.cs" />
     <Compile Include="Core\Serialization\SerializerCollectionTests.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />

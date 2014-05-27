@@ -59,7 +59,7 @@ namespace Shapeshifter.Core.Detection
 
             typeInspector.AcceptOnType(_visitor);
 
-            foreach (var candidate in typeInspector.SerializableItemCandidates)
+            foreach (var candidate in typeInspector.SerializableMemberCandidates)
             {
                 Type candidateType = candidate.Type;
 

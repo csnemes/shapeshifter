@@ -25,7 +25,8 @@ namespace Shapeshifter.Core.Detection
             BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.FlattenHierarchy;
 
         private readonly Lazy<bool> _hasDataContractAttribute;
-        private readonly Lazy<List<SerializableMemberInfo>> _itemCandidates;
+        private readonly Lazy<List<FieldOrPropertyMemberInfo>> _serializableMemberCandidates;
+        private readonly Lazy<Dictionary<string, FieldOrPropertyMemberInfo>> _dataHolderMembers;
         private readonly Lazy<List<KnownTypeAttribute>> _knownTypeAttributes;
         private readonly Lazy<ShapeshifterAttribute> _shapeshifterAttribute;
         private readonly Type _type;
@@ -37,7 +38,10 @@ namespace Shapeshifter.Core.Detection
             _type = type;
             _hasDataContractAttribute = new Lazy<bool>(() => _type.GetCustomAttributes(typeof (DataContractAttribute), false).Any());
             
-            _itemCandidates = new Lazy<List<SerializableMemberInfo>>(() => GetSerializableItemCandidatesForType(_type));
+            _serializableMemberCandidates = new Lazy<List<FieldOrPropertyMemberInfo>>(() => GetSerializableItemCandidatesForType(_type));
+
+            _dataHolderMembers = new Lazy<Dictionary<string, FieldOrPropertyMemberInfo>>(() => 
+                GetAllFieldAndPropertyMembersForType(_type).ToDictionary(fld => fld.Name));
 
             _knownTypeAttributes = new Lazy<List<KnownTypeAttribute>>(GetKnownTypeAttributes);
         
@@ -45,9 +49,24 @@ namespace Shapeshifter.Core.Detection
                 () => _type.GetCustomAttributes(typeof(ShapeshifterAttribute), false).FirstOrDefault() as ShapeshifterAttribute);
         }
 
-        public IEnumerable<SerializableMemberInfo> SerializableItemCandidates
+        public IEnumerable<FieldOrPropertyMemberInfo> SerializableMemberCandidates
         {
-            get { return _itemCandidates.Value; }
+            get { return _serializableMemberCandidates.Value; }
+        }
+
+        public IEnumerable<FieldOrPropertyMemberInfo> DataHolderMembers
+        {
+            get { return _dataHolderMembers.Value.Values; }
+        }
+
+        public FieldOrPropertyMemberInfo GetFieldOrPropertyMemberInfo(string name)
+        {
+            FieldOrPropertyMemberInfo result = null;
+            if (!_dataHolderMembers.Value.TryGetValue(name, out result))
+            {
+                throw Exceptions.CannotFindFieldOrProperty(name, this.Type);
+            }
+            return result;
         }
 
         public bool HasDataContractAttribute
@@ -148,7 +167,7 @@ namespace Shapeshifter.Core.Detection
             {
                 var writer = new StreamWriter(stream);
 
-                foreach (SerializableMemberInfo candidate in SerializableItemCandidates.OrderBy(item => item.Name))
+                foreach (FieldOrPropertyMemberInfo candidate in SerializableMemberCandidates.OrderBy(item => item.Name))
                 {
                     writer.Write(candidate.Name);
                     writer.Write(candidate.Type.GetPrettyName());
@@ -210,7 +229,7 @@ namespace Shapeshifter.Core.Detection
 
         public void AcceptOnType(ISerializableTypeVisitor visitor)
         {
-            var typeInfo = new SerializableTypeInfo(Type, PackformatName, Version, SerializableItemCandidates);
+            var typeInfo = new SerializableTypeInfo(Type, PackformatName, Version, SerializableMemberCandidates);
 
             if (HasDataContractAttribute)
             {
@@ -218,29 +237,19 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static List<SerializableMemberInfo> GetSerializableItemCandidatesForType(Type type)
+        private List<FieldOrPropertyMemberInfo> GetSerializableItemCandidatesForType(Type type)
         {
-            var candidates = new List<SerializableMemberInfo>();
+            return DataHolderMembers.Where(field => field.IsSerializable).ToList();
+        }
 
+        private static List<FieldOrPropertyMemberInfo> GetAllFieldAndPropertyMembersForType(Type type)
+        {
             var allFields = type.GetAllFieldsRecursive(BindingFlagsForInstanceMembers);
-
-            candidates.AddRange(allFields
-                .Where(fieldInfo => ContainsAttributeSpecifyingCandidates(fieldInfo.GetCustomAttributes(true)))
-                .Select(fieldInfo => new SerializableMemberInfo(fieldInfo)));
-
             var allProperties = type.GetAllPropertiesRecursive(BindingFlagsForInstanceMembers);
 
-            candidates.AddRange(allProperties
-                .Where(propertyInfo => ContainsAttributeSpecifyingCandidates(propertyInfo.GetCustomAttributes(true)))
-                .Select(propertyInfo => new SerializableMemberInfo(propertyInfo)));
-
-            return candidates;
+            return allFields.Select(fieldInfo => new FieldOrPropertyMemberInfo(fieldInfo))
+                .Concat(allProperties.Select(propertyInfo => new FieldOrPropertyMemberInfo(propertyInfo))).ToList();
         }
 
-        private static bool ContainsAttributeSpecifyingCandidates(object[] attributes)
-        {
-            if (attributes == null || attributes.Length == 0) return false;
-            return attributes.OfType<DataMemberAttribute>().Any();
-        }
     }
 }

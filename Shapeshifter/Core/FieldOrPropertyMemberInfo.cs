@@ -1,25 +1,27 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Core
 {
     /// <summary>
-    ///     Helper data holder for storing serializable member information.
+    ///     Helper data holder for storing member (field or property) information.
     /// </summary>
     /// <remarks>
     ///     It can be used for both fields and properties, internally it will use the correct Info
     /// </remarks>
-    internal class SerializableMemberInfo
+    internal class FieldOrPropertyMemberInfo
     {
         private readonly FieldInfo _fieldInfo;
         private readonly PropertyInfo _propertyInfo;
 
-        public SerializableMemberInfo(FieldInfo fieldInfo)
+        public FieldOrPropertyMemberInfo(FieldInfo fieldInfo)
         {
             _fieldInfo = fieldInfo;
         }
 
-        public SerializableMemberInfo(PropertyInfo propertyInfo)
+        public FieldOrPropertyMemberInfo(PropertyInfo propertyInfo)
         {
             _propertyInfo = propertyInfo;
         }
@@ -42,6 +44,18 @@ namespace Shapeshifter.Core
             }
         }
 
+        public bool IsSerializable
+        {
+            get
+            {
+                if (_fieldInfo != null)
+                {
+                    return ContainsAttributeSpecifyingCandidates(_fieldInfo.GetCustomAttributes(true));
+                }
+                return ContainsAttributeSpecifyingCandidates(_propertyInfo.GetCustomAttributes(true));
+            }
+        }
+
         public object GetValueFor(object instance)
         {
             if (_fieldInfo != null)
@@ -61,6 +75,12 @@ namespace Shapeshifter.Core
             {
                 _propertyInfo.SetValue(instance, value, null);
             }
+        }
+
+        private static bool ContainsAttributeSpecifyingCandidates(object[] attributes)
+        {
+            if (attributes == null || attributes.Length == 0) return false;
+            return attributes.OfType<DataMemberAttribute>().Any();
         }
     }
 }

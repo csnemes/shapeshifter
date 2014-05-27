@@ -43,7 +43,7 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         [Test]
         public void AddCustomAndDefaultDeserializerForConcreteVersion_InAnyOrder_Resolve_CustomDeserializerIsReturned()
         {
-            var myDefaultDeserializer = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<SerializableMemberInfo>()));
+            var myDefaultDeserializer = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<FieldOrPropertyMemberInfo>()));
             var myCustomDeserializer = new CustomDeserializer("MyPackformatName", 1, null);
 
             {
@@ -80,8 +80,8 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         [Test]
         public void AddTwoDefaultDeserializers_Throws()
         {
-            var myDefaultDeserializer1 = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<SerializableMemberInfo>()));
-            var myDefaultDeserializer2 = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<SerializableMemberInfo>()));
+            var myDefaultDeserializer1 = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<FieldOrPropertyMemberInfo>()));
+            var myDefaultDeserializer2 = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<FieldOrPropertyMemberInfo>()));
 
             Action action = () =>
             {

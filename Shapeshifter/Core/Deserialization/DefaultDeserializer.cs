@@ -11,7 +11,7 @@ namespace Shapeshifter.Core.Deserialization
     internal class DefaultDeserializer : Deserializer
     {
         private readonly SerializableTypeInfo _serializableTypeInfo;
-        private readonly Dictionary<string, SerializableMemberInfo> _packItemCandidates;
+        private readonly Dictionary<string, FieldOrPropertyMemberInfo> _packItemCandidates;
 
         public DefaultDeserializer(SerializableTypeInfo serializableTypeInfo)
             : base(serializableTypeInfo.PackformatName, serializableTypeInfo.Version)
@@ -32,7 +32,7 @@ namespace Shapeshifter.Core.Deserialization
             //try to find a target for each packItem, if not found skip it
             foreach (var packItem in packItems)
             {
-                SerializableMemberInfo target;
+                FieldOrPropertyMemberInfo target;
                 if (_packItemCandidates.TryGetValue(packItem.Key, out target))
                 {
                     target.SetValueFor(result, ValueConverter.ConvertValueToTargetType(target.Type, packItem.Value));
