@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.SchemaComparison.Impl;
@@ -35,6 +36,12 @@ namespace Shapeshifter.SchemaComparison
         private IEnumerable<SerializerInfo> Serializers
         {
             get { return _serializers; }
+        }
+
+        public static Snapshot Create(string snapshotName, IEnumerable<Assembly> assembliesInScope)
+        {
+            SnapshotDetector builder = SnapshotDetector.CreateFor(assembliesInScope);
+            return new Snapshot(snapshotName, builder.Serializers, builder.Deserializers);
         }
 
         public static Snapshot Create(string snapshotName, IEnumerable<Type> knownTypes)

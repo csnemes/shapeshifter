@@ -127,6 +127,14 @@ namespace Shapeshifter.Core.Detection
             return builder;
         }
 
+        public static MetadataExplorer CreateFor(IEnumerable<Assembly> assembliesInScope)
+        {
+            //look for all types bearing Shapeshifter attribute and use them as root types
+            var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterAttribute>());
+
+            return CreateFor(rootTypes, assembliesInScope);
+        }
+
         private void WalkRootType(Type type)
         {
             CheckIfShapeshifterAttributePresent(type);

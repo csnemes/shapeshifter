@@ -32,6 +32,16 @@ namespace Shapeshifter.SchemaComparison.Impl
             get { return _deserializers; }
         }
 
+        public static SnapshotDetector CreateFor(IEnumerable<Assembly> assembliesInScope)
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(assembliesInScope);
+
+            var serializers = metadataExplorer.Serializers.Select(ToSerializerInfo).ToList();
+            var deserializers = metadataExplorer.Deserializers.Select(ToDeserializerInfo).ToList();
+
+            return new SnapshotDetector(serializers, deserializers);
+        }
+
         public static SnapshotDetector CreateFor(Type type, IEnumerable<Assembly> descendantSearchScope = null)
         {
             return CreateFor(new[] {type}, null, descendantSearchScope);

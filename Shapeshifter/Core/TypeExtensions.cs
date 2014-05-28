@@ -8,6 +8,11 @@ namespace Shapeshifter.Core
 {
     public static class TypeExtensions
     {
+        public static bool HasAttributeOfType<TAttribute>(this Type type)
+        {
+            return type.GetCustomAttributes(typeof (TAttribute), false).Any();
+        }
+
         public static FieldInfo GetFieldRecursive(this Type type, string fieldName, BindingFlags flags)
         {
             var flagsWithDeclaredOnly = flags | BindingFlags.DeclaredOnly;
