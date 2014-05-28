@@ -1,9 +1,11 @@
-﻿using System.Runtime.Serialization;
-using Shapeshifter.Core.Deserialization;
+﻿using Shapeshifter.Core.Deserialization;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.SchemaComparison.Impl
 {
     [DataContract]
+    [KnownType(typeof(SerializerInfo))]
+    [KnownType(typeof(DeserializerInfo))]
     internal abstract class InfoBase
     {
         [DataMember] private readonly string _packformatName;

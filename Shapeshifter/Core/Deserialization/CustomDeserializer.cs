@@ -24,6 +24,11 @@ namespace Shapeshifter.Core.Deserialization
             _targetType = targetType;
         }
 
+        public MethodBase MethodInfo
+        {
+            get { return _methodInfo; }
+        }
+
         public CustomSerializerCreationReason CreationReason
         {
             get { return _creationReason; }

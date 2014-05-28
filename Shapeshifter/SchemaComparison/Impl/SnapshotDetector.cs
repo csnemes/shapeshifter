@@ -1,23 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
-using Shapeshifter.Core;
+using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Detection;
+using Shapeshifter.Core.Serialization;
 
 namespace Shapeshifter.SchemaComparison.Impl
 {
     /// <summary>
     ///     Detects all involved classes and methods to create a snapshot
     /// </summary>
-    internal class SnapshotDetector : ISerializableTypeVisitor
+    internal class SnapshotDetector
     {
-        private readonly List<DeserializerInfo> _deserializers = new List<DeserializerInfo>();
-        private readonly List<SerializerInfo> _serializers = new List<SerializerInfo>();
-        private readonly SerializationStructureWalker _walker;
+        private readonly IEnumerable<SerializerInfo> _serializers;
+        private readonly IEnumerable<DeserializerInfo> _deserializers;
 
-        private SnapshotDetector()
+        private SnapshotDetector(IEnumerable<SerializerInfo> serializers, IEnumerable<DeserializerInfo> deserializers)
         {
-            _walker = new SerializationStructureWalker(this);
+            _serializers = serializers;
+            _deserializers = deserializers;
         }
 
         public IEnumerable<SerializerInfo> Serializers
@@ -30,61 +32,55 @@ namespace Shapeshifter.SchemaComparison.Impl
             get { return _deserializers; }
         }
 
-        private SerializationStructureWalker Walker
+        public static SnapshotDetector CreateFor(Type type, IEnumerable<Assembly> descendantSearchScope = null)
         {
-            get { return _walker; }
+            return CreateFor(new[] {type}, null, descendantSearchScope);
         }
 
-        void ISerializableTypeVisitor.VisitSerializableClass(SerializableTypeInfo serializableTypeInfo)
+        public static SnapshotDetector CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
-            _serializers.Add(new DefaultSerializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName));
-            _deserializers.Add(new DefaultDeserializerInfo(serializableTypeInfo.PackformatName, serializableTypeInfo.Version, serializableTypeInfo.Type.FullName));
+            var metadataExplorer = MetadataExplorer.CreateFor(
+                rootTypes ?? Enumerable.Empty<Type>(),
+                knownTypes ?? Enumerable.Empty<Type>(), 
+                descendantSearchScope);
+
+            var serializers = metadataExplorer.Serializers.Select(ToSerializerInfo).ToList();
+            var deserializers = metadataExplorer.Deserializers.Select(ToDeserializerInfo).ToList();
+
+            return new SnapshotDetector(serializers, deserializers);
         }
 
-        void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
+        private static SerializerInfo ToSerializerInfo(Serializer serializer)
         {
-            _deserializers.Add(new CustomDeserializerInfo(attribute.PackformatName, attribute.Version, methodInfo.Name, methodInfo.DeclaringType.FullName));
-        }
-
-        void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo methodInfo)
-        {
-            if (methodInfo == null)
+            if (serializer is DefaultSerializer)
             {
-                throw new ArgumentNullException("methodInfo");
+                return new DefaultSerializerInfo(serializer.PackformatName, serializer.Version, serializer.Type.FullName);
             }
-            _serializers.Add(new CustomSerializerInfo(attribute.PackformatName, attribute.Version, methodInfo.Name,
-                methodInfo.DeclaringType.FullName));
-        }
-
-        public static SnapshotDetector CreateFor(Type type)
-        {
-            var builder = new SnapshotDetector();
-            builder.Walker.WalkRootType(type);
-            return builder;
-        }
-
-        public static SnapshotDetector CreateFor(IEnumerable<Type> types)
-        {
-            var builder = new SnapshotDetector();
-            builder.Walker.WalkRootTypes(types);
-            return builder;
-        }
-
-        public static SnapshotDetector CreateFor(Assembly assembly)
-        {
-            var builder = new SnapshotDetector();
-            builder.Walker.WalkRootTypes(assembly.GetTypes());
-            return builder;
-        }
-
-        public static SnapshotDetector CreateFor(IEnumerable<Assembly> assemblies)
-        {
-            var builder = new SnapshotDetector();
-            foreach (Assembly assembly in assemblies)
+            if (serializer is CustomSerializer)
             {
-                builder.Walker.WalkRootTypes(assembly.GetTypes());
+                var customerSerializer = serializer as CustomSerializer;
+
+                return new CustomSerializerInfo(serializer.PackformatName, serializer.Version, customerSerializer.MethodInfo.Name, 
+                    customerSerializer.MethodInfo.DeclaringType.FullName);
             }
-            return builder;
+            throw new Exception(string.Format("Unexpected serializer type {0}.", serializer.GetType().Name));
+        }
+
+        private static DeserializerInfo ToDeserializerInfo(Deserializer deserializer)
+        {
+            if (deserializer is DefaultDeserializer)
+            {
+                var defaultDeserializer = deserializer as DefaultDeserializer;
+                return new DefaultDeserializerInfo(deserializer.PackformatName, deserializer.Version, defaultDeserializer.Type.FullName);
+            }
+            if (deserializer is CustomDeserializer)
+            {
+                var customerDeserializer = deserializer as CustomDeserializer;
+
+                return new CustomDeserializerInfo(deserializer.PackformatName, deserializer.Version, customerDeserializer.MethodInfo.Name,
+                    customerDeserializer.MethodInfo.DeclaringType.FullName);
+            }
+            throw new Exception(string.Format("Unexpected deserializer type {0}.", deserializer.GetType().Name));
         }
     }
 }

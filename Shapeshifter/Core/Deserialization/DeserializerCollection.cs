@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Shapeshifter.Core.Deserialization
@@ -6,13 +7,23 @@ namespace Shapeshifter.Core.Deserialization
     /// <summary>
     ///     Class containing information on types that are serializable to/from packformat
     /// </summary>
-    internal class DeserializerCollection
+    internal class DeserializerCollection:IEnumerable<Deserializer>
     {
         private readonly Dictionary<DeserializerKey, Deserializer> _deserializers;
 
         private DeserializerCollection(Dictionary<DeserializerKey, Deserializer> deserializers)
         {
             _deserializers = deserializers;
+        }
+
+        public IEnumerator<Deserializer> GetEnumerator()
+        {
+            return _deserializers.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _deserializers.Values.GetEnumerator();
         }
 
         public static DeserializerCollectionBuilder New

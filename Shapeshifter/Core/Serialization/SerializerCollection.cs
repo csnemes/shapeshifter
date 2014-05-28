@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Shapeshifter.Core.Serialization
@@ -6,13 +7,23 @@ namespace Shapeshifter.Core.Serialization
     /// <summary>
     ///     Class containing information on types that are serializable to/from packformat
     /// </summary>
-    internal class SerializerCollection
+    internal class SerializerCollection :IEnumerable<Serializer>
     {
         private readonly Dictionary<Type, Serializer> _serializers;
 
         private SerializerCollection(Dictionary<Type, Serializer> serializers)
         {
             _serializers = serializers;
+        }
+
+        public IEnumerator<Serializer> GetEnumerator()
+        {
+            return _serializers.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _serializers.Values.GetEnumerator();
         }
 
         public static SerializerCollectionBuilder New

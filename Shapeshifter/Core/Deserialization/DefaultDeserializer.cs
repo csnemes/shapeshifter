@@ -20,6 +20,11 @@ namespace Shapeshifter.Core.Deserialization
             _packItemCandidates = serializableTypeInfo.Items.ToDictionary(item => item.Name);
         }
 
+        public Type Type
+        {
+            get { return _serializableTypeInfo.Type; }
+        }
+
         public override Func<ObjectProperties, object> GetDeserializerFunc()
         {
             return Deserialize;

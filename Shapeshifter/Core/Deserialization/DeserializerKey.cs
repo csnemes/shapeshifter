@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Core.Deserialization
 {
     /// <summary>
     ///     A key is the combination of packformatName and version
     /// </summary>
+    [DataContract]
     internal struct DeserializerKey
     {
+        [DataMember]
         private readonly string _packedName;
+
+        [DataMember]
         private readonly uint _version; //zero means unspecified
 
         public DeserializerKey(string packedName, uint version = 0)

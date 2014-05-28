@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.SchemaComparison.Impl;
 
@@ -44,7 +43,7 @@ namespace Shapeshifter.SchemaComparison
         public void WriteHumanReadableExplanation(TextWriter writer)
         {
             writer.WriteLine("Compared to snapshot {0} the deserializer for type {1} with version {2} is missing.",
-                SnapshotName, _serializerInfo.PackformatName, MissingVersion);
+                SnapshotName, MissingPackformatName, MissingVersion);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.IO;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.SchemaComparison;
@@ -106,6 +107,23 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
             result["TestClass"].Count().Should().Be(2);
             result["TestClass"].ToArray()[0].SnapshotName.Should().Be("Base");
             result["TestClass"].ToArray()[1].SnapshotName.Should().Be("New");
+        }
+
+        [Test]
+        public void SaveAndLoad_Success()
+        {
+            const string filePath = @"c:\shapeshifter_test.xml";
+
+            var snapshot = Snapshot.Create("First", typeof(Order));
+            using (var stream = File.Open(filePath, FileMode.Create))
+            {
+                snapshot.SaveTo(stream);
+            }
+
+            var loadedSnapshot = Snapshot.LoadFrom(filePath);
+            loadedSnapshot.Name.Should().Be("First");
+
+            loadedSnapshot.CompareToBase(snapshot).HasMissingItem.Should().BeFalse();
         }
     }
 }

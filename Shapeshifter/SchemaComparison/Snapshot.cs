@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
-using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.SchemaComparison.Impl;
 
@@ -39,13 +39,36 @@ namespace Shapeshifter.SchemaComparison
 
         public static Snapshot Create(string snapshotName, IEnumerable<Type> knownTypes)
         {
-            SnapshotDetector builder = SnapshotDetector.CreateFor(knownTypes);
+            SnapshotDetector builder = SnapshotDetector.CreateFor(null, knownTypes);
             return new Snapshot(snapshotName, builder.Serializers, builder.Deserializers);
         }
 
         public static Snapshot Create(string snapshotName, params Type[] knownTypes)
         {
             return Create(snapshotName, (IEnumerable<Type>) knownTypes);
+        }
+
+        public static Snapshot LoadFrom(string filePath)
+        {
+            var serializer = new DataContractSerializer(typeof (Snapshot));
+            using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+            {
+                return (Snapshot) serializer.ReadObject(stream);
+            }
+        }
+
+        public void SaveTo(string filePath)
+        {
+            using (var stream = File.Open(filePath, FileMode.CreateNew))
+            {
+                SaveTo(stream);
+            }
+        }
+
+        public void SaveTo(Stream stream)
+        {
+            var serializer = new DataContractSerializer(typeof(Snapshot));
+            serializer.WriteObject(stream, this);
         }
 
         private IEnumerable<MissingDeserializerInfo> InternalCompareToActual(Snapshot snapshot)

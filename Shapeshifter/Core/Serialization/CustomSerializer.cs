@@ -16,6 +16,11 @@ namespace Shapeshifter.Core.Serialization
             _creationReason = creationReason;
         }
 
+        public MethodInfo MethodInfo
+        {
+            get { return _methodInfo; }
+        }
+
         public CustomSerializerCreationReason CreationReason
         {
             get { return _creationReason; }

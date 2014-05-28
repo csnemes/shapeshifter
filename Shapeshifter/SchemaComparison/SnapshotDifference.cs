@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
 
 namespace Shapeshifter.SchemaComparison
@@ -28,13 +28,11 @@ namespace Shapeshifter.SchemaComparison
         {
             get { return new SnapshotDifference(); }
         }
-
-
+        
         public bool HasMissingItem
         {
-            get { return _missingItems.Count > 0; }
+            get { return _missingItems.Any(); }
         }
-
 
         public IDictionary<string, List<MissingDeserializerInfo>> GroupBySnapshotName()
         {
@@ -58,6 +56,18 @@ namespace Shapeshifter.SchemaComparison
             var result = new List<MissingDeserializerInfo>(_missingItems);
             result.AddRange(difference._missingItems.Where(item => !existingKeys.Contains(item.Key)));
             return new SnapshotDifference(result);
+        }
+
+        public string GetHumanReadableResult()
+        {
+            using (var writer = new StringWriter())
+            {
+                foreach (var missingDeserializerInfo in _missingItems)
+                {
+                    missingDeserializerInfo.WriteHumanReadableExplanation(writer);
+                }
+                return writer.GetStringBuilder().ToString();
+            }
         }
     }
 }
