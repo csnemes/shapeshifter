@@ -51,18 +51,29 @@ namespace Shapeshifter.Core.Detection
             if (!IsCorrectSignatureForCustomSerializer(methodInfo, attribute.TargetType))
                 throw Exceptions.InvalidSerializerMethodSignature(attribute, methodInfo, attribute.TargetType);
 
-            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.PackformatName, attribute.Version, methodInfo, 
+            var version = GetVersionForCustomSerializer(attribute, attribute.TargetType);
+
+            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.PackformatName, version, methodInfo, 
                 CustomSerializerCreationReason.Explicit));
 
             if (attribute.ForAllDescendants)
             {
-                var descendants = GetAllDescendants(attribute.TargetType);
-                foreach (var descendant in descendants)
+                var descendantTypes = GetAllDescendants(attribute.TargetType);
+                foreach (var descendantType in descendantTypes)
                 {
-                    _serializers.Add(new CustomSerializer(descendant, attribute.PackformatName, attribute.Version, methodInfo,
+                    var descendantVersion = GetVersionForCustomSerializer(attribute, descendantType);
+
+                    _serializers.Add(new CustomSerializer(descendantType, attribute.PackformatName, descendantVersion, methodInfo,
                         CustomSerializerCreationReason.ImplicitByBaseType));
                 }
             }
+        }
+
+        private static uint GetVersionForCustomSerializer(SerializerAttribute attribute, Type targetType)
+        {
+            return attribute.IsVersionSpecified
+                ? attribute.Version
+                : new TypeInspector(targetType).Version;
         }
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)

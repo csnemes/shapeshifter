@@ -17,7 +17,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
         }
 
         [Test]
-        public void CompareToBase_SameVersions_HasMissingItems()
+        public void CompareToBase_SameVersions_HasNoMissingItems()
         {
             var baseSnapshot = Snapshot.Create("Base", typeof(Order));
             var newSnapshot = Snapshot.Create("New", typeof(Order));

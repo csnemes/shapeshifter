@@ -10,15 +10,78 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     public class CustomSerializerTests : TestsBase
     {
         [Test]
-        public void CustomSerializerAndDeserializer_Success()
+        public void CustomSerializer_NoExplicitVersion_VersionHashIsUsed()
         {
-            var source = new MyType() { MyProperty = 42 };
+            var source = new MyTypeWithCustomSerializerNoVersionNumber();
 
-            var serializer = GetSerializer<MyType>();
+            var serializer = GetSerializer<MyTypeWithCustomSerializerNoVersionNumber>();
             var pack = serializer.Serialize(source);
             var jobj = JObject.Parse(pack);
 
-            jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyType");
+            jobj[Constants.VersionKey].Value<uint>().Should().NotBe(0);
+        }
+
+        [Shapeshifter]
+        public class MyTypeWithCustomSerializerNoVersionNumber
+        {
+            [Serializer(typeof(MyTypeWithCustomSerializerNoVersionNumber))]
+            public static void Serializer(IShapeshifterWriter writer, MyTypeWithCustomSerializerNoVersionNumber itemToSerialize)
+            {
+            }
+        }
+
+        [Test]
+        public void CustomSerializer_VersionSpecifiedInShapshifterAttribute_ThatVersionIsUsed()
+        {
+            var source = new MyTypeWithVersionNumberInShapshifterAttribute();
+
+            var serializer = GetSerializer<MyTypeWithVersionNumberInShapshifterAttribute>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.VersionKey].Value<uint>().Should().Be(42);
+        }
+
+        [Shapeshifter(42)]
+        public class MyTypeWithVersionNumberInShapshifterAttribute
+        {
+            [Serializer(typeof(MyTypeWithVersionNumberInShapshifterAttribute))]
+            public static void Serializer(IShapeshifterWriter writer, MyTypeWithVersionNumberInShapshifterAttribute itemToSerialize)
+            {
+            }
+        }
+
+        [Test]
+        public void CustomSerializer_VersionSpecifiedInSerializerttribute_ThatVersionIsUsed()
+        {
+            var source = new MyTypeWithCustomSerializerWithVersionNumber();
+
+            var serializer = GetSerializer<MyTypeWithCustomSerializerWithVersionNumber>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.VersionKey].Value<uint>().Should().Be(44);
+        }
+
+        [Shapeshifter(42)]
+        public class MyTypeWithCustomSerializerWithVersionNumber
+        {
+            [Serializer(typeof(MyTypeWithCustomSerializerWithVersionNumber), 44)]
+            public static void Serializer(IShapeshifterWriter writer, MyTypeWithCustomSerializerWithVersionNumber itemToSerialize)
+            {
+            }
+        }
+
+        [Test]
+        public void CustomSerializerAndDeserializer_Success()
+        {
+            var source = new MyTypeWithCustomSerializer() { MyProperty = 42 };
+
+            var serializer = GetSerializer<MyTypeWithCustomSerializer>();
+            var pack = serializer.Serialize(source);
+            var jobj = JObject.Parse(pack);
+
+            jobj[Constants.TypeNameKey].Value<string>().Should().Be("MyTypeWithCustomSerializer");
             jobj[Constants.VersionKey].Value<uint>().Should().Be(1);
             jobj["MyKey"].Value<int>().Should().Be(42);
 
@@ -27,20 +90,20 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Shapeshifter]
-        public class MyType
+        public class MyTypeWithCustomSerializer
         {
             public int MyProperty { get; set; }
 
-            [Serializer(typeof(MyType), 1)]
-            public static void Serializer(IShapeshifterWriter writer, MyType itemToSerialize)
+            [Serializer(typeof(MyTypeWithCustomSerializer), 1)]
+            public static void Serializer(IShapeshifterWriter writer, MyTypeWithCustomSerializer itemToSerialize)
             {
                 writer.Write("MyKey", itemToSerialize.MyProperty);
             }
 
-            [Deserializer("MyType", 1)]
+            [Deserializer("MyTypeWithCustomSerializer", 1)]
             public static object Deserializer(IShapeshifterReader reader)
             {
-                return new MyType() {MyProperty = reader.Read<int>("MyKey")};
+                return new MyTypeWithCustomSerializer() {MyProperty = reader.Read<int>("MyKey")};
             }
         }
 

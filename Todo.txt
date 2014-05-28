@@ -6,5 +6,5 @@ Performance improvements
 Support load from regular JSON format (without Shapeshifter's attributes)
 Typename collision can occur when using a ForAllDescendants deserializer because packformatname contains only typename (no namespace, no assembly name)
 VS package for history handling, code generation
-
+Snapshot history
 
