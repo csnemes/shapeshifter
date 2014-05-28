@@ -76,18 +76,18 @@ namespace Shapeshifter
             get { return _metadata.Value.Deserializers; }
         }
 
-        public void Serialize(Stream targetStream, object objToPack)
+        public void Serialize(Stream targetStream, object objToPack, Type declaredSourceType = null)
         {
             var textWriter = new StreamWriter(targetStream);
             var packerEngine = new InternalPackformatWriter(textWriter, Serializers);
-            packerEngine.Pack(objToPack);
+            packerEngine.Pack(objToPack, declaredSourceType);
         }
 
-        public string Serialize(object objToPack)
+        public string Serialize(object objToPack, Type declaredSourceType = null)
         {
             var writer = new StringWriter(new StringBuilder());
             var packerEngine = new InternalPackformatWriter(writer, Serializers);
-            packerEngine.Pack(objToPack);
+            packerEngine.Pack(objToPack, declaredSourceType);
             return writer.GetStringBuilder().ToString();
         }
 

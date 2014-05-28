@@ -75,7 +75,7 @@ namespace Shapeshifter.Core
 
         public static IEnumerable<Type> GetBaseTypes(this Type type)
         {
-            return type.BaseType == null
+            return type == null || type.BaseType == null
                 ? Enumerable.Empty<Type>()
                 : type.BaseType.GetBaseTypes().Union(new[] {type.BaseType});
         }

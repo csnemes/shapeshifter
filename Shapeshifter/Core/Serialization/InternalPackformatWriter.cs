@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace Shapeshifter.Core.Serialization
 {
@@ -25,14 +26,7 @@ namespace Shapeshifter.Core.Serialization
         public void WriteProperty(string propertyKey, object propertyValue, Type declaredSourceType = null)
         {
             _writer.WritePropertyName(propertyKey);
-            if (declaredSourceType == typeof (object))
-            {
-                WriteValueWithTypeInformation(propertyValue);
-            }
-            else
-            {
-                WriteValue(propertyValue);
-            }
+            WriteValue(propertyValue, declaredSourceType);
         }
 
         #region IDisposable implementation
@@ -67,9 +61,9 @@ namespace Shapeshifter.Core.Serialization
 
         #endregion
 
-        public void Pack(object objToPack)
+        public void Pack(object objToPack, Type declaredSourceType = null)
         {
-            WriteValue(objToPack);
+            WriteValue(objToPack, declaredSourceType);
         }
 
         private void WriteValueWithTypeInformation(object obj)
@@ -116,11 +110,17 @@ namespace Shapeshifter.Core.Serialization
             }
         }
 
-        private void WriteValue(object obj)
+        private void WriteValue(object obj, Type declaredSourceType = null)
         {
             if (obj == null)
             {
                 _writer.WriteNull();
+                return;
+            }
+
+            if (declaredSourceType == typeof (object))
+            {
+                WriteValueWithTypeInformation(obj);
                 return;
             }
 
@@ -190,15 +190,36 @@ namespace Shapeshifter.Core.Serialization
             }
             else if (obj is Guid)
             {
-                _writer.WriteValue(((Guid)obj).ToString());              
+                _writer.WriteValue(((Guid) obj).ToString());
             }
             else if (obj.GetType().IsConstructedFromOpenGeneric(typeof (KeyValuePair<,>)))
             {
-                WriteKeyValuePair(obj);
+                Type declaredKeyType = null;
+                Type declaredValueType = null;
+
+                if (declaredSourceType != null)
+                {
+                    var genericArguments = declaredSourceType.GetGenericArguments();
+                    declaredKeyType = genericArguments[0];
+                    declaredValueType = genericArguments[1];
+                }
+
+                WriteKeyValuePair(obj, declaredKeyType, declaredValueType);
             }
             else if (obj is IEnumerable)
             {
-                WriteArray((IEnumerable) obj);
+                Type declaredElementType = null;
+
+                if (declaredSourceType != null)
+                {
+                    var genericEnumerableInterface = declaredSourceType.GetInterfaces()
+                        .FirstOrDefault(i => i.IsConstructedFromOpenGeneric(typeof (IEnumerable<>)));
+                    if (genericEnumerableInterface != null)
+                    {
+                        declaredElementType = genericEnumerableInterface.GetGenericArguments().First();
+                    }
+                }
+                WriteArray((IEnumerable) obj, declaredElementType);
             }
             else
             {
@@ -206,7 +227,7 @@ namespace Shapeshifter.Core.Serialization
             }
         }
 
-        private void WriteKeyValuePair(object keyValuePair)
+        private void WriteKeyValuePair(object keyValuePair, Type declaredKeyType = null, Type declaredValueType = null)
         {
             var type = keyValuePair.GetType();
 
@@ -215,17 +236,20 @@ namespace Shapeshifter.Core.Serialization
 
             var valuePropInfo = type.GetProperty("Value");
             var valueVal = valuePropInfo.GetValue(keyValuePair, null);
-            
-            WriteArray(new[] {keyVal, valueVal});
+
+            _writer.WriteStartArray();
+            WriteValue(keyVal, declaredKeyType);
+            WriteValue(valueVal, declaredValueType);
+            _writer.WriteEndArray();
         }
 
-        private void WriteArray(IEnumerable arr)
+        private void WriteArray(IEnumerable arr, Type declaredSourceType = null)
         {
             _writer.WriteStartArray();
 
             foreach (object arrItem in arr)
             {
-                WriteValue(arrItem);
+                WriteValue(arrItem, declaredSourceType);
             }
 
             _writer.WriteEndArray();

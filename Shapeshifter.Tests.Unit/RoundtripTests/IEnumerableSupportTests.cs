@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
@@ -31,6 +31,18 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             result.MyProperty.ToList()[0].Should().Contain("a", "b");
             result.MyProperty.ToList()[1].Should().Contain("c");
             result.MyProperty.ToList()[2].Should().BeEmpty();
+        }
+
+        [Test]
+        public void IEnumerableDeclaredWithObject_ShouldWriteTypeInfo()
+        {
+            var source = new List<object> {"a", 42};
+
+            var serializer = GetSerializer<List<object>>();
+            var wireFormat = serializer.Serialize(source, typeof(List<object>));
+            var result = serializer.Deserialize(wireFormat);
+            result[0].Should().BeOfType<string>().And.Be("a");
+            result[1].Should().BeOfType<int>().And.Be(42);
         }
 
         [DataContract]

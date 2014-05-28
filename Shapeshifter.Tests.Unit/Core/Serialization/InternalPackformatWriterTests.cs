@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Runtime.Serialization;
 using System.Text;
 using FluentAssertions;
@@ -49,14 +51,37 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
             version.Value<string>().Should().Be("Jenco");
         }
 
-
-        private static string Serialize(object toPack)
+        [Test]
+        public void Pack_DeclaredTypeIsObject_TypeInfoIsWritten()
         {
-            var typeContext = MetadataExplorer.CreateFor(typeof(TestClass)).Serializers;
+            var result = Serialize(42, typeof(object));
+
+            var jobj = JObject.Parse(result);
+            var typeName = jobj[Constants.TypeNameKey];
+            typeName.Value<string>().Should().Be("System.Int32");
+        }
+
+        [Test]
+        public void Pack_DeclaredTypeIsDictionaryWithObjects_TypeInfoIsWritten()
+        {
+            var input = new Dictionary<object, object>{{"key", 42}};
+            var result = Serialize(input, typeof(Dictionary<object,object>));
+
+            var dictionary = JArray.Parse(result);
+            var keyValuePair = dictionary.First;
+            var key = keyValuePair.First;
+            key[Constants.TypeNameKey].Value<string>().Should().Be("System.String");;
+            var value = keyValuePair.Last;
+            value[Constants.TypeNameKey].Value<string>().Should().Be("System.Int32"); ;
+        }
+
+        private static string Serialize<T>(T toPack, Type declaredType = null)
+        {
+            var typeContext = MetadataExplorer.CreateFor(typeof(T)).Serializers;
 
             var sb = new StringBuilder();
             var engine = new InternalPackformatWriter(new StringWriter(sb), typeContext);
-            engine.Pack(toPack);
+            engine.Pack(toPack, declaredType);
             return sb.ToString();
         }
 

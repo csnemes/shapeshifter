@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
@@ -50,6 +51,19 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var unpacked = machine.Deserialize(packed);
             unpacked.Should().NotBeNull();
             unpacked.Dictionary.Should().Equal(dict);
+        }
+
+        [Test]
+        public void DictionaryDeclaredWithObjects_ShouldWriteTypeInfo()
+        {
+            var source = new Dictionary<object, object> {{"a", 42}};
+
+            var serializer = GetSerializer<Dictionary<object, object>>();
+            var wireFormat = serializer.Serialize(source, typeof(Dictionary<object, object>));
+            var result = serializer.Deserialize(wireFormat);
+            var keyValuePair = result.First();
+            keyValuePair.Key.Should().BeOfType<string>().And.Be("a");
+            keyValuePair.Value.Should().BeOfType<int>().And.Be(42);
         }
 
         [DataContract]
