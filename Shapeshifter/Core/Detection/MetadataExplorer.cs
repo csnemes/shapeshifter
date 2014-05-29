@@ -42,8 +42,11 @@ namespace Shapeshifter.Core.Detection
 
         void ISerializableTypeVisitor.VisitSerializableClass(SerializableTypeInfo serializableTypeInfo)
         {
-            _serializers.Add(new DefaultSerializer(serializableTypeInfo));
-            _deserializers.Add(new DefaultDeserializer(serializableTypeInfo));
+            if (serializableTypeInfo.Type == null || serializableTypeInfo.Type.IsConcreteType())
+            {
+                _serializers.Add(new DefaultSerializer(serializableTypeInfo));
+                _deserializers.Add(new DefaultDeserializer(serializableTypeInfo));
+            }
         }
 
         void ISerializableTypeVisitor.VisitSerializerMethod(SerializerAttribute attribute, MethodInfo methodInfo)
@@ -51,15 +54,17 @@ namespace Shapeshifter.Core.Detection
             if (!IsCorrectSignatureForCustomSerializer(methodInfo, attribute.TargetType))
                 throw Exceptions.InvalidSerializerMethodSignature(attribute, methodInfo, attribute.TargetType);
 
-            var version = GetVersionForCustomSerializer(attribute, attribute.TargetType);
-
-            _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.PackformatName, version, methodInfo, 
-                CustomSerializerCreationReason.Explicit));
+            if (attribute.TargetType.IsConcreteType())
+            {
+                var version = GetVersionForCustomSerializer(attribute, attribute.TargetType);
+                _serializers.Add(new CustomSerializer(attribute.TargetType, attribute.PackformatName, version, methodInfo,
+                    CustomSerializerCreationReason.Explicit));
+            }
 
             if (attribute.ForAllDescendants)
             {
                 var descendantTypes = GetAllDescendants(attribute.TargetType);
-                foreach (var descendantType in descendantTypes)
+                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
                 {
                     var descendantVersion = GetVersionForCustomSerializer(attribute, descendantType);
 
@@ -78,7 +83,10 @@ namespace Shapeshifter.Core.Detection
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
-            _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo, CustomSerializerCreationReason.Explicit));
+            if (attribute.TargeType == null || attribute.TargeType.IsConcreteType())
+            {
+                _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo, CustomSerializerCreationReason.Explicit));
+            }
 
             if (attribute.ForAllDescendants)
             {
@@ -89,7 +97,7 @@ namespace Shapeshifter.Core.Detection
                     throw Exceptions.InvalidDeserializerMethodSignatureForAllDescendants(attribute, methodInfo);
 
                 var descendantTypes = GetAllDescendants(attribute.TargeType);
-                foreach (var descendantType in descendantTypes)
+                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
                 {
                     _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), attribute.Version, methodInfo,
                         CustomSerializerCreationReason.ImplicitByBaseType, descendantType));

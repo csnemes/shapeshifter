@@ -63,6 +63,11 @@ namespace Shapeshifter.Core
                    otherProperty.DeclaringType.IsSubclassOf(property.DeclaringType);
         }
 
+        public static bool IsConcreteType(this Type type)
+        {
+            return type != null && !type.IsAbstract && !type.IsGenericTypeDefinition;
+        }
+
         public static MethodInfo GetMethodRecursive(this Type type, string methodName, BindingFlags flags, Type[] parameterTypes)
         {
             var flagsWithDeclaredOnly = flags | BindingFlags.DeclaredOnly;
