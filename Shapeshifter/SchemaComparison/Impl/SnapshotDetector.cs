@@ -68,10 +68,10 @@ namespace Shapeshifter.SchemaComparison.Impl
             }
             if (serializer is CustomSerializer)
             {
-                var customerSerializer = serializer as CustomSerializer;
+                var customSerializer = serializer as CustomSerializer;
 
-                return new CustomSerializerInfo(serializer.PackformatName, serializer.Version, customerSerializer.MethodInfo.Name, 
-                    customerSerializer.MethodInfo.DeclaringType.FullName);
+                return new CustomSerializerInfo(serializer.PackformatName, serializer.Version, customSerializer.MethodInfo.Name, 
+                    customSerializer.MethodInfo.DeclaringType.FullName);
             }
             throw new Exception(string.Format("Unexpected serializer type {0}.", serializer.GetType().Name));
         }
@@ -85,10 +85,10 @@ namespace Shapeshifter.SchemaComparison.Impl
             }
             if (deserializer is CustomDeserializer)
             {
-                var customerDeserializer = deserializer as CustomDeserializer;
+                var customDeserializer = deserializer as CustomDeserializer;
 
-                return new CustomDeserializerInfo(deserializer.PackformatName, deserializer.Version, customerDeserializer.MethodInfo.Name,
-                    customerDeserializer.MethodInfo.DeclaringType.FullName);
+                return new CustomDeserializerInfo(deserializer.PackformatName, deserializer.Version, customDeserializer.MethodInfo.Name,
+                    customDeserializer.MethodInfo.DeclaringType.FullName);
             }
             throw new Exception(string.Format("Unexpected deserializer type {0}.", deserializer.GetType().Name));
         }

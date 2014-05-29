@@ -54,7 +54,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
                 writer.Write("MyKey", item.BaseProperty);
             }
 
-            [Deserializer(typeof(MyBase), ForAllDescendants = true)]
+            [Deserializer(typeof(MyBase), 1, ForAllDescendants = true)]
             public static object DeserializeAnyDescendant(IShapeshifterReader reader, Type targetType)
             {
                 var value = reader.Read<int>("MyKey");
@@ -87,7 +87,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Shapeshifter]
         public class MyBaseWithWrongDeserializerAttribute
         {
-            [Deserializer("MyBase", ForAllDescendants = true)]
+            [Deserializer("MyBase", 1, ForAllDescendants = true)]
             public static object Deserialize(IShapeshifterReader reader, Type targetType)
             {
                 return null;

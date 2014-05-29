@@ -183,7 +183,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        public void ConstructedGeneric_CustomerDeserializerCanBeGivenWithTypeName()
+        public void ConstructedGeneric_CustomDeserializerCanBeGivenWithTypeName()
         {
             var source = new GenericDeserializedWithTypeName<int> { MyProperty = 42 };
             var serializer = GetSerializer<GenericDeserializedWithTypeName<int>>();
@@ -269,7 +269,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Shapeshifter]
         public class MyClassWithInvalidDeserializerMethodSignature
         {
-            [Deserializer(typeof(MyClassWithNonStaticDeserializerMethod))]
+            [Deserializer(typeof(MyClassWithNonStaticDeserializerMethod), 1)]
             public static void DeserializerWithWrongSignature()
             {
             }

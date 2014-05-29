@@ -67,7 +67,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
                 writer.Write("MyKey", (int)myEnum);
             }
 
-            [Deserializer("MyEnumPackname")]
+            [Deserializer("MyEnumPackname", 1)]
             public static MyEnum Deserialize(IShapeshifterReader reader)
             {
                 var enumValueAsInt = reader.Read<int>("MyKey");

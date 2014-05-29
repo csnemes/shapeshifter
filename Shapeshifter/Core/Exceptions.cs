@@ -165,6 +165,15 @@ namespace Shapeshifter.Core
                 String.Format("Open generic type {0} cannot be used as known type.", type.Name)));
         }
 
+        public const string CustomDeserializerMustSpecifyVersionId = "CustomDeserializerMustSpecifyVersion";
+        public static Exception CustomDeserializerMustSpecifyVersion(DeserializerAttribute attribute, MethodInfo methodInfo)
+        {
+            return SafeCreateException(() => new ShapeshifterException(CustomDeserializerMustSpecifyVersionId,
+                String.Format("Custom deserializer {0}.{1}  must specify version.",
+                    methodInfo.DeclaringType == null ? null : methodInfo.DeclaringType.FullName, methodInfo.Name)));
+        }
+
+        
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {
             try

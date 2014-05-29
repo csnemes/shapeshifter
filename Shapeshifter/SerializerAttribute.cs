@@ -28,7 +28,7 @@ namespace Shapeshifter
     {
         private readonly string _packformatName;
         private readonly Type _targetType;
-        private uint? _version;
+        private readonly uint? _version;
         private bool _forAllDescendants = false;
 
         public SerializerAttribute(Type targetType, string packformatName, uint version)
@@ -63,15 +63,9 @@ namespace Shapeshifter
             get { return _packformatName; }
         }
 
-        public bool IsVersionSpecified
+        public uint? Version
         {
-            get { return _version.HasValue; }
-        }
-
-        public uint Version
-        {
-            get { return _version.HasValue ? _version.Value : default(uint); }
-            set { _version = value; }
+            get { return _version; }
         }
 
         public bool ForAllDescendants

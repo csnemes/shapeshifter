@@ -67,7 +67,6 @@ namespace Shapeshifter.Core.Detection
                 foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
                 {
                     var descendantVersion = GetVersionForCustomSerializer(attribute, descendantType);
-
                     _serializers.Add(new CustomSerializer(descendantType, attribute.PackformatName, descendantVersion, methodInfo,
                         CustomSerializerCreationReason.ImplicitByBaseType));
                 }
@@ -76,18 +75,13 @@ namespace Shapeshifter.Core.Detection
 
         private static uint GetVersionForCustomSerializer(SerializerAttribute attribute, Type targetType)
         {
-            return attribute.IsVersionSpecified
-                ? attribute.Version
+            return attribute.Version.HasValue
+                ? attribute.Version.Value
                 : new TypeInspector(targetType).Version;
         }
 
         void ISerializableTypeVisitor.VisitDeserializerMethod(DeserializerAttribute attribute, MethodInfo methodInfo)
         {
-            if (attribute.TargeType == null || attribute.TargeType.IsConcreteType())
-            {
-                _deserializers.Add(new CustomDeserializer(attribute.PackformatName, attribute.Version, methodInfo, CustomSerializerCreationReason.Explicit));
-            }
-
             if (attribute.ForAllDescendants)
             {
                 if (attribute.TargeType == null)
@@ -95,19 +89,39 @@ namespace Shapeshifter.Core.Detection
 
                 if (!IsCorrectSignatureForCustomDeserializerForAllDescendants(methodInfo))
                     throw Exceptions.InvalidDeserializerMethodSignatureForAllDescendants(attribute, methodInfo);
-
-                var descendantTypes = GetAllDescendants(attribute.TargeType);
-                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
-                {
-                    _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), attribute.Version, methodInfo,
-                        CustomSerializerCreationReason.ImplicitByBaseType, descendantType));
-                }
             }
             else
             {
+                if (!attribute.Version.HasValue)
+                    throw Exceptions.CustomDeserializerMustSpecifyVersion(attribute, methodInfo);
+
                 if (!IsCorrectSignatureForCustomDeserializer(methodInfo))
                     throw Exceptions.InvalidDeserializerMethodSignature(attribute, methodInfo);
             }
+
+            if (attribute.TargeType == null || attribute.TargeType.IsConcreteType())
+            {
+                var version = GetVersionForCustomDeserializer(attribute, attribute.TargeType);
+                _deserializers.Add(new CustomDeserializer(attribute.PackformatName, version, methodInfo, CustomSerializerCreationReason.Explicit));
+            }
+
+            if (attribute.ForAllDescendants)
+            {
+                var descendantTypes = GetAllDescendants(attribute.TargeType);
+                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
+                {
+                    var descendantVersion = GetVersionForCustomDeserializer(attribute, descendantType);
+                    _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), descendantVersion, methodInfo,
+                        CustomSerializerCreationReason.ImplicitByBaseType, descendantType));
+                }
+            }
+        }
+
+        private static uint GetVersionForCustomDeserializer(DeserializerAttribute attribute, Type targetType)
+        {
+            return attribute.Version.HasValue
+                ? attribute.Version.Value
+                : new TypeInspector(targetType).Version;
         }
 
         private IEnumerable<Type> GetAllDescendants(Type baseType)

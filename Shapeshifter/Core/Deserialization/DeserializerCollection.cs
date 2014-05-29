@@ -44,12 +44,6 @@ namespace Shapeshifter.Core.Deserialization
                 return result;
             }
 
-            var versionNeutralDeserializerKey = new DeserializerKey(deserializerKey.PackedName);
-            if (_deserializers.TryGetValue(versionNeutralDeserializerKey, out result))
-            {
-                return result;
-            }
-
             return null;
         }
 

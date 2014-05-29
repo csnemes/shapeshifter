@@ -18,11 +18,11 @@ namespace Shapeshifter
     ///     specific deserializer is found it will be used. Only one default deserializer can be defined for a given name.
     /// </remarks>
     /// <example>
-    ///     [Deserializer(typeof(MyClass))]
+    ///     [Deserializer(typeof(MyClass), 56789)]
     ///     public static object DeserializerForMyClass(IShapeshifterReader reader)
     ///     {}
     ///
-    ///     [Deserializer("MyOldClass")]
+    ///     [Deserializer("MyOldClass", 12345)]
     ///     public static object DeserializerForAllOldVersions(IShapeshifterReader reader)
     ///     {}
     ///
@@ -40,19 +40,29 @@ namespace Shapeshifter
     {
         private readonly Type _targeType;
         private readonly string _packformatName;
-        private uint _version;
+        private readonly uint? _version;
         private bool _forAllDescendants = false;
 
-        public DeserializerAttribute(Type targetType, uint version = 0)
-            : this(targetType.GetPrettyName(), version)
+        public DeserializerAttribute(Type targetType)
+            : this(targetType, targetType.GetPrettyName(), null)
         {
-            _targeType = targetType;
         }
 
-        public DeserializerAttribute(string packformatName, uint version = 0)
+        public DeserializerAttribute(Type targetType, uint version)
+            : this(targetType, targetType.GetPrettyName(), version)
         {
+        }
+
+        public DeserializerAttribute(string packformatName, uint version)
+            : this(null, packformatName, version)
+        {
+        }
+
+        private DeserializerAttribute(Type targetType, string packformatName, uint? version)
+        {
+            _targeType = targetType;
             _packformatName = packformatName;
-            _version = version;
+            _version = version;            
         }
 
         public Type TargeType
@@ -65,15 +75,9 @@ namespace Shapeshifter
             get { return _packformatName; }
         }
 
-        public bool IsVersionSpecified
-        {
-            get { return _version != 0; }
-        }
-
-        public uint Version
+        public uint? Version
         {
             get { return _version; }
-            set { _version = value; }
         }
 
         public bool ForAllDescendants

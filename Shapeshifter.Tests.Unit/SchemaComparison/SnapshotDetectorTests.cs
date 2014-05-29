@@ -53,15 +53,15 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
 
         private class ConverterClass
         {
+            [Serializer(typeof(InnerClass), 100)]
+            public static void Serializer(IShapeshifterWriter writer, InnerClass item)
+            {
+            }
+            
             [Deserializer(typeof(InnerClass), 100)]
             public static object Deserializer(IShapeshifterReader reader)
             {
                 return null;
-            }
-
-            [Serializer(typeof(InnerClass), 100)]
-            public static void Serializer(IShapeshifterWriter writer, InnerClass item)
-            {
             }
         }
     }

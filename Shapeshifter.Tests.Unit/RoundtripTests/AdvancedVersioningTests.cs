@@ -45,7 +45,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             [DataMember]
             public int Age { get; set; }
 
-            [Deserializer("PersonVersionOne")]
+            [Deserializer("PersonVersionOne", 2830146994)]
             private static object TransformVersionOne(IShapeshifterReader reader)
             {
                 var age = reader.Read<int>("Age");

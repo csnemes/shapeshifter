@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-using FluentAssertions;
+﻿using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Detection;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Tests.Unit.Core.Detection
 {
@@ -100,6 +101,68 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             metadataExplorer.Deserializers.ResolveDeserializer(new DeserializerKey("MyOpenGenericTypeWithCustomSerializer<T>", 1)).Should().BeNull();
         }
 
+        [Test]
+        public void CustomSerializer_WithNoVersion_ShouldCreateSerializerWithHash()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithNoVersion));
+            metadataExplorer.Serializers.Should().ContainSingle(i => i.Type == typeof (MyTypeWithSerializerWithNoVersion) && i.Version != 0);
+        }
+
+        [Test]
+        public void CustomSerializerForChild_WithNoVersion_ShouldCreateSerializerWithHash()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof (MyTypeWithSerializerWithNoVersion), new[] {Assembly.GetExecutingAssembly()});
+            metadataExplorer.Serializers.Should().ContainSingle(i => i.Type == typeof(MyChildWithSerializerWithNoVersion) && i.Version != 0);
+        }
+
+        [Test]
+        public void CustomSerializer_WithExplicitVersion_ShouldCreateSerializerWithExplicitVersion()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithExplicitVersion));
+            metadataExplorer.Serializers.Should().ContainSingle(i => i.Type == typeof(MyTypeWithSerializerWithExplicitVersion) && i.Version == 1);
+        }
+
+        [Test]
+        public void CustomSerializerForChild_WithExplicitVersion_ShouldCreateSerializerWithExplicitVersion()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithExplicitVersion), new[] { Assembly.GetExecutingAssembly() });
+            metadataExplorer.Serializers.Should().ContainSingle(i => i.Type == typeof(MyChildWithSerializerWithExplicitVersion) && i.Version == 1);
+        }
+
+        [Test]
+        public void CustomDeserializer_WithNoVersion_ShouldCreateDeserializerWithHash()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithNoVersion));
+            metadataExplorer.Deserializers.Should().ContainSingle(i => i.PackformatName == "MyTypeWithSerializerWithNoVersion" && i.Version != 0);
+        }
+
+        [Test]
+        public void CustomDeserializerForChild_WithNoVersion_ShouldCreateDeserializerWithHash()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithNoVersion), new[] { Assembly.GetExecutingAssembly() });
+            metadataExplorer.Deserializers.Should().ContainSingle(i => i.PackformatName == "MyChildWithSerializerWithNoVersion" && i.Version != 0);
+        }
+
+        [Test]
+        public void CustomDeserializer_WithExplicitVersion_ShouldCreateDeserializerWithExplicitVersion()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithExplicitVersion));
+            metadataExplorer.Deserializers.Should().ContainSingle(i => i.PackformatName == "MyTypeWithSerializerWithExplicitVersion" && i.Version == 1);
+        }
+
+        [Test]
+        public void CustomDeserializerForChild_WithExplicitVersion_ShouldCreateDeserializerWithExplicitVersion()
+        {
+            var metadataExplorer = MetadataExplorer.CreateFor(typeof(MyTypeWithSerializerWithExplicitVersion), new[] { Assembly.GetExecutingAssembly() });
+            metadataExplorer.Deserializers.Should().ContainSingle(i => i.PackformatName == "MyChildWithSerializerWithExplicitVersion" && i.Version == 1);
+        }
+
+        [Test]
+        public void CustomDeserializerWithTypeAndNoVersion_ShouldThrow()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(MyTypeWithCustomDeserializerWithTypeAndNoVersion));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CustomDeserializerMustSpecifyVersionId);
+        }
 
         [DataContract]
         [Shapeshifter]
@@ -183,6 +246,48 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             }
 
             [Deserializer(typeof(MyOpenGenericTypeWithCustomSerializer<>), 1)]
+            public static object Deserialize(IShapeshifterReader writer)
+            {
+                return null;
+            }
+        }
+
+        public class MyTypeWithSerializerWithNoVersion
+        {
+            [Serializer(typeof (MyTypeWithSerializerWithNoVersion), ForAllDescendants = true)]
+            public static void Serialize(IShapeshifterWriter writer, object input)
+            {
+            }
+
+            [Deserializer(typeof(MyTypeWithSerializerWithNoVersion), ForAllDescendants = true)]
+            public static object Deserialize(IShapeshifterReader writer, Type targetType)
+            {
+                return null;
+            }
+        }
+
+        public class MyChildWithSerializerWithNoVersion : MyTypeWithSerializerWithNoVersion
+        { }
+
+        public class MyTypeWithSerializerWithExplicitVersion
+        {
+            [Serializer(typeof(MyTypeWithSerializerWithExplicitVersion), 1, ForAllDescendants = true)]
+            public static void Serialize(IShapeshifterWriter writer, object input)
+            {
+            }
+
+            [Deserializer(typeof(MyTypeWithSerializerWithExplicitVersion), 1, ForAllDescendants = true)]
+            public static object Deserialize(IShapeshifterReader writer, Type targetType)
+            {
+                return null;
+            }
+        }
+        public class MyChildWithSerializerWithExplicitVersion : MyTypeWithSerializerWithExplicitVersion
+        { }
+
+        public class MyTypeWithCustomDeserializerWithTypeAndNoVersion
+        {
+            [Deserializer(typeof(int))]
             public static object Deserialize(IShapeshifterReader writer)
             {
                 return null;

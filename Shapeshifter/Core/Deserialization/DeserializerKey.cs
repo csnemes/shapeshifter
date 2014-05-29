@@ -13,14 +13,16 @@ namespace Shapeshifter.Core.Deserialization
         private readonly string _packedName;
 
         [DataMember]
-        private readonly uint _version; //zero means unspecified
+        private readonly uint _version;
 
-        public DeserializerKey(string packedName, uint version = 0)
+        public DeserializerKey(string packedName, uint version)
         {
             if (String.IsNullOrWhiteSpace(packedName))
-            {
-                throw new ArgumentException("packedName");
-            }
+                throw new ArgumentException("Null or whitespace not allowed.", "packedName");
+
+            if (version == 0)
+                throw new ArgumentException("Must be a positive number.", "version");
+
             _packedName = packedName;
             _version = version;
         }

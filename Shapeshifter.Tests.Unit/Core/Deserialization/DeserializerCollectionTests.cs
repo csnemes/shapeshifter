@@ -31,16 +31,6 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         }
 
         [Test]
-        public void AddForUnspecifiedVersion_Resolve_Success()
-        {
-            var myDeserializer = new CustomDeserializer("MyPackformatName", 0, null);
-
-            var deserializerCollection = (DeserializerCollection)DeserializerCollection.New.Add(myDeserializer);
-
-            deserializerCollection.ResolveDeserializer(new DeserializerKey("MyPackformatName", 1)).Should().Be(myDeserializer);
-        }
-
-        [Test]
         public void AddCustomAndDefaultDeserializerForConcreteVersion_InAnyOrder_Resolve_CustomDeserializerIsReturned()
         {
             var myDefaultDeserializer = new DefaultDeserializer(new SerializableTypeInfo(null, "MyPackformatName", 1, new List<FieldOrPropertyMemberInfo>()));
