@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Shapeshifter.Core.Deserialization
 {
@@ -18,13 +20,13 @@ namespace Shapeshifter.Core.Deserialization
 
         public T Read<T>(string key)
         {
-            object jsonValue = _elements[key];
+            var jsonValue = _elements[key];
             return ValueConverter.ConvertValueToTargetType<T>(jsonValue);
         }
 
         public object Read(Type type, string key)
         {
-            object jsonValue = _elements[key];
+            var jsonValue = _elements[key];
             return ValueConverter.ConvertValueToTargetType(type, jsonValue);
         }
 
@@ -36,6 +38,16 @@ namespace Shapeshifter.Core.Deserialization
                 throw Exceptions.TheValueForTheKeyIsNotAnObject(key);
             }
             return new ShapeshifterReader(packedInstance.Elements);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return _elements.GetEnumerator();
+        }
+
+        public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
+        {
+            return _elements.GetEnumerator();
         }
     }
 }

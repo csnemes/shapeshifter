@@ -20,8 +20,14 @@ namespace Shapeshifter.Core
             return SafeCreateException(() => new ShapeshifterException(FailedToSetValueId,
                 String.Format("Failed to set value on member {0} of type {1}.", name, type.FullName), innerException));
         }
-        
 
+        public const string FailedToGetValueId = "FailedToGetValue";
+        public static Exception FailedToGetValue(string name, Type type, Exception innerException)
+        {
+            return SafeCreateException(() => new ShapeshifterException(FailedToGetValueId,
+                String.Format("Failed to get value from member {0} of type {1}.", name, type.FullName), innerException));
+        }
+        
         public const string CannotFindFieldOrPropertyId = "CannotFindFieldOrProperty";
         public static Exception CannotFindFieldOrProperty(string name, Type type)
         {

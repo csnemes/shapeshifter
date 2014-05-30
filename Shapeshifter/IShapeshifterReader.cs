@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Shapeshifter
 {
     /// <summary>
     ///     Interface used by custom deserializer methods.
     /// </summary>
-    public interface IShapeshifterReader
+    public interface IShapeshifterReader : IEnumerable<KeyValuePair<string, object>>
     {
         /// <summary>
         ///     Returns the version of the stored instance

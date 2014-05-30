@@ -2,7 +2,9 @@
 using NUnit.Framework;
 using Shapeshifter.Builder;
 using Shapeshifter.Core;
+using Shapeshifter.Core.Deserialization;
 using System;
+using System.Collections.Generic;
 
 namespace Shapeshifter.Tests.Unit.Builder
 {
@@ -90,6 +92,40 @@ namespace Shapeshifter.Tests.Unit.Builder
             Action action = () => builder.SetMember("_childPrivateField", 42);
 
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.FailedToSetValueId);
+        }
+
+        [Test]
+        public void ValuesCanBeRead()
+        {
+            var builder = new InstanceBuilder<TestClass>();
+            builder.SetMember("_basePublicField", "Hello");
+            builder.SetMember("BasePublicProperty", 42);
+
+            builder.GetMember<string>("_basePublicField").Should().Be("Hello");
+            builder.GetMember<int>("BasePublicProperty").Should().Be(42);
+        }
+
+        [Test]
+        public void InstancePopulatedFromReader()
+        {
+            var objectProperties = new ObjectProperties(new Dictionary<string, object>()
+            {
+                {Constants.TypeNameKey, "TestClass"},
+                {Constants.VersionKey, (long)1},
+                {"_basePrivateField", "Hello"},
+                {"BasePrivateProperty", 42},
+                {"_childPrivateField", "Seeya"},
+                {"ChildPrivateProperty", 43},
+            });
+            var reader = new ShapeshifterReader(objectProperties);
+
+            var builder = new InstanceBuilder<TestClass>(reader);
+            var instance = builder.GetInstance();
+
+            instance.GetBasePrivateField().Should().Be("Hello");
+            instance.GetBasePrivateProperty().Should().Be(42);
+            instance.GetChildPrivateField().Should().Be("Seeya");
+            instance.GetChildPrivateProperty().Should().Be(43);
         }
 
         private class TestClass : TestClassBase
