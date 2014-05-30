@@ -163,6 +163,5 @@ namespace Shapeshifter.Tests.Unit.Builder
                 return BasePrivateProperty;
             }
         }
-        
     }
 }
