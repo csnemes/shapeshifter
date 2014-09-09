@@ -81,14 +81,17 @@ namespace Shapeshifter
             var textWriter = new StreamWriter(targetStream);
             var packerEngine = new InternalPackformatWriter(textWriter, Serializers);
             packerEngine.Pack(objToPack, declaredSourceType);
+            textWriter.Flush();
         }
 
         public string Serialize(object objToPack, Type declaredSourceType = null)
         {
-            var writer = new StringWriter(new StringBuilder());
-            var packerEngine = new InternalPackformatWriter(writer, Serializers);
-            packerEngine.Pack(objToPack, declaredSourceType);
-            return writer.GetStringBuilder().ToString();
+            using (var writer = new StringWriter(new StringBuilder()))
+            {
+                var packerEngine = new InternalPackformatWriter(writer, Serializers);
+                packerEngine.Pack(objToPack, declaredSourceType);
+                return writer.GetStringBuilder().ToString();
+            }
         }
 
         public object Deserialize(Stream sourceStream)
@@ -100,9 +103,11 @@ namespace Shapeshifter
 
         public object Deserialize(string source)
         {
-            var reader = new StringReader(source);
-            var unpackerEngine = new InternalPackformatReader(reader, Deserializers);
-            return unpackerEngine.Unpack(_targetType);
+            using (var reader = new StringReader(source))
+            {
+                var unpackerEngine = new InternalPackformatReader(reader, Deserializers);
+                return unpackerEngine.Unpack(_targetType);
+            }
         }
     }
 }

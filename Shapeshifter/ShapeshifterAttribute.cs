@@ -23,7 +23,7 @@ namespace Shapeshifter
     ///     public class MyClass
     ///     { ... }
     /// </example>
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
     public sealed class ShapeshifterAttribute : Attribute
     {
         private readonly string _packformatName;

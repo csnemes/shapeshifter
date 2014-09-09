@@ -253,7 +253,27 @@ namespace Shapeshifter.Core.Detection
 
             if (HasDataContractAttribute)
             {
+                CheckIfTypeHasProperDataContractAttirbuteInHierarchy();
                 visitor.VisitSerializableClass(typeInfo);
+            }
+        }
+
+        private void CheckIfTypeHasProperDataContractAttirbuteInHierarchy()
+        {
+            if (Type == null) return;
+
+            var inspector = this;
+            while (true)
+            {
+                var baseType = inspector.Type.BaseType;
+
+                if (baseType == null || baseType == typeof(object) || baseType == typeof(ValueType)) return;
+
+                inspector = new TypeInspector(baseType);
+                if (!inspector.IsSerializable)
+                {
+                    throw Exceptions.DataContractAttributeMissingFromHierarchy(Type, baseType);
+                }
             }
         }
 

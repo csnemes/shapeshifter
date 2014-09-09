@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Xml;
+using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
@@ -164,6 +165,82 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CustomDeserializerMustSpecifyVersionId);
         }
 
+        [Test]
+        public void BaseClassWithoutDataContract_ShouldThrow()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(DerivedClass));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DataContractAttributeMissingFromHierarchyId);
+        }
+
+        [Test]
+        public void BaseClassWithoutDataContractMultiLevelHierarchy_ShouldThrow()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(MostDerivedClass));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DataContractAttributeMissingFromHierarchyId);
+        }
+
+        [Test]
+        public void StructWithDataContract_HierarchyCheck_ShouldNotThrow()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(TestStruct));
+            action.ShouldNotThrow();
+        }
+
+
+        [Shapeshifter]
+        [DataContract]
+        private struct TestStruct
+        {
+
+        }
+
+        [Test]
+        public void SameClassNameInDifferentNamespace_ShouldThrow()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(OuterClass));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.PackformatNameCollisionyId);
+        }
+
+        [Shapeshifter]
+        [DataContract]
+        private class OuterClass
+        {
+            [DataMember]
+            public InnerClassWithSameName Item1 { get; set; }
+            [DataMember]
+            public OtherNamespace.InnerClassWithSameName Item2 { get; set; }
+        }
+
+        [DataContract]
+        private class InnerClassWithSameName
+        {
+            [DataMember]
+            public string Item { get; set; }
+        }
+
+        private class BaseClass
+        {
+            public string BaseItem { get; set; }
+        }
+
+        private class LeastDerivedClass : BaseClass
+        {
+        }
+
+        [Shapeshifter]
+        [DataContract]
+        private class MostDerivedClass : LeastDerivedClass
+        {
+        }
+
+        [Shapeshifter]
+        [DataContract]
+        private class DerivedClass : BaseClass
+        {
+            public string DerivedItem { get; set; }
+        }
+
+
         [DataContract]
         [Shapeshifter]
         private class ExternalClass
@@ -295,3 +372,16 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
     }
 }
+
+
+namespace OtherNamespace
+{
+    [DataContract]
+    public class InnerClassWithSameName
+    {
+        [DataMember]
+        public string Item { get; set; }
+    }
+}
+
+

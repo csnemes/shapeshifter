@@ -14,6 +14,7 @@ namespace Shapeshifter.Core.Detection
     internal class SerializationStructureWalker
     {
         private readonly HashSet<Type> _typesVisited = new HashSet<Type>();
+        private readonly HashSet<string> _packformatNamesUsed = new HashSet<string>(); 
         private readonly ISerializableTypeVisitor _visitor;
 
         public SerializationStructureWalker(ISerializableTypeVisitor visitor)
@@ -56,6 +57,13 @@ namespace Shapeshifter.Core.Detection
             typeInspector.AcceptOnStaticMethods(_visitor);
 
             if (!typeInspector.IsSerializable) return;
+
+            if (_packformatNamesUsed.Contains(typeInspector.PackformatName))
+            {
+                throw Exceptions.PackformatNameCollision(typeInspector.PackformatName, type);
+            }
+
+            _packformatNamesUsed.Add(typeInspector.PackformatName);
 
             typeInspector.AcceptOnType(_visitor);
 

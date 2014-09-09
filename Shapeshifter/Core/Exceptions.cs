@@ -179,6 +179,21 @@ namespace Shapeshifter.Core
                     methodInfo.DeclaringType == null ? null : methodInfo.DeclaringType.FullName, methodInfo.Name)));
         }
 
+        public const string DataContractAttributeMissingFromHierarchyId = "DataContractAttributeMissingFromHierarchy";
+        public static Exception DataContractAttributeMissingFromHierarchy(Type rootType, Type badTypeInHierarchy)
+        {
+            return SafeCreateException(() => new ShapeshifterException(DataContractAttributeMissingFromHierarchyId,
+                String.Format("Missing DataContractAttribute from base type {0} of derived type {1}.",
+                    badTypeInHierarchy.Name, rootType.Name)));
+        }
+
+        public const string PackformatNameCollisionyId = "PackformatNameCollision";
+        public static Exception PackformatNameCollision(string packformatName, Type type)
+        {
+            return SafeCreateException(() => new ShapeshifterException(PackformatNameCollisionyId,
+                String.Format("Packformat name {0} is already in use, cannot use it for type {1}. Please use Shapeshifter attribute with Name property to specify a different name.",
+                    packformatName, type.FullName)));
+        }
         
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {

@@ -1,13 +1,19 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.SchemaComparison
 {
     /// <summary>
     ///     Class for managing the history of snapshots.
+    ///     SnapshotHistory is a mutable class.
     /// </summary>
-    public class SnapshotHistory
+    [DataContract]
+    [Shapeshifter]
+    public class SnapshotHistory : IEnumerable<Snapshot>
     {
+        [DataMember]
         private readonly List<Snapshot> _snapshots;
 
         private SnapshotHistory()
@@ -19,7 +25,7 @@ namespace Shapeshifter.SchemaComparison
         {
             _snapshots = snapshots;
         }
-
+        
         public static SnapshotHistory Empty
         {
             get { return new SnapshotHistory(); }
@@ -32,7 +38,23 @@ namespace Shapeshifter.SchemaComparison
 
         public static SnapshotHistory LoadFrom(Stream stream)
         {
-            return null;
+            var serializer = new Shapeshifter<SnapshotHistory>();
+            return serializer.Deserialize(stream);
+        }
+
+        public int Count
+        {
+            get { return _snapshots.Count; }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<Snapshot> GetEnumerator()
+        {
+            return _snapshots.GetEnumerator();
         }
 
         public void AddSnapshot(Snapshot snapshot)
@@ -51,6 +73,8 @@ namespace Shapeshifter.SchemaComparison
 
         public void SaveTo(Stream stream)
         {
+            var serializer = new Shapeshifter<SnapshotHistory>();
+            serializer.Serialize(stream, this);
         }
     }
 }

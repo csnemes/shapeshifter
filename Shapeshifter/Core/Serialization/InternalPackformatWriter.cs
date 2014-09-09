@@ -192,39 +192,49 @@ namespace Shapeshifter.Core.Serialization
             {
                 _writer.WriteValue(((Guid) obj).ToString());
             }
-            else if (obj.GetType().IsConstructedFromOpenGeneric(typeof (KeyValuePair<,>)))
-            {
-                Type declaredKeyType = null;
-                Type declaredValueType = null;
-
-                if (declaredSourceType != null)
-                {
-                    var genericArguments = declaredSourceType.GetGenericArguments();
-                    declaredKeyType = genericArguments[0];
-                    declaredValueType = genericArguments[1];
-                }
-
-                WriteKeyValuePair(obj, declaredKeyType, declaredValueType);
-            }
-            else if (obj is IEnumerable)
-            {
-                Type declaredElementType = null;
-
-                if (declaredSourceType != null)
-                {
-                    var genericEnumerableInterface = declaredSourceType.GetInterfaces()
-                        .FirstOrDefault(i => i.IsConstructedFromOpenGeneric(typeof (IEnumerable<>)));
-                    if (genericEnumerableInterface != null)
-                    {
-                        declaredElementType = genericEnumerableInterface.GetGenericArguments().First();
-                    }
-                }
-                WriteArray((IEnumerable) obj, declaredElementType);
-            }
             else
             {
-                WriteObject(obj);
+                var type = obj.GetType();
+                //shapesihftelhető?
+                if (_serializers.HasSerializer(type))
+                {
+                    WriteObject(obj);
+                }
+                else if (obj.GetType().IsConstructedFromOpenGeneric(typeof (KeyValuePair<,>)))
+                {
+                    Type declaredKeyType = null;
+                    Type declaredValueType = null;
+
+                    if (declaredSourceType != null)
+                    {
+                        var genericArguments = declaredSourceType.GetGenericArguments();
+                        declaredKeyType = genericArguments[0];
+                        declaredValueType = genericArguments[1];
+                    }
+
+                    WriteKeyValuePair(obj, declaredKeyType, declaredValueType);
+                }
+                else if (obj is IEnumerable)
+                {
+                    Type declaredElementType = null;
+
+                    if (declaredSourceType != null)
+                    {
+                        var genericEnumerableInterface = declaredSourceType.GetInterfaces()
+                            .FirstOrDefault(i => i.IsConstructedFromOpenGeneric(typeof (IEnumerable<>)));
+                        if (genericEnumerableInterface != null)
+                        {
+                            declaredElementType = genericEnumerableInterface.GetGenericArguments().First();
+                        }
+                    }
+                    WriteArray((IEnumerable) obj, declaredElementType);
+                }
+                else
+                {
+                    throw Exceptions.SerializerResolutionFailed(type);
+                }
             }
+
         }
 
         private void WriteKeyValuePair(object keyValuePair, Type declaredKeyType = null, Type declaredValueType = null)

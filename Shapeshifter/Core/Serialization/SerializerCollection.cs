@@ -31,6 +31,12 @@ namespace Shapeshifter.Core.Serialization
             get { return new SerializerCollectionBuilder(); }
         }
 
+        public bool HasSerializer(Type type)
+        {
+            return _serializers.ContainsKey(type) ||
+                    (type.IsGenericType && _serializers.ContainsKey(type.GetGenericTypeDefinition()));
+        }
+
         public Serializer ResolveSerializer(Type type)
         {
             Serializer serializer;
@@ -121,5 +127,6 @@ namespace Shapeshifter.Core.Serialization
                 return new SerializerCollection(builder._serializers);
             }
         }
+
     }
 }
