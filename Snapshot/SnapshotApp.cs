@@ -23,7 +23,10 @@ namespace Snapshot
             string[] include,
             [Description("Comma separated list of files to be excluded during snapshot creation. Only specify file names, not paths. Wildcards are accepted.")]
             [Aliases("x")]
-            string[] exclude)
+            string[] exclude,
+            [Description("If specified the snapshot won't be saved to the snapshot file.")]
+            [DefaultValue(false)]
+            bool whatif)
         {
             var path = GetSnapshotPath();
             var snapshotHistory = System.IO.File.Exists(path) ? SnapshotHistory.LoadFrom(path) : SnapshotHistory.Empty;
@@ -34,9 +37,11 @@ namespace Snapshot
             snapshot.AssembliesParsed.ForEach(Console.WriteLine);
 
             snapshotHistory.AddSnapshot(snapshot.Snapshot);
-            snapshotHistory.SaveTo(path);
-
-            Console.WriteLine("Snapshot taken.");
+            if (!whatif)
+            {
+                snapshotHistory.SaveTo(path);
+                Console.WriteLine("Snapshot taken.");
+            }
         }
 
         [Verb(Description = "Lists the existing snapshots in the snapshot file.")]
