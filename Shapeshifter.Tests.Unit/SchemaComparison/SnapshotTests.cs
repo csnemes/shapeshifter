@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.SchemaComparison;
@@ -112,7 +114,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
         [Test]
         public void SaveAndLoad_Success()
         {
-            const string filePath = @"c:\shapeshifter_test.xml";
+            string filePath = Path.Combine(Path.GetTempPath(), @"c:\shapeshifter_test.xml");
 
             var snapshot = Snapshot.Create("First", typeof(Order));
             using (var stream = File.Open(filePath, FileMode.Create))
@@ -124,6 +126,29 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
             loadedSnapshot.Name.Should().Be("First");
 
             loadedSnapshot.CompareToBase(snapshot).HasMissingItem.Should().BeFalse();
+        }
+
+        [Test]
+        public void Create_FromFile()
+        {
+            var dllPath = Path.Combine(Path.GetTempPath(), "ModelVersion1.dll");
+            var targetPath = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+
+            SaveEmbeddedResourceToFile("Shapeshifter.Tests.Unit.SchemaComparison.Resources.ModelVersion1.dll", dllPath);
+        
+            var snapshot = Snapshot.Create("Test", new [] { dllPath });
+            snapshot.SaveTo(targetPath);
+
+            File.Exists(targetPath).Should().BeTrue();
+        }
+
+        private void SaveEmbeddedResourceToFile(string resourceName, string targetPath)
+        {
+            using (Stream input = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName))
+            using (Stream output = File.Create(targetPath))
+            {
+                input.CopyTo(output);
+            }
         }
     }
 }

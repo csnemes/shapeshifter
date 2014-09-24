@@ -48,8 +48,8 @@ namespace Shapeshifter
            typeof (EnumConverter)
         };
 
-        private readonly Lazy<MetadataExplorer> _metadata;
         private readonly Type _targetType;
+        private readonly MetadataExplorer _metadata;
 
         public Shapeshifter(Type type, IEnumerable<Assembly> descendantSearchScope = null)
             : this(type, new Type[0], descendantSearchScope)
@@ -63,17 +63,17 @@ namespace Shapeshifter
             var rootTypesToCheck = new List<Type> { type };
             var knownTypesToCheck = _builtInKnownTypes.Union(knownTypes ?? Enumerable.Empty<Type>());
 
-            _metadata = new Lazy<MetadataExplorer>(() => MetadataExplorer.CreateFor(rootTypesToCheck, knownTypesToCheck, descendantSearchScope));
+            _metadata = MetadataExplorer.CreateFor(rootTypesToCheck, knownTypesToCheck, descendantSearchScope);
         }
 
         private SerializerCollection Serializers
         {
-            get { return _metadata.Value.Serializers; }
+            get { return _metadata.Serializers; }
         }
 
         private DeserializerCollection Deserializers
         {
-            get { return _metadata.Value.Deserializers; }
+            get { return _metadata.Deserializers; }
         }
 
         public void Serialize(Stream targetStream, object objToPack, Type declaredSourceType = null)

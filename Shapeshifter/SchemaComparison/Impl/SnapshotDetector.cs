@@ -64,7 +64,8 @@ namespace Shapeshifter.SchemaComparison.Impl
         {
             if (serializer is DefaultSerializer)
             {
-                return new DefaultSerializerInfo(serializer.PackformatName, serializer.Version, serializer.Type.FullName);
+                var typeInspector = new TypeInspector(serializer.Type);
+                return new DefaultSerializerInfo(serializer.PackformatName, serializer.Version, serializer.Type.FullName, typeInspector.SerializableMemberCandidates);
             }
             if (serializer is CustomSerializer)
             {
@@ -73,6 +74,7 @@ namespace Shapeshifter.SchemaComparison.Impl
                 return new CustomSerializerInfo(serializer.PackformatName, serializer.Version, customSerializer.MethodInfo.Name, 
                     customSerializer.MethodInfo.DeclaringType.FullName);
             }
+
             throw new Exception(string.Format("Unexpected serializer type {0}.", serializer.GetType().Name));
         }
 

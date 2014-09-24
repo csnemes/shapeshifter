@@ -7,6 +7,7 @@ namespace Shapeshifter.Core.Deserialization
     ///     A key is the combination of packformatName and version
     /// </summary>
     [DataContract]
+    [Serializable]
     internal struct DeserializerKey
     {
         [DataMember]

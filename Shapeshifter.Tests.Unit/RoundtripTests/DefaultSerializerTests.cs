@@ -13,9 +13,17 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void TypeWithDataContractWithoutShapeshifterAttribute_Throws()
         {
-            Action action = () => GetSerializer<TypeWithoutShapeshifterAttribute>().Serialize(null);
+            Action action = () => GetSerializer<TypeWithoutShapeshifterAttribute>();
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
         }
+
+        [Test]
+        public void KnownTypeWithDataContractWithoutShapeshifterAttribute_Throws()
+        {
+            Action action = () => new Shapeshifter<TypeWithShapeshifterAndDataContractAttribute>(new[] { typeof(TypeWithoutShapeshifterAttribute) });
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
+        }
+
 
         [Test]
         public void TypeWithShapeshifterWithoutDataContractAttribute_NoDefaultSerializerCreated()

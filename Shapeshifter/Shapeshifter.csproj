@@ -70,12 +70,14 @@
     <Compile Include="Core\Serialization\Serializer.cs" />
     <Compile Include="Core\TypeExtensions.cs" />
     <Compile Include="Core\SerializableTypeInfo.cs" />
+    <Compile Include="SchemaComparison\Exceptions.cs" />
     <Compile Include="SchemaComparison\Impl\CustomDeserializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\CustomSerializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\DefaultDeserializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\DefaultSerializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\DeserializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\InfoBase.cs" />
+    <Compile Include="SchemaComparison\Impl\SnapshotCreatorInSeparateAppDomain.cs" />
     <Compile Include="SchemaComparison\MissingDeserializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\SerializerInfo.cs" />
     <Compile Include="SchemaComparison\Snapshot.cs" />
@@ -83,7 +85,6 @@
     <Compile Include="SchemaComparison\SnapshotDifference.cs" />
     <Compile Include="SchemaComparison\SnapshotHistory.cs" />
     <Compile Include="IShapeshifterWriter.cs" />
-    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="ShapeshifterAttribute.cs" />
     <Compile Include="SerializerAttribute.cs" />
     <Compile Include="ShapeshifterException.cs" />

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
 using Shapeshifter.Core.Deserialization;
@@ -193,6 +194,14 @@ namespace Shapeshifter.Core
             return SafeCreateException(() => new ShapeshifterException(PackformatNameCollisionyId,
                 String.Format("Packformat name {0} is already in use, cannot use it for type {1}. Please use Shapeshifter attribute with Name property to specify a different name.",
                     packformatName, type.FullName)));
+        }
+
+        public const string CannotResolveAssemblyId = "CannotResolveAssembly";
+        public static Exception CannotResolveAssembly(string name, List<string> basePaths, Assembly requestingAssembly)
+        {
+            return SafeCreateException(() => new ShapeshifterException(CannotResolveAssemblyId,
+                String.Format("Cannot resolve assembly {0} requested by {2}. We searched for it in the following places:{1}.", 
+                name, basePaths != null ? String.Join(";", basePaths) : String.Empty, requestingAssembly != null ? requestingAssembly.Location : "null")));
         }
         
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)

@@ -1,8 +1,10 @@
-﻿using System.Runtime.Serialization;
+﻿using System;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.SchemaComparison.Impl
 {
     [DataContract]
+    [Serializable]
     [KnownType(typeof(CustomSerializerInfo))]
     [KnownType(typeof(DefaultSerializerInfo))]
     internal abstract class SerializerInfo : InfoBase

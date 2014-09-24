@@ -21,9 +21,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void ClassWithMyList_EmptyListTest_ShouldThrow()
         {
-            var machine = GetSerializer<ClassWithMyList>();
-            var source = new ClassWithMyList { MyListItems = new List<MyList>() };
-            Action action = () => machine.Serialize(source);
+            Action action = () => GetSerializer<ClassWithMyList>();
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DataContractAttributeMissingFromHierarchyId);
         }
 

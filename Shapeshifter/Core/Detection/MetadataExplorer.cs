@@ -133,54 +133,49 @@ namespace Shapeshifter.Core.Detection
 
         public static MetadataExplorer CreateFor(Type rootType, IEnumerable<Assembly> descendantSearchScope = null)
         {
+            if (rootType == null) throw new ArgumentNullException("rootType");
+            
             return CreateFor(new[] {rootType}, descendantSearchScope);
         }
 
         public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
+            if (rootTypes == null) throw new ArgumentNullException("rootTypes");
+
             return CreateFor(rootTypes, new Type[0], descendantSearchScope);
         }
 
         public static MetadataExplorer CreateFor(IEnumerable<Type> rootTypes, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
+            if (rootTypes == null) throw new ArgumentNullException("rootTypes");
+            if (knownTypes == null) throw new ArgumentNullException("knownTypes");
+
             var builder = new MetadataExplorer(descendantSearchScope);
-            builder.WalkRootTypes(rootTypes);
-            builder.WalkKnownTypes(knownTypes);
+            builder.WalkTypes(rootTypes.Concat(knownTypes));
             return builder;
         }
 
         public static MetadataExplorer CreateFor(IEnumerable<Assembly> assembliesInScope)
         {
+            if (assembliesInScope == null) throw new ArgumentNullException("assembliesInScope");
+            
             //look for all types bearing Shapeshifter attribute and use them as root types
             var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterAttribute>());
 
             return CreateFor(rootTypes, assembliesInScope);
         }
 
-        private void WalkRootType(Type type)
+        private void WalkType(Type type)
         {
             CheckIfShapeshifterAttributePresent(type);
             Walker.WalkRootType(type);
         }
 
-        private void WalkKnownType(Type type)
-        {
-            Walker.WalkKnownType(type);
-        }
-
-        private void WalkRootTypes(IEnumerable<Type> types)
+        private void WalkTypes(IEnumerable<Type> types)
         {
             foreach (Type type in types)
             {
-                WalkRootType(type);
-            }
-        }
-
-        private void WalkKnownTypes(IEnumerable<Type> types)
-        {
-            foreach (Type type in types)
-            {
-                WalkKnownType(type);
+                WalkType(type);
             }
         }
 

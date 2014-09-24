@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Runtime.Serialization;
-using Shapeshifter.Annotations;
 
 namespace Shapeshifter
 {
@@ -15,7 +14,7 @@ namespace Shapeshifter
             _id = id;
         }
 
-        protected ShapeshifterException([NotNull] SerializationInfo info, StreamingContext context)
+        protected ShapeshifterException(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

@@ -14,16 +14,19 @@ namespace Shapeshifter.SchemaComparison
     ///     This class is immutable incl. the data within
     /// </summary>
     [DataContract]
+    [Serializable]
     public class Snapshot
     {
         [DataMember] private readonly Dictionary<DeserializerKey, DeserializerInfo> _deserializers;
         [DataMember] private readonly string _name;
+        [DataMember] private readonly DateTime _takenDate;
         [DataMember] private readonly List<SerializerInfo> _serializers;
 
         private Snapshot(string name, IEnumerable<SerializerInfo> serializers,
             IEnumerable<DeserializerInfo> deserializers)
         {
             _name = name;
+            _takenDate = DateTime.Now;
             _serializers = serializers.ToList();
             _deserializers = deserializers.ToDictionary(item => item.Key);
         }
@@ -32,10 +35,20 @@ namespace Shapeshifter.SchemaComparison
         {
             get { return _name; }
         }
+        
+        public DateTime TakenDate
+        {
+            get { return _takenDate; }
+        }
 
         private IEnumerable<SerializerInfo> Serializers
         {
             get { return _serializers; }
+        }
+
+        public static Snapshot Create(string snapshotName, IEnumerable<string> assemblyPaths)
+        {
+            return SnapshotCreatorInSeparateAppDomain.Create(snapshotName, assemblyPaths);
         }
 
         public static Snapshot Create(string snapshotName, IEnumerable<Assembly> assembliesInScope)
@@ -66,7 +79,7 @@ namespace Shapeshifter.SchemaComparison
 
         public void SaveTo(string filePath)
         {
-            using (var stream = File.Open(filePath, FileMode.CreateNew))
+            using (var stream = File.Open(filePath, FileMode.Create))
             {
                 SaveTo(stream);
             }

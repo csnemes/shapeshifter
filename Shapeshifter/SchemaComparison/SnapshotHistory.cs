@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.Serialization;
 
 namespace Shapeshifter.SchemaComparison
@@ -33,7 +35,10 @@ namespace Shapeshifter.SchemaComparison
 
         public static SnapshotHistory LoadFrom(string filePath)
         {
-            return null;
+            using (var file = File.Open(filePath, FileMode.Open))
+            {
+                return LoadFrom(file);
+            }
         }
 
         public static SnapshotHistory LoadFrom(Stream stream)
@@ -59,7 +64,20 @@ namespace Shapeshifter.SchemaComparison
 
         public void AddSnapshot(Snapshot snapshot)
         {
+            CheckSnapshotName(snapshot.Name);
             _snapshots.Add(snapshot);
+        }
+
+        private void CheckSnapshotName(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw Exceptions.SnapshotNameIsMissing();
+            }
+            if (_snapshots.Any(snapshot => snapshot.Name.Equals(name, StringComparison.OrdinalIgnoreCase)))
+            {
+                throw Exceptions.DuplicateSnapshotName(name);
+            }
         }
 
         public SnapshotDifference CompareTo(Snapshot snapshot)
@@ -69,6 +87,10 @@ namespace Shapeshifter.SchemaComparison
 
         public void SaveTo(string filePath)
         {
+            using (var file = File.Create(filePath))
+            {
+                SaveTo(file);
+            }
         }
 
         public void SaveTo(Stream stream)

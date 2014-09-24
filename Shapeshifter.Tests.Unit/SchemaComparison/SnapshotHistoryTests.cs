@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Runtime.InteropServices.ComTypes;
 using FluentAssertions;
@@ -41,6 +42,36 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
                 var newHistory = SnapshotHistory.LoadFrom(memoryStream);
                 newHistory.Count.Should().Be(1);
             }
+        }
+
+        [Test]
+        public void SaveHistoryToFile_SavesData()
+        {
+            var path = Path.GetTempFileName();
+            var history = SnapshotHistory.Empty;
+            var snapshot = Snapshot.Create("V1", new[] { typeof(Order) });
+            history.AddSnapshot(snapshot);
+            history.SaveTo(path);
+
+            var lines = File.ReadLines(path);
+            lines.Count().Should().BeGreaterOrEqualTo(1);
+
+            File.Delete(path);
+        }
+
+        [Test]
+        public void SaveHistoryToFile_SavedDataCanBeLoadedBack()
+        {
+            var path = Path.GetTempFileName();
+            var history = SnapshotHistory.Empty;
+            var snapshot = Snapshot.Create("V1", new[] { typeof(Order) });
+            history.AddSnapshot(snapshot);
+            history.SaveTo(path);
+
+            var loadedHistory = SnapshotHistory.LoadFrom(path);
+            loadedHistory.Count.Should().Be(1);
+
+            File.Delete(path);
         }
 
 
