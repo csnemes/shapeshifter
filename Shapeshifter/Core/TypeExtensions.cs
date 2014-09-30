@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Shapeshifter.Core
 {
-    public static class TypeExtensions
+    internal static class TypeExtensions
     {
         public static bool HasAttributeOfType<TAttribute>(this Type type)
         {

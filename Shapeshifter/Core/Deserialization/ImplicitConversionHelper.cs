@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Shapeshifter.Core.Deserialization
 {
-    public static class ImplicitConversionHelper
+    internal static class ImplicitConversionHelper
     {
         public static object ConvertValue(Type targetType, object value)
         {

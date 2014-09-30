@@ -5,7 +5,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     public abstract class TestsBase
     {
-        protected static IShapeshifter<T> GetSerializer<T>()
+        protected static Shapeshifter<T> GetSerializer<T>()
         {
             return new Shapeshifter<T>(new[] {Assembly.GetExecutingAssembly()});
         }

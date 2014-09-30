@@ -8,7 +8,7 @@ using Shapeshifter.Core;
 
 namespace Shapeshifter.SchemaComparison.Impl
 {
-    public static class SnapshotCreatorInSeparateAppDomain
+    internal static class SnapshotCreatorInSeparateAppDomain
     {
         public static Snapshot Create(string snapshotName, IEnumerable<string> assemblyPaths)
         {
@@ -26,7 +26,7 @@ namespace Shapeshifter.SchemaComparison.Impl
         }
     }
 
-    public class SnapshotCreatorOtherSide : MarshalByRefObject
+    internal class SnapshotCreatorOtherSide : MarshalByRefObject
     {
         private List<string> _basePaths;
  

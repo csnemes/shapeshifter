@@ -18,8 +18,13 @@ namespace Shapeshifter
     /// <remarks>
     ///     See UnitTests for usage.
     /// </remarks>
-    public class Shapeshifter<T> : Shapeshifter, IShapeshifter<T>
+    public class Shapeshifter<T> : Shapeshifter
     {
+        /// <summary>
+        /// Creates a Shapeshifter serializer for the given type T. Additional assemblies can be specified as descendant search scopes. They will be used if 
+        /// ForAllDescendants property is set to true on <see cref="SerializerAttribute"/> or on <see cref="DeserializerAttribute"/>.
+        /// </summary>
+        /// <param name="descendantSearchScope">list of assemblies to search for descendant classes</param>
         public Shapeshifter(IEnumerable<Assembly> descendantSearchScope = null) 
             : base(typeof (T), descendantSearchScope)
         {
@@ -41,7 +46,7 @@ namespace Shapeshifter
         }
     }
 
-    public class Shapeshifter : IShapeshifter
+    public class Shapeshifter
     {
         private readonly IEnumerable<Type> _builtInKnownTypes = new List<Type>
         {

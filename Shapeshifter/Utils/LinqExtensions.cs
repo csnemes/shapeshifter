@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Shapeshifter.Utils
 {
-    public static class LinqExtensions
+    internal static class LinqExtensions
     {
         /// <summary>
         ///     Indicates whether the specified source is null or an empty collection.

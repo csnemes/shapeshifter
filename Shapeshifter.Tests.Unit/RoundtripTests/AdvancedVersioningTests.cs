@@ -21,7 +21,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             result.Name.Should().Be("Jenő Kovács");
         }
 
-        private IShapeshifter<T> GetSerializer<T>()
+        private Shapeshifter<T> GetSerializer<T>()
         {
             return new Shapeshifter<T>();
         }

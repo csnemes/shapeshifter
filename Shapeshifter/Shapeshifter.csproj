@@ -98,7 +98,6 @@
     <Compile Include="Core\Deserialization\Deserializer.cs" />
     <Compile Include="Core\Deserialization\InternalPackformatReader.cs" />
     <Compile Include="Core\Deserialization\DeserializerKey.cs" />
-    <Compile Include="IShapeshifter.cs" />
     <Compile Include="IShapeshifterReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DeserializerAttribute.cs" />
