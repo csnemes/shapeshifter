@@ -130,7 +130,7 @@ namespace Shapeshifter.Tests.Unit.Builder
 
         private class TestClass : TestClassBase
         {
-            private string _childPrivateField;
+            private string _childPrivateField = null;
             private int ChildPrivateProperty { get; set; }
 
             public string GetChildPrivateField()
@@ -147,10 +147,10 @@ namespace Shapeshifter.Tests.Unit.Builder
 
         private class TestClassBase
         {
-            public string _basePublicField;
+            public string _basePublicField = null;
             public int BasePublicProperty { get; set; }
 
-            private string _basePrivateField;
+            private string _basePrivateField = null;
             private int BasePrivateProperty { get; set; }
 
             public string GetBasePrivateField()

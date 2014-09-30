@@ -59,7 +59,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var source = new Dictionary<object, object> {{"a", 42}};
 
             var serializer = GetSerializer<Dictionary<object, object>>();
-            var wireFormat = serializer.Serialize(source, typeof(Dictionary<object, object>));
+            var wireFormat = serializer.Serialize(source); 
             var result = serializer.Deserialize(wireFormat);
             var keyValuePair = result.First();
             keyValuePair.Key.Should().BeOfType<string>().And.Be("a");

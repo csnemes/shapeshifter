@@ -4,7 +4,8 @@ using Shapeshifter.Core;
 namespace Shapeshifter
 {
     /// <summary>
-    ///     Attribute for marking static helper methods as deserializers of a given type and version.
+    ///     Attribute for marking custom deserializers of a given type and version. A custom deserializer can be any static method with the required signature 
+    ///     static object AnyName(IShapeshifterReader reader). 
     /// </summary>
     /// <remarks>
     ///     If it is applied to a static method it means that for the defined name and version this method will be called during
@@ -18,6 +19,7 @@ namespace Shapeshifter
     ///     specific deserializer is found it will be used. Only one default deserializer can be defined for a given name.
     /// </remarks>
     /// <example>
+    /// <code>
     ///     [Deserializer(typeof(MyClass), 56789)]
     ///     public static object DeserializerForMyClass(IShapeshifterReader reader)
     ///     {}
@@ -34,6 +36,7 @@ namespace Shapeshifter
     ///     [Deserializer(typeof(MyBase), ForAllDescendants = true)]
     ///     public static object DeserializerForAllDescendants(IShapeshifterReader reader, Type targetType)
     ///     {}
+    /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public sealed class DeserializerAttribute : Attribute
@@ -43,16 +46,25 @@ namespace Shapeshifter
         private readonly uint? _version;
         private bool _forAllDescendants = false;
 
+        /// <summary>
+        /// Creates an instance of the attribute with the specified targetType
+        /// </summary>
         public DeserializerAttribute(Type targetType)
             : this(targetType, targetType.GetPrettyName(), null)
         {
         }
 
+        /// <summary>
+        /// Creates an instance of the attribute with the specified targetType and version
+        /// </summary>
         public DeserializerAttribute(Type targetType, uint version)
             : this(targetType, targetType.GetPrettyName(), version)
         {
         }
 
+        /// <summary>
+        /// Creates an instance of the attribute with the specified serialized type name and version
+        /// </summary>
         public DeserializerAttribute(string packformatName, uint version)
             : this(null, packformatName, version)
         {
@@ -65,21 +77,34 @@ namespace Shapeshifter
             _version = version;            
         }
 
+        /// <summary>
+        /// Returns the type provided by the custom deserializer marked by this attribute
+        /// </summary>
         public Type TargeType
         {
             get { return _targeType; }
         }
 
+        /// <summary>
+        /// Returns the serialized type name targeted by the custom deserializer marked by this attribute
+        /// </summary>
         public string PackformatName
         {
             get { return _packformatName; }
         }
 
+        /// <summary>
+        /// Returns the version targeted by the custom deserializer marked by this attribute
+        /// </summary>
         public uint? Version
         {
             get { return _version; }
         }
 
+        /// <summary>
+        /// Specifies if the marked custom deserializer method should be used for all descendants of the given target type.
+        /// Descendant detection uses the descendantSearchScope specified when creating <see cref="Shapeshifter"/>.
+        /// </summary>
         public bool ForAllDescendants
         {
             get { return _forAllDescendants; }

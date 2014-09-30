@@ -7,6 +7,10 @@ using Shapeshifter.Core.Detection;
 
 namespace Shapeshifter.Tests.Unit.Core.Detection
 {
+#pragma warning disable 169
+#pragma warning disable 649
+// ReSharper disable UnusedMember.Local
+
     [TestFixture]
     public class TypeInspectorTests
     {
@@ -187,6 +191,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         {
             [DataMember]
             private T _genericValue;
+
             [DataMember]
             private string _strValue;
         }

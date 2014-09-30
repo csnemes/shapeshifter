@@ -24,7 +24,8 @@ namespace Shapeshifter
         object Read(Type type, string key);
 
         /// <summary>
-        ///     Returns a <see cref="IShapeshifterReader" /> for the given key
+        ///     Returns a <see cref="IShapeshifterReader" /> for the given key. Can be used to reach nested instances. Throws an exception if the value corresponding to the 
+        ///     key is not an object.
         /// </summary>
         IShapeshifterReader GetReader(string key);
     }

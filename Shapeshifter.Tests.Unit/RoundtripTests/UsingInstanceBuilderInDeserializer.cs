@@ -34,7 +34,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             [DataMember]
             public MyClassWithSimpleField _myComplexField;
 
-            public int _myIntField;
+            public int _myIntField = 0;
 
             [Deserializer(typeof (MyClassWithComplexField), 1)]
             public static MyClassWithComplexField Deserialize(IShapeshifterReader reader)

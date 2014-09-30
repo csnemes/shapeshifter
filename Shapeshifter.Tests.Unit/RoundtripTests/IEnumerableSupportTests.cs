@@ -39,7 +39,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             var source = new List<object> {"a", 42};
 
             var serializer = GetSerializer<List<object>>();
-            var wireFormat = serializer.Serialize(source, typeof(List<object>));
+            var wireFormat = serializer.Serialize(source); 
             var result = serializer.Deserialize(wireFormat);
             result[0].Should().BeOfType<string>().And.Be("a");
             result[1].Should().BeOfType<int>().And.Be(42);

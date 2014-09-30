@@ -205,12 +205,11 @@ namespace Shapeshifter.Core.Serialization
                     Type declaredKeyType = null;
                     Type declaredValueType = null;
 
-                    if (declaredSourceType != null)
-                    {
-                        var genericArguments = declaredSourceType.GetGenericArguments();
-                        declaredKeyType = genericArguments[0];
-                        declaredValueType = genericArguments[1];
-                    }
+                    var sourceType = declaredSourceType ?? type;
+
+                    var genericArguments = sourceType.GetGenericArguments();
+                    declaredKeyType = genericArguments[0];
+                    declaredValueType = genericArguments[1];
 
                     WriteKeyValuePair(obj, declaredKeyType, declaredValueType);
                 }
@@ -218,15 +217,15 @@ namespace Shapeshifter.Core.Serialization
                 {
                     Type declaredElementType = null;
 
-                    if (declaredSourceType != null)
+                    var sourceType = declaredSourceType ?? type;
+
+                    var genericEnumerableInterface = sourceType.GetInterfaces()
+                        .FirstOrDefault(i => i.IsConstructedFromOpenGeneric(typeof (IEnumerable<>)));
+                    if (genericEnumerableInterface != null)
                     {
-                        var genericEnumerableInterface = declaredSourceType.GetInterfaces()
-                            .FirstOrDefault(i => i.IsConstructedFromOpenGeneric(typeof (IEnumerable<>)));
-                        if (genericEnumerableInterface != null)
-                        {
-                            declaredElementType = genericEnumerableInterface.GetGenericArguments().First();
-                        }
+                        declaredElementType = genericEnumerableInterface.GetGenericArguments().First();
                     }
+
                     WriteArray((IEnumerable) obj, declaredElementType);
                 }
                 else

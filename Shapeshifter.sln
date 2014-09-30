@@ -1,16 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30110.0
+VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shapeshifter", "Shapeshifter\Shapeshifter.csproj", "{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shapeshifter.Tests.Unit", "Shapeshifter.Tests.Unit\Shapeshifter.Tests.Unit.csproj", "{19D27318-87B5-4977-B6FB-604D233CE58D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B0BADF65-641C-407B-908C-C002D8538CFD}"
-	ProjectSection(SolutionItems) = preProject
-		ToDo.txt = ToDo.txt
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Snapshot", "Snapshot\Snapshot.csproj", "{8AB642BD-6E65-4A21-BF9F-2C75B3B6A990}"
 EndProject

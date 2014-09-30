@@ -11,7 +11,7 @@ Set up to run as a LinqPad (linqpad.net) script (thus the ".Dump()" call)
 
 using System.IO;
 
-public static class MurMurHash3
+internal static class MurMurHash3
 {
     //Change to suit your needs
     private const uint seed = 144;

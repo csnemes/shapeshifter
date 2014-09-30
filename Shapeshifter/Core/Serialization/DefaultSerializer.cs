@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Runtime.Serialization;
 
 namespace Shapeshifter.Core.Serialization
 {
     /// <summary>
-    ///     Default serializer which writes all member values with <see cref="DataMember" /> attribute to the
+    ///     Default serializer which writes all member values with <see cref="DataMemberAttribute" /> attribute to the
     ///     <see cref="InternalPackformatWriter" />
     /// </summary>
     internal class DefaultSerializer : Serializer
