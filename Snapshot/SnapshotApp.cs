@@ -12,6 +12,7 @@ namespace Snapshot
     public class SnapshotApp
     {
         private string _userSpecifiedSnapshotFilePath;
+        private bool _verbose;
 
         [Verb(Description = "Takes a snapshot of the given assemblies and stores it in the snapshot file.")]
         public void Add(
@@ -31,7 +32,7 @@ namespace Snapshot
             var path = GetSnapshotPath();
             var snapshotHistory = System.IO.File.Exists(path) ? SnapshotHistory.LoadFrom(path) : SnapshotHistory.Empty;
 
-            var snapshot = SnapshotTaken.TakeSnapshot(name, include, exclude ?? new string[0]);
+            var snapshot = SnapshotTaken.TakeSnapshot(name, include, exclude ?? new string[0], _verbose);
 
             Console.WriteLine("Assemblies parsed:");
             snapshot.AssembliesParsed.ForEach(Console.WriteLine);
@@ -66,12 +67,16 @@ namespace Snapshot
 
         [Verb(Description = "Compares the current snapshot againts the snapshots stored in a snapshot file.")]
         public void Compare(
-                        [Required]
+            [Required]
             [Description("Comma separated list of files to be parsed during snapshot creation. Wildcards are accepted.")]
             string[] include,
             [Description("Comma separated list of files to be excluded during snapshot creation. Only specify file names, not paths. Wildcards are accepted.")]
             [Aliases("x")]
-            string[] exclude)
+            string[] exclude,
+            [Description("Defines the name of the oldest snapshot taken into account.")]
+            string oldestSnapshot,
+            [Description("Returns with exit code 1 if there is a difference between the snapshots.")]
+            bool failOnDifference)
         {
             var path = GetSnapshotPath();
             if (!System.IO.File.Exists(path))
@@ -79,12 +84,21 @@ namespace Snapshot
                 throw new ApplicationException(String.Format("Snapshot file on path {0} not found.", path));
             }
             var history = SnapshotHistory.LoadFrom(path);
-            var snapshot = SnapshotTaken.TakeSnapshot("ActualSnapshot", include, exclude ?? new string[0]);
+            var snapshot = SnapshotTaken.TakeSnapshot("ActualSnapshot", include, exclude ?? new string[0], _verbose);
 
-            var difference = snapshot.Snapshot.CompareToBase(history);
+            var snapshotsToCheckAgainst = oldestSnapshot != null
+                ? history.SkipWhile(snp => !snp.Name.Equals(oldestSnapshot, StringComparison.InvariantCultureIgnoreCase))
+                : history;
+
+            var difference = snapshot.Snapshot.CompareToBase(snapshotsToCheckAgainst);
 
             Console.WriteLine("The following differences are detected:");
             Console.WriteLine(difference.GetHumanReadableResult());
+
+            if (failOnDifference)
+            {
+                Environment.Exit(1);
+            }
         }
 
         [Global(Aliases = "f",
@@ -94,6 +108,15 @@ namespace Snapshot
         public void File(string file)
         {
             _userSpecifiedSnapshotFilePath = file;
+        }
+
+        [Global(Aliases = "v",
+            Description =
+                "Prints detailed information on tool run."
+            )]
+        public void Verbose(bool verbose)
+        {
+            _verbose = verbose;
         }
 
         [Empty]
@@ -135,12 +158,28 @@ namespace Snapshot
         {
             Console.WriteLine("Invocation failed. Try -? or help for more information.");
             Console.WriteLine(context.Exception.Message);
+            var loaderException = context.Exception as ReflectionTypeLoadException;
+            if (loaderException != null)
+            {
+                foreach (var exception in loaderException.LoaderExceptions)
+                {
+                    Console.WriteLine(exception.Message);
+                }
+            }
+            //
+            if (_verbose)
+            {
+                Console.WriteLine(new string('-', 80));
+                Console.WriteLine(context.Exception.ToString()); 
+            }
         }
 
 
         private string GetSnapshotPath()
         {
-            return _userSpecifiedSnapshotFilePath ?? Path.Combine(Directory.GetCurrentDirectory(), "shapeshifter.snapshot");
+            var path = _userSpecifiedSnapshotFilePath ?? Path.Combine(Directory.GetCurrentDirectory(), "shapeshifter.snapshot");
+            if (_verbose) Console.WriteLine(String.Format("SnapshotPath:{0}", path));
+            return path;
         }
 
     }

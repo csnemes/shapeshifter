@@ -43,7 +43,7 @@ namespace Shapeshifter.SchemaComparison
         /// <returns>The SnapshotHistory loaded.</returns>
         public static SnapshotHistory LoadFrom(string filePath)
         {
-            using (var file = File.Open(filePath, FileMode.Open))
+            using (var file = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.None))
             {
                 return LoadFrom(file);
             }

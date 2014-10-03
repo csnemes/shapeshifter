@@ -13,8 +13,9 @@ namespace Snapshot
         private readonly string _name;
         private List<string> _assembliesToParse;
         private Shapeshifter.SchemaComparison.Snapshot _snapshot;
+        private readonly bool _verbose;
 
-        private SnapshotTaken(string name, IEnumerable<string> includedPaths, IEnumerable<string> excludedNames)
+        private SnapshotTaken(string name, IEnumerable<string> includedPaths, IEnumerable<string> excludedNames, bool verbose)
         {
             //Validate excluded filenames
             var errorItem = excludedNames.FirstOrDefault(item => !String.IsNullOrEmpty(Path.GetDirectoryName(item)));
@@ -28,9 +29,9 @@ namespace Snapshot
             _excludedNames = excludedNames;
         }
 
-        public static SnapshotTaken TakeSnapshot(string name, IEnumerable<string> includedPaths, IEnumerable<string> excludedNames)
+        public static SnapshotTaken TakeSnapshot(string name, IEnumerable<string> includedPaths, IEnumerable<string> excludedNames, bool verbose)
         {
-            var recorder = new SnapshotTaken(name, includedPaths, excludedNames ?? new String[0]);
+            var recorder = new SnapshotTaken(name, includedPaths, excludedNames ?? new String[0], verbose);
             recorder.Take();
             return recorder;
         }
@@ -69,7 +70,14 @@ namespace Snapshot
                 }
 
                 var files = Directory.GetFiles(directory, fileName, SearchOption.TopDirectoryOnly);
-                return files.Where(file => !DoesMatchAnyExcludedFileName(file));
+                var filesPath = files.Where(file => !DoesMatchAnyExcludedFileName(file));
+
+                foreach (var path in filesPath)
+                {
+                    Console.WriteLine(path);
+                }
+
+                return filesPath;
             }
             catch (Exception ex)
             {
