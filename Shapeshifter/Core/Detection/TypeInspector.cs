@@ -267,7 +267,7 @@ namespace Shapeshifter.Core.Detection
             {
                 var baseType = inspector.Type.BaseType;
 
-                if (baseType == null || baseType == typeof(object) || baseType == typeof(ValueType)) return;
+                if (baseType == null || baseType == typeof(object) || baseType == typeof(ValueType) || baseType == typeof(Enum)) return;
 
                 inspector = new TypeInspector(baseType);
                 if (!inspector.IsSerializable)

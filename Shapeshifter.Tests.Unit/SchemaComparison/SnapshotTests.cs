@@ -114,7 +114,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
         [Test]
         public void SaveAndLoad_Success()
         {
-            string filePath = Path.Combine(Path.GetTempPath(), @"c:\shapeshifter_test.xml");
+            string filePath = Path.Combine(Path.GetTempPath(), @"shapeshifter_test.xml");
 
             var snapshot = Snapshot.Create("First", typeof(Order));
             using (var stream = File.Open(filePath, FileMode.Create))

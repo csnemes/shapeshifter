@@ -1,9 +1,12 @@
-﻿using FluentAssertions;
+﻿using System.Security.Cryptography;
+using FluentAssertions;
 using NUnit.Framework;
+using Shapeshifter;
 using Shapeshifter.Core.Detection;
 using System;
 using System.Diagnostics;
 using System.Runtime.Serialization;
+using Version1;
 
 namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
@@ -45,8 +48,21 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void DetectTheVersionNumberHelper()
         {
-            var ti = new TypeInspector(typeof (MyClassVersionTwo));
+            var ti = new TypeInspector(typeof(Version1.TestEnum));
             Debug.Print(ti.Version.ToString());
+        }
+
+        [Test]
+        public void DeserializeDifferentEnumVersion()
+        {
+            var inp =
+                @"{""__typeName"":""TestClass"",""__version"":3211725878,""Enum"":{""__typeName"":""TestEnum"",""__version"":1060625644,""__enumValue"":""Two""}}";
+
+            var serializer = GetSerializer<Version1.TestClass>();
+
+            var result = serializer.Deserialize(inp);
+
+            result.Enum.Should().Be(TestEnum.One);
         }
     }
     
@@ -98,3 +114,35 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 
 
 }
+
+namespace Version1
+{
+    [Shapeshifter()]
+    [DataContract]
+    public class TestClass
+    {
+        [DataMember]
+        public TestEnum Enum { get; set; }
+
+        [Deserializer("TestEnum", 1060625644)]
+        public static object DeserializerForOldVersion(IShapeshifterReader reader)
+        {
+            var val = reader.Read<string>("__enumValue");
+            TestEnum result;
+            if (TestEnum.TryParse(val, out result))
+            {
+                return TestEnum.One;
+            }
+            return result;
+        }
+    }
+
+    [DataContract]
+    public enum TestEnum
+    {
+        [EnumMember]
+        One
+    }
+}
+
+

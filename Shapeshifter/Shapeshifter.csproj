@@ -89,7 +89,7 @@
     <Compile Include="ShapeshifterAttribute.cs" />
     <Compile Include="SerializerAttribute.cs" />
     <Compile Include="ShapeshifterException.cs" />
-    <Compile Include="Shapeshifter.cs" />
+    <Compile Include="ShapeshifterSerializer.cs" />
     <Compile Include="Utils\LinqExtensions.cs" />
     <Compile Include="Utils\MurMurHash3.cs" />
     <Compile Include="Core\Serialization\InternalPackformatWriter.cs" />

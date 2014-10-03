@@ -28,7 +28,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void BuiltinEnumConverter_CanBeOverriddenForConcreteEnumType()
         {
-            var machine = new Shapeshifter<ClassWithEnum>(new[] {typeof (MyEnumConverter)}, new[] {Assembly.GetExecutingAssembly()});
+            var machine = new ShapeshifterSerializer<ClassWithEnum>(new[] {typeof (MyEnumConverter)}, new[] {Assembly.GetExecutingAssembly()});
             var source = new ClassWithEnum { EnumValue = MyEnum.First };
             string packed = machine.Serialize(source);
 

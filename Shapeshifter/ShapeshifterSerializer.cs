@@ -18,14 +18,14 @@ namespace Shapeshifter
     /// <remarks>
     ///     See UnitTests for usage.
     /// </remarks>
-    public class Shapeshifter<T> : Shapeshifter
+    public class ShapeshifterSerializer<T> : ShapeshifterSerializer
     {
         /// <summary>
         /// Creates a Shapeshifter serializer for the given type T. Additional assemblies can be specified as descendant search scopes. They will be used if 
         /// ForAllDescendants property is set to true on <see cref="SerializerAttribute"/> or on <see cref="DeserializerAttribute"/>.
         /// </summary>
         /// <param name="descendantSearchScope">List of assemblies to search for descendant classes</param>
-        public Shapeshifter(IEnumerable<Assembly> descendantSearchScope = null) 
+        public ShapeshifterSerializer(IEnumerable<Assembly> descendantSearchScope = null) 
             : base(typeof (T), descendantSearchScope)
         {
         }
@@ -37,7 +37,7 @@ namespace Shapeshifter
         /// </summary>
         /// <param name="knownTypes">List of known types</param>
         /// <param name="descendantSearchScope">List of assemblies to search for descendant classes</param>
-        public Shapeshifter(IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
+        public ShapeshifterSerializer(IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
             : base(typeof(T), knownTypes, descendantSearchScope)
         {
         }
@@ -66,7 +66,7 @@ namespace Shapeshifter
     /// <summary>
     ///     Shapeshifter serializer and deserializer
     /// </summary>
-    public class Shapeshifter
+    public class ShapeshifterSerializer
     {
         private readonly IEnumerable<Type> _builtInKnownTypes = new List<Type>
         {
@@ -82,7 +82,7 @@ namespace Shapeshifter
         /// </summary>
         /// <param name="type">Type to serialize or deserialize.</param>
         /// <param name="descendantSearchScope">List of assemblies to search for descendant classes</param>
-        public Shapeshifter(Type type, IEnumerable<Assembly> descendantSearchScope = null)
+        public ShapeshifterSerializer(Type type, IEnumerable<Assembly> descendantSearchScope = null)
             : this(type, new Type[0], descendantSearchScope)
         {
         }
@@ -95,7 +95,7 @@ namespace Shapeshifter
         /// <param name="type">Type to serialize or deserialize.</param>
         /// <param name="knownTypes">List of known types</param>
         /// <param name="descendantSearchScope">List of assemblies to search for descendant classes</param>
-        public Shapeshifter(Type type, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
+        public ShapeshifterSerializer(Type type, IEnumerable<Type> knownTypes, IEnumerable<Assembly> descendantSearchScope = null)
         {
             _targetType = type;
 

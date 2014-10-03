@@ -20,7 +20,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void KnownTypeWithDataContractWithoutShapeshifterAttribute_Throws()
         {
-            Action action = () => new Shapeshifter<TypeWithShapeshifterAndDataContractAttribute>(new[] { typeof(TypeWithoutShapeshifterAttribute) });
+            Action action = () => new ShapeshifterSerializer<TypeWithShapeshifterAndDataContractAttribute>(new[] { typeof(TypeWithoutShapeshifterAttribute) });
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
         }
 

@@ -10,7 +10,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void SameVersionWriteAndReadBack_OriginalVersion()
         {
-            var serializer = new Shapeshifter<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion1) });
+            var serializer = new ShapeshifterSerializer<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion1) });
             var serialized = serializer.Serialize(new NonDataContractClass() { Value = "42"});
             var result = serializer.Deserialize(serialized);
             result.Value.Should().Be("42");
@@ -19,7 +19,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void SameVersionWriteAndReadBack_NewVersion()
         {
-            var serializer = new Shapeshifter<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion2) });
+            var serializer = new ShapeshifterSerializer<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion2) });
             var serialized = serializer.Serialize(new NonDataContractClass() { Value = "42" });
             var result = serializer.Deserialize(serialized);
             result.Value.Should().Be("42");
@@ -28,10 +28,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         [Test]
         public void OldVersionReadBack_NewVersion()
         {
-            var oldSerializer = new Shapeshifter<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion1) });
+            var oldSerializer = new ShapeshifterSerializer<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion1) });
             var serialized = oldSerializer.Serialize(new NonDataContractClass() { Value = "42" });
 
-            var serializer = new Shapeshifter<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion2) });
+            var serializer = new ShapeshifterSerializer<NonDataContractClass>(new[] { typeof(SerializationForNonDataContractClassVersion2) });
             var result = serializer.Deserialize(serialized);
             result.Value.Should().Be("42");
         }

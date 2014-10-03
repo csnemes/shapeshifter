@@ -56,7 +56,7 @@ namespace Shapeshifter.SchemaComparison
         /// <returns>The SnapshotHistory loaded.</returns>
         public static SnapshotHistory LoadFrom(Stream stream)
         {
-            var serializer = new Shapeshifter<SnapshotHistory>();
+            var serializer = new ShapeshifterSerializer<SnapshotHistory>();
             return serializer.Deserialize(stream);
         }
 
@@ -132,7 +132,7 @@ namespace Shapeshifter.SchemaComparison
         /// <param name="stream">A target stream to save the serialized SnapshotHistory to.</param>
         public void SaveTo(Stream stream)
         {
-            var serializer = new Shapeshifter<SnapshotHistory>();
+            var serializer = new ShapeshifterSerializer<SnapshotHistory>();
             serializer.Serialize(stream, this);
         }
     }

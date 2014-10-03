@@ -5,9 +5,9 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 {
     public abstract class TestsBase
     {
-        protected static Shapeshifter<T> GetSerializer<T>()
+        protected static ShapeshifterSerializer<T> GetSerializer<T>()
         {
-            return new Shapeshifter<T>(new[] {Assembly.GetExecutingAssembly()});
+            return new ShapeshifterSerializer<T>(new[] {Assembly.GetExecutingAssembly()});
         }
 
         protected bool StringArrayEquals(string[] arr1, string[] arr2)

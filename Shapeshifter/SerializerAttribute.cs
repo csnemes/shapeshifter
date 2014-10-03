@@ -92,7 +92,7 @@ namespace Shapeshifter
 
         /// <summary>
         /// Specifies if the marked custom serializer method should be used for all descendants of the given target type.
-        /// Descendant detection uses the descendantSearchScope specified when creating <see cref="Shapeshifter"/>.
+        /// Descendant detection uses the descendantSearchScope specified when creating <see cref="ShapeshifterSerializer"/>.
         /// </summary>
         public bool ForAllDescendants
         {
