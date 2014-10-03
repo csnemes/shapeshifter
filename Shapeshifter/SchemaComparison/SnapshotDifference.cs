@@ -86,13 +86,13 @@ namespace Shapeshifter.SchemaComparison
         /// Returns differences in human readable form.
         /// </summary>
         /// <returns>Differences described.</returns>
-        public string GetHumanReadableResult()
+        public string GetHumanReadableResult(bool verbose)
         {
             using (var writer = new StringWriter())
             {
                 foreach (var missingDeserializerInfo in _missingItems)
                 {
-                    missingDeserializerInfo.WriteHumanReadableExplanation(writer);
+                    missingDeserializerInfo.WriteHumanReadableExplanation(writer, verbose);
                 }
                 return writer.GetStringBuilder().ToString();
             }

@@ -93,7 +93,7 @@ namespace Snapshot
             var difference = snapshot.Snapshot.CompareToBase(snapshotsToCheckAgainst);
 
             Console.WriteLine("The following differences are detected:");
-            Console.WriteLine(difference.GetHumanReadableResult());
+            Console.WriteLine(difference.GetHumanReadableResult(_verbose));
 
             if (failOnDifference)
             {

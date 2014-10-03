@@ -27,6 +27,11 @@ namespace Shapeshifter.SchemaComparison.Impl
         {
             get { return _typeFullName; }
         }
+
+        public IEnumerable<SerializedMemberInfo> SerializedMembers
+        {
+            get { return _serializedMembers; }
+        }
     }
 
     [DataContract]

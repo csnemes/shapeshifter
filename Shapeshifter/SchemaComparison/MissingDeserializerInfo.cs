@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Text;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.SchemaComparison.Impl;
 
@@ -59,10 +60,35 @@ namespace Shapeshifter.SchemaComparison
         /// Writes human readable explanation of the difference onto the given <see cref="TextWriter"/>.
         /// </summary>
         /// <param name="writer"><see cref="TextWriter"/> to write to.</param>
-        public void WriteHumanReadableExplanation(TextWriter writer)
+        /// <param name="verbose">if true writes the original class structure as well</param>
+        public void WriteHumanReadableExplanation(TextWriter writer, bool verbose)
         {
             writer.WriteLine("Compared to snapshot {0} the deserializer for type {1} with version {2} is missing.",
                 SnapshotName, MissingPackformatName, MissingVersion);
+
+            //original class details
+            if (verbose)
+            {
+                var defaultOriginalSerializer = _serializerInfo as DefaultSerializerInfo;
+                if (defaultOriginalSerializer != null)
+                {
+                    writer.WriteLine(GetOriginalClassStructure(defaultOriginalSerializer));
+                }
+            }
+        }
+
+        private string GetOriginalClassStructure(DefaultSerializerInfo defaultSerializerInfo)
+        {
+            var builder = new StringBuilder();
+
+            builder.AppendFormat("serialized class {0} \n", defaultSerializerInfo.TypeFullName);
+            builder.AppendLine("{");
+            foreach (var serializedMember in defaultSerializerInfo.SerializedMembers)
+            {
+                builder.AppendFormat("\t{0} {1}\n", serializedMember.Type, serializedMember.Name);
+            }
+            builder.AppendLine("}");
+            return builder.ToString();
         }
     }
 }
