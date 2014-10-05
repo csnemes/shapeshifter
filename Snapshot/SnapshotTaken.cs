@@ -72,9 +72,12 @@ namespace Snapshot
                 var files = Directory.GetFiles(directory, fileName, SearchOption.TopDirectoryOnly);
                 var filesPath = files.Where(file => !DoesMatchAnyExcludedFileName(file));
 
-                foreach (var path in filesPath)
+                if (_verbose)
                 {
-                    Console.WriteLine(path);
+                    foreach (var path in filesPath)
+                    {
+                        Console.WriteLine(path);
+                    }
                 }
 
                 return filesPath;
