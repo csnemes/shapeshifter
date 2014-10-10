@@ -129,7 +129,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeString
         {
             [DataMember]
@@ -137,7 +137,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeBool
         {
             [DataMember]
@@ -145,7 +145,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeIntegers
         {
             [DataMember]
@@ -159,7 +159,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeUnsignedIntegers
         {
             [DataMember]
@@ -173,7 +173,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeFloats
         {
             [DataMember]
@@ -187,7 +187,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithNativeBytes
         {
             [DataMember]
@@ -201,7 +201,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class ClassWithDateTypes
         {
             [DataMember]

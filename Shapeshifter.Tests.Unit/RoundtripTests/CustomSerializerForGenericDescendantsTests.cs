@@ -43,7 +43,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.BaseProperty.Should().Be(42);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public abstract class MyBase<T>
         {
             public T BaseProperty { get; set; }

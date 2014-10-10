@@ -5,7 +5,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
 {
 
     [DataContract]
-    [Shapeshifter]
+    [ShapeshifterRoot]
     internal class Order
     {
         [DataMember]
@@ -36,7 +36,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
     //New Version 
 
     [DataContract]
-    [Shapeshifter]
+    [ShapeshifterRoot]
     internal class NewOrder
     {
         [DataMember]
@@ -49,7 +49,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
     namespace NewerVersion  //namespace used to enable using the same class name 
     {
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         internal class NewOrder
         {
             [DataMember]
@@ -73,7 +73,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
     namespace Version1
     {
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         internal class TestClass
         {
             [DataMember]
@@ -84,7 +84,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
     namespace Version2
     {
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         internal class TestClass
         {
             [DataMember]
@@ -98,7 +98,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
     namespace Version3
     {
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         internal class TestClass
         {
             [DataMember]

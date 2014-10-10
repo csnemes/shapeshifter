@@ -110,7 +110,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithNumericArrays
         {
             [DataMember]
@@ -121,7 +121,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithStringArray
         {
             [DataMember]
@@ -129,7 +129,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithObjectArray
         {
             [DataMember]
@@ -137,7 +137,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithNestedArrays
         {
             [DataMember]

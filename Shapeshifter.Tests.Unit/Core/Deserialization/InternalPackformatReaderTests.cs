@@ -77,7 +77,7 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         }
 
         [DataContract]
-        [Shapeshifter(2)]
+        [ShapeshifterRoot(2)]
         private class OwnedItem
         {
             [DataMember]
@@ -97,7 +97,7 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         }
         
         [DataContract]
-        [Shapeshifter(1)]
+        [ShapeshifterRoot(1)]
         private class PersonInfo
         {
             public PersonInfo(string firstName, string lastName)

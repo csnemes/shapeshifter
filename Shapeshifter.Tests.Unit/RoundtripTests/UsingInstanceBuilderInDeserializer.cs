@@ -27,7 +27,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             unpacked._myIntField.Should().Be(44);
         }
 
-        [Shapeshifter(1)]
+        [ShapeshifterRoot(1)]
         [DataContract]
         private class MyClassWithComplexField
         {

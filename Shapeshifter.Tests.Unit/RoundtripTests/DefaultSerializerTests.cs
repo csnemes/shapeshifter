@@ -14,14 +14,14 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         public void TypeWithDataContractWithoutShapeshifterAttribute_Throws()
         {
             Action action = () => GetSerializer<TypeWithoutShapeshifterAttribute>();
-            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterRootAttributeMissingId);
         }
 
         [Test]
         public void KnownTypeWithDataContractWithoutShapeshifterAttribute_Throws()
         {
             Action action = () => new ShapeshifterSerializer<TypeWithShapeshifterAndDataContractAttribute>(new[] { typeof(TypeWithoutShapeshifterAttribute) });
-            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterAttributeMissingId);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.ShapeshifterRootAttributeMissingId);
         }
 
 
@@ -61,7 +61,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.MyProperty.Should().Be(42);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class TypeWithoutDataContractAttribute
         {
             public int MyProperty { get; set; }
@@ -74,7 +74,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             public int MyProperty { get; set; }
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         public class TypeWithShapeshifterAndDataContractAttribute
         {
@@ -82,7 +82,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             public int MyProperty { get; set; }
         }
 
-        [Shapeshifter("MyPackformatName", 1)]
+        [ShapeshifterRoot("MyPackformatName", 1)]
         [DataContract]
         public class TypeWithCustomPackformatName
         {

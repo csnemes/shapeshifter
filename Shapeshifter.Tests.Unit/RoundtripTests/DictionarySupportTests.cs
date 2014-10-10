@@ -67,7 +67,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithPrimitiveDictionary
         {
             [DataMember]
@@ -75,7 +75,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithObjectDictionary
         {
             [DataMember]

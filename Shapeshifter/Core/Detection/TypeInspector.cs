@@ -29,7 +29,7 @@ namespace Shapeshifter.Core.Detection
         private readonly Lazy<List<FieldOrPropertyMemberInfo>> _serializableMemberCandidates;
         private readonly Lazy<Dictionary<string, FieldOrPropertyMemberInfo>> _dataHolderMembers;
         private readonly Lazy<List<KnownTypeAttribute>> _knownTypeAttributes;
-        private readonly Lazy<ShapeshifterAttribute> _shapeshifterAttribute;
+        private readonly Lazy<ShapeshifterRootAttribute> _shapeshifterAttribute;
         private readonly Type _type;
 
         private uint _version;
@@ -46,8 +46,8 @@ namespace Shapeshifter.Core.Detection
 
             _knownTypeAttributes = new Lazy<List<KnownTypeAttribute>>(GetKnownTypeAttributes);
         
-            _shapeshifterAttribute = new Lazy<ShapeshifterAttribute>(
-                () => _type.GetCustomAttributes(typeof(ShapeshifterAttribute), false).FirstOrDefault() as ShapeshifterAttribute);
+            _shapeshifterAttribute = new Lazy<ShapeshifterRootAttribute>(
+                () => _type.GetCustomAttributes(typeof(ShapeshifterRootAttribute), false).FirstOrDefault() as ShapeshifterRootAttribute);
         }
 
         public IEnumerable<FieldOrPropertyMemberInfo> SerializableMemberCandidates
@@ -75,9 +75,9 @@ namespace Shapeshifter.Core.Detection
             get { return _hasDataContractAttribute.Value; }
         }
 
-        public bool HasShapeshifterAttribute
+        public bool HasShapeshifterRootAttribute
         {
-            get { return ShapeshifterAttribute != null; }
+            get { return ShapeshifterRootAttribute != null; }
         }
 
         public bool IsSerializable
@@ -100,7 +100,7 @@ namespace Shapeshifter.Core.Detection
             get { return _knownTypeAttributes.Value; }
         }
 
-        private ShapeshifterAttribute ShapeshifterAttribute
+        private ShapeshifterRootAttribute ShapeshifterRootAttribute
         {
             get { return _shapeshifterAttribute.Value; }
         }
@@ -200,13 +200,13 @@ namespace Shapeshifter.Core.Detection
 
         private string GetPackformatNameFromShapeshifterAttribute()
         {
-            return ShapeshifterAttribute != null ? ShapeshifterAttribute.PackformatName : null;
+            return ShapeshifterRootAttribute != null ? ShapeshifterRootAttribute.PackformatName : null;
         }
 
         private uint? GetVersionFromShapeshifterAttribute()
         {
-            return ShapeshifterAttribute != null && ShapeshifterAttribute.IsVersionSpecified
-                ? (uint?)ShapeshifterAttribute.Version
+            return ShapeshifterRootAttribute != null && ShapeshifterRootAttribute.IsVersionSpecified
+                ? (uint?)ShapeshifterRootAttribute.Version
                 : null;
         }
 

@@ -8,20 +8,14 @@ using System.Text;
 using System.Threading.Tasks;
 using Shapeshifter;
 
-namespace ModelVersion1
+namespace ModelVersion2
 {
     [ShapeshifterRoot]
     [DataContract]
-
-    public class Customer
+    [KnownType(typeof(IndividualCustomer))]
+    public abstract class Customer
     {
         [DataMember]
-        public string Name { get; set; }
-
-        [DataMember]
-        public string HomeAddress { get; set; }
-        
-        [DataMember]
-        public List<Order> Orders { get; set; }
+        List<Order> Orders { get; set; }
     }
 }

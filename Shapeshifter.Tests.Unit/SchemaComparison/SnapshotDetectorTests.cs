@@ -36,7 +36,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
 
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class InnerClass
         {
             [DataMember]
@@ -44,7 +44,7 @@ namespace Shapeshifter.Tests.Unit.SchemaComparison
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ExternalClass
         {
             [DataMember]

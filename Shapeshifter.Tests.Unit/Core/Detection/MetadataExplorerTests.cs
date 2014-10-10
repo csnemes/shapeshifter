@@ -187,7 +187,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         private struct TestStruct
         {
@@ -201,7 +201,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.PackformatNameCollisionyId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         private class OuterClass
         {
@@ -227,13 +227,13 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         {
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         private class MostDerivedClass : LeastDerivedClass
         {
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         private class DerivedClass : BaseClass
         {
@@ -242,7 +242,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
 
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ExternalClass
         {
             [DataMember]
@@ -253,7 +253,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithList
         {
             [DataMember]
@@ -267,7 +267,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [KnownType(typeof (InnerClass))]
         private class ClassWithKnownTypes
         {
@@ -276,7 +276,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [KnownType("GetKnownTypes")]
         private class ClassWithKnownTypesMethod
         {
@@ -289,13 +289,13 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             }
         }
 
-        [Shapeshifter(1)]
+        [ShapeshifterRoot(1)]
         [DataContract]
         public abstract class MyAbstractType
         {
         }
 
-        [Shapeshifter(1)]
+        [ShapeshifterRoot(1)]
         [DataContract]
         public class MyOpenGenericType<T>
         {

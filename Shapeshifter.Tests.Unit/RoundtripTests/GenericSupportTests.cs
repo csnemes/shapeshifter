@@ -66,7 +66,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class GenericNameDiffTest<T>
         {
             [DataMember]
@@ -74,7 +74,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class Generic<T>
         {
             [DataMember]
@@ -82,7 +82,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class TypeWithGenericMembers<T>
         {
             [DataMember]
@@ -99,7 +99,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.IllegalUsageOfOpenGenericAsKnownTypeId);
         }
         
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         [KnownType(typeof(Generic<>))]
         private class TypeWithOpenGenericAsKnownType

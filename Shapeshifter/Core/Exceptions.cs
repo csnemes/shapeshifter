@@ -43,11 +43,11 @@ namespace Shapeshifter.Core
                 String.Format("Cannot find deserializer for typeName {0} and version {1}.", properties.TypeName, properties.Version)));
         }
 
-        public const string ShapeshifterAttributeMissingId = "ShapeshifterAttributeMissing";
-        public static Exception ShapeshifterAttributeMissing(Type type)
+        public const string ShapeshifterRootAttributeMissingId = "ShapeshifterRootAttributeMissing";
+        public static Exception ShapeshifterRootAttributeMissing(Type type)
         {
-            return SafeCreateException(() => new ShapeshifterException(ShapeshifterAttributeMissingId,
-                String.Format("ShapeshifterAttribute is missing from class {0}.", type.Name)));
+            return SafeCreateException(() => new ShapeshifterException(ShapeshifterRootAttributeMissingId,
+                String.Format("ShapeshifterRootAttribute is missing from class {0}.", type.Name)));
         }
 
         public const string InvalidInputValueForConverterId = "InvalidInputValueForConverter";

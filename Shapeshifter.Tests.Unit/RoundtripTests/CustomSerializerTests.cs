@@ -21,7 +21,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             jobj[Constants.VersionKey].Value<uint>().Should().NotBe(0);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyTypeWithCustomSerializerNoVersionNumber
         {
             [Serializer(typeof(MyTypeWithCustomSerializerNoVersionNumber))]
@@ -42,7 +42,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             jobj[Constants.VersionKey].Value<uint>().Should().Be(42);
         }
 
-        [Shapeshifter(42)]
+        [ShapeshifterRoot(42)]
         public class MyTypeWithVersionNumberInShapshifterAttribute
         {
             [Serializer(typeof(MyTypeWithVersionNumberInShapshifterAttribute))]
@@ -63,7 +63,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             jobj[Constants.VersionKey].Value<uint>().Should().Be(44);
         }
 
-        [Shapeshifter(42)]
+        [ShapeshifterRoot(42)]
         public class MyTypeWithCustomSerializerWithVersionNumber
         {
             [Serializer(typeof(MyTypeWithCustomSerializerWithVersionNumber), 44)]
@@ -89,7 +89,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.MyProperty.Should().Be(42);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyTypeWithCustomSerializer
         {
             public int MyProperty { get; set; }
@@ -124,7 +124,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.MyProperty.Should().Be(42);
         }
 
-        [Shapeshifter()]
+        [ShapeshifterRoot()]
         public class MyTypeWithCustomPackName
         {
             public int MyProperty { get; set; }
@@ -164,7 +164,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             jobj[Constants.TypeNameKey].Value<string>().Should().Be("Generic<Int32>");
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class Generic<T>
         {
             public T MyProperty { get; set; }
@@ -193,7 +193,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.MyProperty.Should().Be(42);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class GenericDeserializedWithTypeName<T>
         {
             public T MyProperty { get; set; }
@@ -218,7 +218,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyClassWithNonStaticSerializerMethod
         {
             [Serializer(typeof(MyClassWithNonStaticSerializerMethod))]
@@ -234,7 +234,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyClassWithNonStaticDeserializerMethod
         {
             [Deserializer(typeof(MyClassWithNonStaticDeserializerMethod))]
@@ -250,7 +250,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidSerializerMethodSignatureId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyClassWithInvalidSerializerMethodSignature
         {
             [Serializer(typeof(MyClassWithInvalidSerializerMethodSignature))]
@@ -266,7 +266,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidDeserializerMethodSignatureId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyClassWithInvalidDeserializerMethodSignature
         {
             [Deserializer(typeof(MyClassWithNonStaticDeserializerMethod), 1)]

@@ -5,13 +5,13 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ModelVersion1
+namespace ModelVersion2
 {
     [DataContract]
     public class Order
     {
         [DataMember]
-        public string DeliveryAddress { get; set; }
+        public Address DeliveryAddress { get; set; }
 
         [DataMember]
         public int NumberOfOrderedWidgets { get; set; }

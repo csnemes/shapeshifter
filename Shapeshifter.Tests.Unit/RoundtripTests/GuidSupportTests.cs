@@ -24,7 +24,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithGuid
         {
             [DataMember]

@@ -10,7 +10,7 @@ namespace Shapeshifter
     ///      Marker attribute meaning that this class will be serialized and deserialized using Shapeshifter's default serialization method.
     /// 
     /// <code>
-    ///     [Shapeshifter]
+    ///     [ShapeshifterRoot]
     ///     public class MyClass
     ///     { ... }
     /// </code>
@@ -18,21 +18,21 @@ namespace Shapeshifter
     ///     Also the default serialization method can be influenced with this attribute specifying the class name and/or version used in the serialized format.
     /// 
     /// <code>
-    ///     [Shapeshifter("MonClass", 1)]
+    ///     [ShapeshifterRoot("MonClass", 1)]
     ///     public class MyClass
     ///     { ... }
     /// 
-    ///     [Shapeshifter("MonClass")]
+    ///     [ShapeshifterRoot("MonClass")]
     ///     public class MyClass
     ///     { ... }
     ///
-    ///     [Shapeshifter(1)]
+    ///     [ShapeshifterRoot(1)]
     ///     public class MyClass
     ///     { ... }
     /// </code>
     /// </example>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Enum | AttributeTargets.Struct, AllowMultiple = false, Inherited = false)]
-    public sealed class ShapeshifterAttribute : Attribute
+    public sealed class ShapeshifterRootAttribute : Attribute
     {
         private readonly string _packformatName;
         private uint? _version;
@@ -40,7 +40,7 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a serialized name and version.
         /// </summary>
-        public ShapeshifterAttribute(string packformatName, uint version)
+        public ShapeshifterRootAttribute(string packformatName, uint version)
             :this (packformatName, (uint?) version)
         {
         }
@@ -48,7 +48,7 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a serialized name if given.
         /// </summary>
-        public ShapeshifterAttribute(string packformatName = null)
+        public ShapeshifterRootAttribute(string packformatName = null)
             :this(packformatName, null)
         {
         }
@@ -56,12 +56,12 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a version and the default name.
         /// </summary>
-        public ShapeshifterAttribute(uint version)
+        public ShapeshifterRootAttribute(uint version)
             : this(null, version)
         {
         }
 
-        private ShapeshifterAttribute(string packformatName, uint? version)
+        private ShapeshifterRootAttribute(string packformatName, uint? version)
         {
             _packformatName = packformatName;
             _version = version;

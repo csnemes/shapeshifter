@@ -85,7 +85,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             unpacked.Value.Should().BeOfType<Guid>().And.Be(guid);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         [DataContract]
         private class DataHolder
         {

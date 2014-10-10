@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelVersion1", "ModelVersi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shapeshifter", "..\Shapeshifter\Shapeshifter.csproj", "{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelVersion2", "ModelVersion2\ModelVersion2.csproj", "{7E3AB03B-8679-4CCF-9CA4-23F603BBD51A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShapeshifterInvocations", "ShapeshifterInvocations\ShapeshifterInvocations.csproj", "{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +25,14 @@ Global
 		{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C0DFDAE5-69E6-40F1-A9B3-A5F07F887B92}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E3AB03B-8679-4CCF-9CA4-23F603BBD51A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E3AB03B-8679-4CCF-9CA4-23F603BBD51A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E3AB03B-8679-4CCF-9CA4-23F603BBD51A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E3AB03B-8679-4CCF-9CA4-23F603BBD51A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

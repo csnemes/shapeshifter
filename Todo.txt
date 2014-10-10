@@ -1,7 +1,0 @@
-
---------------------------------------------------------------------------------------
-Roadmap
---------------------------------------------------------------------------------------
-Performance improvements
-Support load from regular JSON format (without Shapeshifter's attributes)
-

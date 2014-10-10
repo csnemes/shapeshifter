@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{7E3AB03B-8679-4CCF-9CA4-23F603BBD519}</ProjectGuid>
+    <ProjectGuid>{D847B344-DA62-4AEC-9FE2-AB1D09EE5F3F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ModelVersion1</RootNamespace>
-    <AssemblyName>ModelVersion1</AssemblyName>
+    <RootNamespace>ShapeshifterInvocations</RootNamespace>
+    <AssemblyName>ShapeshifterInvocations</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,9 +30,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework">
+      <HintPath>..\packages\NUnit.2.6.3\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -40,14 +42,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Customer.cs" />
-    <Compile Include="Order.cs" />
+    <Compile Include="InvocationExamples.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Shapeshifter\Shapeshifter.csproj">
       <Project>{c0dfdae5-69e6-40f1-a9b3-a5f07f887b92}</Project>
       <Name>Shapeshifter</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelVersion1\ModelVersion1.csproj">
+      <Project>{7e3ab03b-8679-4ccf-9ca4-23f603bbd519}</Project>
+      <Name>ModelVersion1</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ModelVersion2\ModelVersion2.csproj">
+      <Project>{7e3ab03b-8679-4ccf-9ca4-23f603bbd51a}</Project>
+      <Name>ModelVersion2</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

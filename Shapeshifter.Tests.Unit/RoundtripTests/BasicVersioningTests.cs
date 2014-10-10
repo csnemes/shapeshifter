@@ -67,7 +67,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
     
     [DataContract]
-    [Shapeshifter(1)]
+    [ShapeshifterRoot(1)]
     public class MyClassVersionOne
     {
         [DataMember]
@@ -75,7 +75,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
 
     [DataContract]
-    [Shapeshifter(2)]
+    [ShapeshifterRoot(2)]
     public class MyClassVersionTwo //example for switching property type
     {
         [DataMember]
@@ -91,7 +91,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
     }
 
     [DataContract]
-    [Shapeshifter(3)]
+    [ShapeshifterRoot(3)]
     public class MyClassVersionThree //example for switching property name
     {
         [DataMember]
@@ -117,7 +117,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
 
 namespace Version1
 {
-    [Shapeshifter()]
+    [ShapeshifterRoot()]
     [DataContract]
     public class TestClass
     {

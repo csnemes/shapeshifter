@@ -43,7 +43,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             target.BaseProperty.Should().Be(42);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public abstract class MyBase
         {
             public int BaseProperty { get; set; }
@@ -84,7 +84,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DeserializerAttributeTargetTypeMustBeSpecifiedForAllDescendantsId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyBaseWithWrongDeserializerAttribute
         {
             [Deserializer("MyBase", 1, ForAllDescendants = true)]
@@ -101,7 +101,7 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidDeserializerMethodSignatureForAllDescendantsId);
         }
 
-        [Shapeshifter]
+        [ShapeshifterRoot]
         public class MyBaseWithWrongDeserializerMethodSignature
         {
             [Deserializer(typeof(MyBase), ForAllDescendants = true)]

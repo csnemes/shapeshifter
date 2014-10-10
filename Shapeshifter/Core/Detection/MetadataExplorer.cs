@@ -159,15 +159,15 @@ namespace Shapeshifter.Core.Detection
         {
             if (assembliesInScope == null) throw new ArgumentNullException("assembliesInScope");
             
-            //look for all types bearing Shapeshifter attribute and use them as root types
-            var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterAttribute>());
+            //look for all types bearing ShapeshifterRoot attribute and use them as root types
+            var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterRootAttribute>());
 
             return CreateFor(rootTypes, assembliesInScope);
         }
 
         private void WalkType(Type type)
         {
-            CheckIfShapeshifterAttributePresent(type);
+            CheckIfShapeshifterRootAttributeIsPresent(type);
             Walker.WalkRootType(type);
         }
 
@@ -179,12 +179,12 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
-        private static void CheckIfShapeshifterAttributePresent(Type type)
+        private static void CheckIfShapeshifterRootAttributeIsPresent(Type type)
         {
             var ti = new TypeInspector(type);
-            if (ti.HasDataContractAttribute && ! ti.HasShapeshifterAttribute)
+            if (ti.HasDataContractAttribute && ! ti.HasShapeshifterRootAttribute)
             {
-                throw Exceptions.ShapeshifterAttributeMissing(type);
+                throw Exceptions.ShapeshifterRootAttributeMissing(type);
             }
         }
 

@@ -45,14 +45,14 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class ClassWithEnum
         {
             [DataMember]
             public MyEnum EnumValue { get; set; }
         }
 
-        [Shapeshifter(1)]
+        [ShapeshifterRoot(1)]
         private enum MyEnum
         {
             First,

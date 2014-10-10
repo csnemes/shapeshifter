@@ -53,7 +53,7 @@ namespace Shapeshifter.SchemaComparison
         }
 
         /// <summary>
-        /// Creates a snapshot from the given assemblies by searching for all serializable object graph roots marked by the <see cref="ShapeshifterAttribute"/>. 
+        /// Creates a snapshot from the given assemblies by searching for all serializable object graph roots marked by the <see cref="ShapeshifterRootAttribute"/>. 
         /// </summary>
         /// <param name="snapshotName">Name of the snapshot.</param>
         /// <param name="assemblyPaths">List of paths of the input assemblies.</param>
@@ -64,7 +64,7 @@ namespace Shapeshifter.SchemaComparison
         }
 
         /// <summary>
-        /// Creates a snapshot from the given assemblies by searching for all serializable object graph roots marked by the <see cref="ShapeshifterAttribute"/>. 
+        /// Creates a snapshot from the given assemblies by searching for all serializable object graph roots marked by the <see cref="ShapeshifterRootAttribute"/>. 
         /// </summary>
         /// <param name="snapshotName">Name of the snapshot.</param>
         /// <param name="assembliesInScope">List of input assemblies.</param>

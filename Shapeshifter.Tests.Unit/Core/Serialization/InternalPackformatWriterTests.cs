@@ -86,7 +86,7 @@ namespace Shapeshifter.Tests.Unit.Core.Serialization
         }
 
         [DataContract]
-        [Shapeshifter]
+        [ShapeshifterRoot]
         private class TestClass
         {
             [DataMember]

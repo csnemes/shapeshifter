@@ -12,7 +12,7 @@ namespace Shapeshifter.SchemaComparison
     ///     SnapshotHistory is a mutable class, but not the <see cref="Snapshot"/>s within.
     /// </summary>
     [DataContract]
-    [Shapeshifter]
+    [ShapeshifterRoot]
     public class SnapshotHistory : IEnumerable<Snapshot>
     {
         [DataMember]
