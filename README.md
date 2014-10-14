@@ -2,7 +2,7 @@ Shapeshifter 1.0.0
 ============
 Shapeshifter is a serialization library for long-term data storage. 
 It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.    
-See Wiki and Documentation for details.
+See [Wiki](https://github.com/csnemes/shapeshifter/wiki) and [Documentation](https://github.com/csnemes/shapeshifter/tree/dev/Documentation/Help) for details.
 
 Compatibility:
 ---
@@ -14,8 +14,8 @@ Current Release:
 
 To install:
 ---
+  - using NuGet: Install-Package Shapeshifter
   - build and use the binaries
-  - NuGet package is coming soon
 
 To build:
 ---
