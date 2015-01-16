@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Core\CustomSerializerCreationReason.cs" />
     <Compile Include="Core\Deserialization\ImplicitConversionHelper.cs" />
+    <Compile Include="Core\Deserialization\SerializerInstanceStore.cs" />
     <Compile Include="Core\Deserialization\ValueConverter.cs" />
     <Compile Include="Core\Converters\EnumConverter.cs" />
     <Compile Include="Core\Serialization\CustomSerializer.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Linq;
+using System.Xml;
 using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Core;
@@ -14,6 +15,21 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
     [TestFixture]
     public class MetadataExplorerTests
     {
+
+        [Test]
+        public void ShouldDetectNonStaticDeserializer()
+        {
+            var result = MetadataExplorer.CreateFor(typeof(NonStaticDeserializerClass)).Deserializers;
+            result.Count().Should().Be(1);
+        }
+
+        [Test]
+        public void ShouldDetectNonStaticDeserializerAndFailIfNoPublicDefaultConstructor()
+        {
+            Action action = () => MetadataExplorer.CreateFor(typeof(NonStaticDeserializerClassNoConstructor));
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.TypeHasNoPublicDefaultConstructorId); 
+        }
+
         [Test]
         public void ShouldDetectMemberTypesWithDataMemberAttribute()
         {
@@ -354,7 +370,7 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
             }
 
             [Deserializer(typeof(MyTypeWithSerializerWithExplicitVersion), 1, ForAllDescendants = true)]
-            public static object Deserialize(IShapeshifterReader writer, Type targetType)
+            public static object Deserialize(IShapeshifterReader reader, Type targetType)
             {
                 return null;
             }
@@ -365,7 +381,28 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         public class MyTypeWithCustomDeserializerWithTypeAndNoVersion
         {
             [Deserializer(typeof(int))]
-            public static object Deserialize(IShapeshifterReader writer)
+            public static object Deserialize(IShapeshifterReader reader)
+            {
+                return null;
+            }
+        }
+
+        public class NonStaticDeserializerClass
+        {
+            [Deserializer(typeof(int), 1)]
+            public object Deserialize(IShapeshifterReader reader)
+            {
+                return null;
+            }
+        }
+
+        public class NonStaticDeserializerClassNoConstructor
+        {
+            public NonStaticDeserializerClassNoConstructor(int i)
+            { }
+
+            [Deserializer(typeof(int), 1)]
+            public object Deserialize(IShapeshifterReader reader)
             {
                 return null;
             }

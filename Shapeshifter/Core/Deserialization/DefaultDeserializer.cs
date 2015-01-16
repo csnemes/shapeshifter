@@ -25,7 +25,7 @@ namespace Shapeshifter.Core.Deserialization
             get { return _serializableTypeInfo.Type; }
         }
 
-        public override Func<ObjectProperties, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, object> GetDeserializerFunc(SerializerInstanceStore instanceStore)
         {
             return Deserialize;
         }

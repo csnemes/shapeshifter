@@ -14,6 +14,7 @@ namespace Shapeshifter.Core.Deserialization
     {
         private readonly JsonReader _reader;
         private readonly DeserializerCollection _deserializers;
+        private readonly SerializerInstanceStore _serializerInstanceStore = new SerializerInstanceStore();
 
         public InternalPackformatReader(TextReader reader, DeserializerCollection deserializers)
         {
@@ -122,7 +123,7 @@ namespace Shapeshifter.Core.Deserialization
 
                 //if we don't have a real builder we'll throw an exception when someone tries to get the data
                 var builderFunc =
-                    (typeUnpacker == null ? null : typeUnpacker.GetDeserializerFunc())
+                    (typeUnpacker == null ? null : typeUnpacker.GetDeserializerFunc(_serializerInstanceStore))
                     ?? (i => { throw Exceptions.CannotFindDeserializer(i); });
 
                 return new ObjectInPackedForm(objectProperties, builderFunc);

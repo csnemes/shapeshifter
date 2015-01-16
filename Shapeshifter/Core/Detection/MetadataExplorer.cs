@@ -99,6 +99,13 @@ namespace Shapeshifter.Core.Detection
                     throw Exceptions.InvalidDeserializerMethodSignature(attribute, methodInfo);
             }
 
+            if (!methodInfo.IsStatic)
+            {
+                var defaultPublicConstructor = methodInfo.DeclaringType.GetConstructor(Type.EmptyTypes);
+                if (defaultPublicConstructor == null)
+                    throw Exceptions.TypeHasNoPublicDefaultConstructor(methodInfo.DeclaringType);
+            }
+
             if (attribute.TargeType == null || attribute.TargeType.IsConcreteType())
             {
                 var version = GetVersionForCustomDeserializer(attribute, attribute.TargeType);

@@ -34,12 +34,18 @@ namespace Shapeshifter.Core.Deserialization
             get { return _creationReason; }
         }
 
-        public override Func<ObjectProperties, object> GetDeserializerFunc()
+        public override Func<ObjectProperties, object> GetDeserializerFunc(SerializerInstanceStore instanceStore)
         {
+            object instance = null;
+            if (!_methodInfo.IsStatic)
+            {
+                instance = instanceStore.GetInstance(_methodInfo.DeclaringType);
+            }
+
             return (objects) =>
                 _targetType == null
-                    ? _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects)})
-                    : _methodInfo.Invoke(null, new object[] {new ShapeshifterReader(objects), _targetType});
+                    ? _methodInfo.Invoke(instance, new object[] { new ShapeshifterReader(objects) })
+                    : _methodInfo.Invoke(instance, new object[] { new ShapeshifterReader(objects), _targetType });
         }
     }
 }
