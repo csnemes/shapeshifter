@@ -26,6 +26,7 @@ Use Visual Studio 2013
 Version History:
 ---
  *1.0.0.0 Initial release
+ 
  *1.1.0.0 - Added support for non-static custom deserializers (see wiki for details)
           - Added ShapeshifterSerializerFactory class to simplify configuration 
 
