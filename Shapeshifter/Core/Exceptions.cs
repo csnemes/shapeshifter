@@ -203,6 +203,21 @@ namespace Shapeshifter.Core
                 String.Format("Cannot resolve assembly {0} requested by {2}. We searched for it in the following places:{1}.", 
                 name, basePaths != null ? String.Join(";", basePaths) : String.Empty, requestingAssembly != null ? requestingAssembly.Location : "null")));
         }
+
+        public const string TypeHasNoPublicDefaultConstructorId = "TypeHasNoPublicDefaultConstructor";
+        public static Exception TypeHasNoPublicDefaultConstructor(Type type)
+        {
+            return SafeCreateException(() => new ShapeshifterException(TypeHasNoPublicDefaultConstructorId,
+                String.Format("Type {0} has no default public constructor.", type.FullName)));
+        }
+
+
+        public const string FailureWhenInvokingConstructorId = "FailureWhenInvokingConstructor";
+        public static Exception FailureWhenInvokingConstructor(Type type, Exception exception)
+        {
+            return SafeCreateException(() => new ShapeshifterException(FailureWhenInvokingConstructorId,
+                String.Format("Constructor invocation failed when constructing type {0} with error {1}.", type.FullName, exception.Message), exception));
+        }
         
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {

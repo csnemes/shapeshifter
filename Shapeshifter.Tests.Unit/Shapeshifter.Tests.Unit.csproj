@@ -60,6 +60,7 @@
     <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />
     <Compile Include="RoundtripTests\IEnumerableImplementingClassTests.cs" />
     <Compile Include="RoundtripTests\ListBasedClassTests.cs" />
+    <Compile Include="RoundtripTests\NonStaticCustomDeserializerTests.cs" />
     <Compile Include="RoundtripTests\UsingInstanceBuilderInDeserializer.cs" />
     <Compile Include="SchemaComparison\SnapshotDetectorTests.cs" />
     <Compile Include="SchemaComparison\SnapshotHistoryTests.cs" />

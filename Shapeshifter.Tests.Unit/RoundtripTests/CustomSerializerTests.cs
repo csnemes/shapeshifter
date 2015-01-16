@@ -228,10 +228,10 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        public void CustomDeserializerOnNonStaticMethod_Throws()
+        public void CustomDeserializerOnNonStaticMethodMustHaveVersion()
         {
             Action action = () => GetSerializer<MyClassWithNonStaticDeserializerMethod>().Serialize(null);
-            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InvalidUsageOfAttributeOnInstanceMethodId);
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CustomDeserializerMustSpecifyVersionId);
         }
 
         [ShapeshifterRoot]

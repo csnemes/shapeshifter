@@ -217,7 +217,7 @@ namespace Shapeshifter.Core.Detection
             foreach (var nonStaticMethod in nonStaticMethods)
             {
                 ProcessAttributes<SerializerAttribute>(nonStaticMethod, ThrowInvalidAttributeUsage);
-                ProcessAttributes<DeserializerAttribute>(nonStaticMethod, ThrowInvalidAttributeUsage);
+                ProcessAttributes<DeserializerAttribute>(nonStaticMethod, visitor.VisitDeserializerMethod);
             }
         }
 
