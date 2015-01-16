@@ -4,13 +4,13 @@ using Shapeshifter.Core;
 namespace Shapeshifter
 {
     /// <summary>
-    ///     Attribute for marking custom deserializers of a given type and version. A custom deserializer can be any static method with the required signature 
-    ///     static object AnyName(IShapeshifterReader reader). 
+    ///     Attribute for marking custom deserializers of a given type and version. A custom deserializer can be any method (static or instance) with the required signature 
+    ///      static object AnyName(IShapeshifterReader reader). 
     /// </summary>
     /// <remarks>
     ///     If it is applied to a static method it means that for the defined name and version this method will be called during
-    ///     deserialization.
-    ///     The method must be static and the signature must conform to object MyMethod(IShapeshifterReader reader).
+    ///     deserialization. Custom deserializer method must be either static or instance of a class with a default public constructor.
+    ///     The signature must conform to object MyMethod(IShapeshifterReader reader).
     ///     Multiple DeserializerAttributes can be applied to a single method.
     ///     For the attribute a name and a version can be specified. The name is the name of the class in the serialized data
     ///     and the version is its serialized version
@@ -33,7 +33,7 @@ namespace Shapeshifter
     ///     public static object DeserializerForSpecifiedOldVersions(IShapeshifterReader reader)
     ///     {}
     /// 
-    ///     [Deserializer(typeof(MyBase), ForAllDescendants = true)]
+    ///     [Deserializer(typeof(MyBase),1 , ForAllDescendants = true)]
     ///     public static object DeserializerForAllDescendants(IShapeshifterReader reader, Type targetType)
     ///     {}
     /// </code>
