@@ -18,7 +18,7 @@ namespace Shapeshifter.Builder
         private readonly TypeInspector _typeInspector;
         private readonly bool _enableInstanceManipulation;
         private readonly object _instance;
-        private bool _instanceRed = false;
+        private bool _instanceRead = false;
 
         /// <summary>
         /// Creates a builder for the type given. If a reader is specified it tries to fill the new instance with the data from the reader.
@@ -92,7 +92,7 @@ namespace Shapeshifter.Builder
         /// <param name="value">The value to set.</param>
         public void SetMember(string name, object value)
         {
-            if (_instanceRed && !_enableInstanceManipulation)
+            if (_instanceRead && !_enableInstanceManipulation)
             {
                 throw Exceptions.InstanceAlreadyGivenAway();
             }
@@ -120,7 +120,7 @@ namespace Shapeshifter.Builder
         {
             T result;
 
-            if (_instanceRed && !_enableInstanceManipulation)
+            if (_instanceRead && !_enableInstanceManipulation)
             {
                 throw Exceptions.InstanceAlreadyGivenAway();
             }
@@ -146,12 +146,12 @@ namespace Shapeshifter.Builder
         /// <returns>The instance built.</returns>
         public object GetInstance()
         {
-            if (_instanceRed)
+            if (_instanceRead)
             {
                 throw Exceptions.InstanceAlreadyGivenAway();
             }
 
-            _instanceRed = true;
+            _instanceRead = true;
             return _instance;
         }
     }
