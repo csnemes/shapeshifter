@@ -73,7 +73,7 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         {
             var typeContext = MetadataExplorer.CreateFor(typeof (T)).Deserializers;
             var engine = new InternalPackformatReader(input, typeContext);
-            return (T)engine.Unpack<T>();
+            return engine.Unpack<T>();
         }
 
         [DataContract]

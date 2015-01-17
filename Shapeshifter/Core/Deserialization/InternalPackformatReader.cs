@@ -27,16 +27,18 @@ namespace Shapeshifter.Core.Deserialization
         {
         }
 
-        public object Unpack<T>()
+        public T Unpack<T>()
         {
-            object result = MatchValue();
-            return ValueConverter.ConvertValueToTargetType<T>(result);
+            var result = ValueConverter.ConvertValueToTargetType<T>(MatchValue());
+            _serializerInstanceStore.NotifyInstancesOnDeserializationEnding();
+            return result;
         }
 
         public object Unpack(Type targetType)
         {
-            object result = MatchValue();
-            return ValueConverter.ConvertValueToTargetType(targetType, result);
+            var result = ValueConverter.ConvertValueToTargetType(targetType, MatchValue());
+            _serializerInstanceStore.NotifyInstancesOnDeserializationEnding();
+            return result;
         }
 
         private object MatchValue(bool skipRead = false)

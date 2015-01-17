@@ -218,6 +218,14 @@ namespace Shapeshifter.Core
             return SafeCreateException(() => new ShapeshifterException(FailureWhenInvokingConstructorId,
                 String.Format("Constructor invocation failed when constructing type {0} with error {1}.", type.FullName, exception.Message), exception));
         }
+
+
+        public const string FailedToRunDeserializationEndingId = "FailedToRunDeserializationEnding";
+        public static Exception FailedToRunDeserializationEnding(Type type, Exception exception)
+        {
+            return SafeCreateException(() => new ShapeshifterException(FailedToRunDeserializationEndingId,
+                String.Format("DeserializationEnding invocation failed on type {0} with error {1}.", type.FullName, exception.Message), exception));
+        }
         
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {
