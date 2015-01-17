@@ -63,6 +63,18 @@ namespace Shapeshifter.Tests.Unit.Builder
         }
 
         [Test]
+        public void MultipleGetInstance_ShouldThrowException_EvenWithModificationEnabled()
+        {
+            var builder = new InstanceBuilder<TestClass>(true);
+
+            builder.GetInstance();
+
+            Action action = () => builder.GetInstance();
+
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InstanceAlreadyGivenAwayId);
+        }
+
+        [Test]
         public void SetMemberAfterGetInstance_ShouldThrowException()
         {
             var builder = new InstanceBuilder<TestClass>();
@@ -72,6 +84,16 @@ namespace Shapeshifter.Tests.Unit.Builder
             Action action = () => builder.SetMember("_childPrivateField", "Hello");
 
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InstanceAlreadyGivenAwayId);
+        }
+
+        [Test]
+        public void SetMemberAfterGetInstance_EnabledModification_ShouldModifyTheValue()
+        {
+            var builder = new InstanceBuilder<TestClass>(true);
+
+            var instance = builder.GetInstance();
+            builder.SetMember("_childPrivateField", "Hello");
+            instance.GetChildPrivateField().Should().Be("Hello");
         }
 
         [Test]
@@ -124,6 +146,31 @@ namespace Shapeshifter.Tests.Unit.Builder
 
             instance.GetBasePrivateField().Should().Be("Hello");
             instance.GetBasePrivateProperty().Should().Be(42);
+            instance.GetChildPrivateField().Should().Be("Seeya");
+            instance.GetChildPrivateProperty().Should().Be(43);
+        }
+
+        [Test]
+        public void InstancePopulatedFromReaderModifiedAfterwards()
+        {
+            var objectProperties = new ObjectProperties(new Dictionary<string, object>()
+            {
+                {Constants.TypeNameKey, "TestClass"},
+                {Constants.VersionKey, (long)1},
+                {"_basePrivateField", "Hello"},
+                {"BasePrivateProperty", 42},
+                {"_childPrivateField", "Seeya"},
+                {"ChildPrivateProperty", 43},
+            });
+            var reader = new ShapeshifterReader(objectProperties);
+
+            var builder = new InstanceBuilder<TestClass>(reader, true);
+            var instance = builder.GetInstance();
+
+            builder.SetMember("BasePrivateProperty", 1);
+
+            instance.GetBasePrivateField().Should().Be("Hello");
+            instance.GetBasePrivateProperty().Should().Be(1);
             instance.GetChildPrivateField().Should().Be("Seeya");
             instance.GetChildPrivateProperty().Should().Be(43);
         }
