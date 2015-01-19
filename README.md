@@ -35,6 +35,9 @@ Version History:
 *1.2.0 
   - Instance builder can be configured to enable the modification of an instance after it is read from the builder  
   - Non static custom deserializers can participate in a fix-up phase right before returning the deserialized object hierarchy
+  - Bugfix: Snapshot did not take into account classes which only contained custom deserializers
+  - Bugfix: Snapshot verbose flag did not list the assemblies processed
+  - Small refactorings 
 
 Notes:
 ---
