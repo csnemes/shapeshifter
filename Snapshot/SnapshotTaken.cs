@@ -27,6 +27,7 @@ namespace Snapshot
             _name = name;
             _includedPaths = includedPaths;
             _excludedNames = excludedNames;
+            _verbose = verbose;
         }
 
         public static SnapshotTaken TakeSnapshot(string name, IEnumerable<string> includedPaths, IEnumerable<string> excludedNames, bool verbose)

@@ -56,7 +56,6 @@ namespace Shapeshifter
         /// <returns>A serializer for the given type.</returns>
         public ShapeshifterSerializer<T> GetSerializer<T>()
         {
-            var assembliesToSearch = AppDomain.CurrentDomain.GetAssemblies();
             return (ShapeshifterSerializer<T>) _cache.GetOrAdd(typeof (T), type => new ShapeshifterSerializer<T>(GetTypesWithCustomDeserializersOrShapeshifterRoot(
                 _assembliesToParse), _assembliesToParse));
         }

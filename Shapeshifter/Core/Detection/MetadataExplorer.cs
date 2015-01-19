@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Serialization;
 
@@ -168,8 +169,23 @@ namespace Shapeshifter.Core.Detection
             
             //look for all types bearing ShapeshifterRoot attribute and use them as root types
             var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterRootAttribute>());
+            var knownTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(HasCustomDeserializerWithoutDataContract);
 
-            return CreateFor(rootTypes, assembliesInScope);
+            return CreateFor(rootTypes, knownTypes, assembliesInScope);
+        }
+
+        private static bool HasCustomDeserializerWithoutDataContract(Type type)
+        {
+            //If type contains a custom deserializer or serializer must be added to known types except if the class itself is part of a serialization hierarchy (approx. has DataContract attribute)
+            var hasCustomDeserializer =  type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
+                                   BindingFlags.Instance).Any(memberInfo => memberInfo.HasAttributeOfType<DeserializerAttribute>());
+
+            var hasCustomSerializer =  type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
+                                   BindingFlags.Instance).Any(memberInfo => memberInfo.HasAttributeOfType<SerializerAttribute>());
+
+            var hasDataContract = type.HasAttributeOfType<DataContractAttribute>();
+
+            return (hasCustomDeserializer || hasCustomSerializer) && !hasDataContract;
         }
 
         private void WalkType(Type type)
