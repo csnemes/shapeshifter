@@ -163,13 +163,18 @@ namespace Shapeshifter.Core.Detection
             return builder;
         }
 
-        public static MetadataExplorer CreateFor(IEnumerable<Assembly> assembliesInScope)
+        public static MetadataExplorer CreateFor(IEnumerable<Assembly> assembliesInScope, IEnumerable<Type> additionalKnownTypes = null)
         {
             if (assembliesInScope == null) throw new ArgumentNullException("assembliesInScope");
             
             //look for all types bearing ShapeshifterRoot attribute and use them as root types
             var rootTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(type => type.HasAttributeOfType<ShapeshifterRootAttribute>());
             var knownTypes = assembliesInScope.SelectMany(assembly => assembly.GetTypes()).Where(HasCustomDeserializerWithoutDataContract);
+
+            if (additionalKnownTypes != null)
+            {
+                knownTypes = knownTypes.Concat(additionalKnownTypes);
+            }
 
             return CreateFor(rootTypes, knownTypes, assembliesInScope);
         }

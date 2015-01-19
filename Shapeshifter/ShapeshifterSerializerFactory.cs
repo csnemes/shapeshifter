@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading;
+using Shapeshifter.Core.Detection;
 
 namespace Shapeshifter
 {
@@ -56,21 +57,11 @@ namespace Shapeshifter
         /// <returns>A serializer for the given type.</returns>
         public ShapeshifterSerializer<T> GetSerializer<T>()
         {
-            return (ShapeshifterSerializer<T>) _cache.GetOrAdd(typeof (T), type => new ShapeshifterSerializer<T>(GetTypesWithCustomDeserializersOrShapeshifterRoot(
-                _assembliesToParse), _assembliesToParse));
-        }
-
-        private IEnumerable<Type> GetTypesWithCustomDeserializersOrShapeshifterRoot(IEnumerable<Assembly> assembliesToScan)
-        {
-            return assembliesToScan.SelectMany(assembly => assembly.GetTypes())
-                    .Where(HasCustomDeserializerOrShapeshifterRoot).ToList();
-        }
-
-        private bool HasCustomDeserializerOrShapeshifterRoot(Type type)
-        {
-            return type.GetCustomAttributes(typeof (ShapeshifterRootAttribute), false).Any() ||
-                   type.GetMembers(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static |
-                                   BindingFlags.Instance).Any(memberInfo => memberInfo.GetCustomAttributes(typeof(DeserializerAttribute), false).Any());
+            return (ShapeshifterSerializer<T>) _cache.GetOrAdd(typeof (T), type =>
+            {
+                var metadata = MetadataExplorer.CreateFor(_assembliesToParse, ShapeshifterSerializer.BuiltInKnownTypes);
+                return new ShapeshifterSerializer<T>(metadata);
+            });
         }
 
     }

@@ -42,6 +42,9 @@ namespace Shapeshifter
         {
         }
 
+        internal ShapeshifterSerializer(MetadataExplorer metadata) : base(typeof(T), metadata)
+        {}
+
         /// <summary>
         /// Deserializes an instance of T from the given stream.
         /// </summary>
@@ -68,7 +71,7 @@ namespace Shapeshifter
     /// </summary>
     public class ShapeshifterSerializer
     {
-        private readonly IEnumerable<Type> _builtInKnownTypes = new List<Type>
+        internal static readonly IEnumerable<Type> BuiltInKnownTypes = new List<Type>
         {
            typeof (EnumConverter)
         };
@@ -100,9 +103,15 @@ namespace Shapeshifter
             _targetType = type;
 
             var rootTypesToCheck = new List<Type> { type };
-            var knownTypesToCheck = _builtInKnownTypes.Union(knownTypes ?? Enumerable.Empty<Type>());
+            var knownTypesToCheck = BuiltInKnownTypes.Union(knownTypes ?? Enumerable.Empty<Type>());
 
             _metadata = MetadataExplorer.CreateFor(rootTypesToCheck, knownTypesToCheck, descendantSearchScope);
+        }
+
+        internal ShapeshifterSerializer(Type type, MetadataExplorer metadata)
+        {
+            _targetType = type;
+            _metadata = metadata;
         }
 
         private SerializerCollection Serializers
@@ -168,5 +177,6 @@ namespace Shapeshifter
                 return unpackerEngine.Unpack(_targetType);
             }
         }
+
     }
 }
