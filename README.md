@@ -25,14 +25,14 @@ Use Visual Studio 2013
 
 Version History:
 ---
- *1.0.0 
+*1.0.0 
     Initial release
  
- *1.1.0 
+*1.1.0 
   - Added support for non-static custom deserializers (see wiki for details)
   - Added ShapeshifterSerializerFactory class to simplify configuration 
   
-  *1.2.0 
+*1.2.0 
   - Instance builder can be configured to enable the modification of an instance after it is read from the builder  
   - Non static custom deserializers can participate in a fix-up phase right before returning the deserialized object hierarchy
 
