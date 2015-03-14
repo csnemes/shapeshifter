@@ -19,6 +19,7 @@ namespace Shapeshifter.Core.Detection
         private readonly DeserializerCollection.DeserializerCollectionBuilder _deserializers = DeserializerCollection.New;
         private readonly SerializerCollection.SerializerCollectionBuilder _serializers = SerializerCollection.New;
         private readonly SerializationStructureWalker _walker;
+        private readonly List<Action<IEnumerable<Type>>> _deferredActions = new List<Action<IEnumerable<Type>>>();
 
         private MetadataExplorer(IEnumerable<Assembly> descendantSearchScope = null)
         {
@@ -64,13 +65,20 @@ namespace Shapeshifter.Core.Detection
 
             if (attribute.ForAllDescendants)
             {
-                var descendantTypes = GetAllDescendants(attribute.TargetType);
-                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
-                {
-                    var descendantVersion = GetVersionForCustomSerializer(attribute, descendantType);
-                    _serializers.Add(new CustomSerializer(descendantType, attribute.PackformatName, descendantVersion, methodInfo,
-                        CustomSerializerCreationReason.ImplicitByBaseType));
-                }
+                //defer the search for descendants to the end of the exploring process
+                //this way all visited types can be added to the descendant search scope
+                Action<IEnumerable<Type>> action = visitedTypes =>
+                    {
+                        var descendantTypes = GetAllDescendants(attribute.TargetType, visitedTypes);
+                        foreach (var descendantType in descendantTypes.Where(i => i.IsConcreteType()))
+                        {
+                            var descendantVersion = GetVersionForCustomSerializer(attribute, descendantType);
+                            _serializers.Add(new CustomSerializer(descendantType, attribute.PackformatName,
+                                descendantVersion, methodInfo,
+                                CustomSerializerCreationReason.ImplicitByBaseType));
+                        }
+                    };
+                _deferredActions.Add(action);
             }
         }
 
@@ -93,7 +101,7 @@ namespace Shapeshifter.Core.Detection
             }
             else
             {
-                if (!attribute.Version.HasValue)
+                if (!attribute.Version.HasValue && attribute.TargeType == null)
                     throw Exceptions.CustomDeserializerMustSpecifyVersion(attribute, methodInfo);
 
                 if (!IsCorrectSignatureForCustomDeserializer(methodInfo))
@@ -115,13 +123,19 @@ namespace Shapeshifter.Core.Detection
 
             if (attribute.ForAllDescendants)
             {
-                var descendantTypes = GetAllDescendants(attribute.TargeType);
-                foreach (var descendantType in descendantTypes.Where(i=>i.IsConcreteType()))
-                {
-                    var descendantVersion = GetVersionForCustomDeserializer(attribute, descendantType);
-                    _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), descendantVersion, methodInfo,
-                        CustomSerializerCreationReason.ImplicitByBaseType, descendantType));
-                }
+                //defer the search for descendants to the end of the exploring process
+                Action<IEnumerable<Type>> action = visitedTypes =>
+                    {
+                        var descendantTypes = GetAllDescendants(attribute.TargeType, visitedTypes);
+                        foreach (var descendantType in descendantTypes.Where(i => i.IsConcreteType()))
+                        {
+                            var descendantVersion = GetVersionForCustomDeserializer(attribute, descendantType);
+                            _deserializers.Add(new CustomDeserializer(descendantType.GetPrettyName(), descendantVersion,
+                                methodInfo,
+                                CustomSerializerCreationReason.ImplicitByBaseType, descendantType));
+                        }
+                    };
+                _deferredActions.Add(action);
             }
         }
 
@@ -132,11 +146,11 @@ namespace Shapeshifter.Core.Detection
                 : new TypeInspector(targetType).Version;
         }
 
-        private IEnumerable<Type> GetAllDescendants(Type baseType)
+        private IEnumerable<Type> GetAllDescendants(Type baseType, IEnumerable<Type> visitedTypes)
         {
             // TODO optimize this lookup ?
-            return _descendantSearchScope.SelectMany(i => i.GetTypes())
-                .Where(i => i.GetBaseTypes().Any(b => b.IsSameAsOrConstructedFrom(baseType)));
+            var typesToCheck = _descendantSearchScope.SelectMany(i => i.GetTypes()).Union(visitedTypes);
+            return typesToCheck.Where(i => i.GetBaseTypes().Any(b => b.IsSameAsOrConstructedFrom(baseType)));
         }
 
         public static MetadataExplorer CreateFor(Type rootType, IEnumerable<Assembly> descendantSearchScope = null)
@@ -205,6 +219,13 @@ namespace Shapeshifter.Core.Detection
             {
                 WalkType(type);
             }
+            //get visited types from walker and feed it into the descendant search. Descendant search is deferred, it will be
+            //executed right next, now with an extended search scope which includes all the types visited. This "trick" ensures
+            //that ForAllDescendant converters works most of the time without explicitly specifying descendant search scope assemblies.
+            //This is especially important as EnumConverter is not even visible for consumers so they don't even know that they must 
+            //specify assemblies with custom enums (taking part in the serialization graph) in it.
+            //run deferred actions
+            _deferredActions.ForEach(action => action(Walker.TypesVisited));
         }
 
         private static void CheckIfShapeshifterRootAttributeIsPresent(Type type)

@@ -57,7 +57,14 @@
     <Compile Include="Core\Serialization\SerializerCollectionTests.cs" />
     <Compile Include="Core\TypeExtensionsTests.cs" />
     <Compile Include="RoundtripTests\BuiltInTypesAsObjectsTests.cs" />
+    <Compile Include="RoundtripTests\ComplexStructureTests.cs" />
+    <Compile Include="RoundtripTests\ComplexStructure\Address.cs" />
+    <Compile Include="RoundtripTests\ComplexStructure\Customer.cs" />
+    <Compile Include="RoundtripTests\ComplexStructure\Order.cs" />
+    <Compile Include="RoundtripTests\ComplexStructure\OrderItem.cs" />
+    <Compile Include="RoundtripTests\ComplexStructure\Product.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />
+    <Compile Include="RoundtripTests\EnumConverterTests.cs" />
     <Compile Include="RoundtripTests\IEnumerableImplementingClassTests.cs" />
     <Compile Include="RoundtripTests\ListBasedClassTests.cs" />
     <Compile Include="RoundtripTests\NonStaticCustomDeserializerTests.cs" />
@@ -103,6 +110,7 @@
   <ItemGroup>
     <EmbeddedResource Include="SchemaComparison\Resources\ModelVersion1.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

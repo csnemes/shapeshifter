@@ -82,7 +82,7 @@ namespace Shapeshifter.Core.Detection
 
         public bool IsSerializable
         {
-            get { return HasDataContractAttribute || IsNativeType; }
+            get { return HasDataContractAttribute || IsNativeType || this.Type.IsEnum; }
         }
 
         public bool IsNativeType

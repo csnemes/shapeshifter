@@ -43,6 +43,11 @@ namespace Shapeshifter.Core.Detection
             }
         }
 
+        internal IEnumerable<Type> TypesVisited
+        {
+            get { return _typesVisited; }
+        }
+
         private void InternalWalkType(Type type)
         {
             //TODO cache typeInspectors statically?

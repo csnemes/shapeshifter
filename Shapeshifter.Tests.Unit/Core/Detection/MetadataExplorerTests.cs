@@ -175,10 +175,18 @@ namespace Shapeshifter.Tests.Unit.Core.Detection
         }
 
         [Test]
-        public void CustomDeserializerWithTypeAndNoVersion_ShouldThrow()
+        public void CustomDeserializerWithTypeAndNoVersion_ShouldNotThrow()
         {
             Action action = () => MetadataExplorer.CreateFor(typeof(MyTypeWithCustomDeserializerWithTypeAndNoVersion));
-            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CustomDeserializerMustSpecifyVersionId);
+            action.ShouldNotThrow();
+        }
+
+        [Test]
+        public void CustomDeserializerWithTypeAndNoVersion_UsesTheCurentVersionOfTheType()
+        {
+            var explorer = MetadataExplorer.CreateFor(typeof(MyTypeWithCustomDeserializerWithTypeAndNoVersion));
+            var deserializer = explorer.Deserializers.First();
+            deserializer.Version.Should().Be(3948729994);
         }
 
         [Test]

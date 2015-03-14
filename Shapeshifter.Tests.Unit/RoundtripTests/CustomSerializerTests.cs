@@ -228,18 +228,19 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         }
 
         [Test]
-        public void CustomDeserializerOnNonStaticMethodMustHaveVersion()
+        public void CustomDeserializerOnNonStaticMethodWithoutVersionShouldNotThrow()
         {
             Action action = () => GetSerializer<MyClassWithNonStaticDeserializerMethod>().Serialize(null);
-            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.CustomDeserializerMustSpecifyVersionId);
+            action.ShouldNotThrow();
         }
 
         [ShapeshifterRoot]
         public class MyClassWithNonStaticDeserializerMethod
         {
             [Deserializer(typeof(MyClassWithNonStaticDeserializerMethod))]
-            public void NonStaticDeserializer(IShapeshifterWriter writer, MyClassWithNonStaticDeserializerMethod item)
+            public object NonStaticDeserializer(IShapeshifterReader reader)
             {
+                return null;
             }
         }
 

@@ -15,8 +15,8 @@ namespace Shapeshifter
     ///     For the attribute a name and a version can be specified. The name is the name of the class in the serialized data
     ///     and the version is its serialized version
     ///     Versions are calculated automatically by Shapeshifter or defined by the <see cref="SerializerAttribute" /> or <see cref="ShapeshifterRootAttribute" />.
-    ///     If no version is specified on a method that deserializer becomes the default, which means that if no version
-    ///     specific deserializer is found it will be used. Only one default deserializer can be defined for a given name.
+    ///     If no version is specified on a method that deserializer becomes the deserializer for the current version. Use this
+    ///     feature with care as the current version might change if you temper the class. Also in such scenario target type must be given.
     /// </remarks>
     /// <example>
     /// <code>
