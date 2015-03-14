@@ -173,6 +173,8 @@ namespace Snapshot
                 Console.WriteLine(new string('-', 80));
                 Console.WriteLine(context.Exception.ToString()); 
             }
+
+            Environment.Exit(-1);
         }
 
 
