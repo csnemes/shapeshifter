@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Shapeshifter.Core;
 using Shapeshifter.Core.Deserialization;
 using Shapeshifter.Core.Detection;
 using Shapeshifter.Core.Serialization;
@@ -65,7 +66,7 @@ namespace Shapeshifter.SchemaComparison.Impl
             if (serializer is DefaultSerializer)
             {
                 var typeInspector = new TypeInspector(serializer.Type);
-                return new DefaultSerializerInfo(serializer.PackformatName, serializer.Version, serializer.Type.FullName, typeInspector.SerializableMemberCandidates);
+                return new DefaultSerializerInfo(serializer.PackformatName, serializer.Version, serializer.Type.GetPrettyFullName(), typeInspector.SerializableMemberCandidates);
             }
             if (serializer is CustomSerializer)
             {
@@ -83,7 +84,7 @@ namespace Shapeshifter.SchemaComparison.Impl
             if (deserializer is DefaultDeserializer)
             {
                 var defaultDeserializer = deserializer as DefaultDeserializer;
-                return new DefaultDeserializerInfo(deserializer.PackformatName, deserializer.Version, defaultDeserializer.Type.FullName);
+                return new DefaultDeserializerInfo(deserializer.PackformatName, deserializer.Version, defaultDeserializer.Type.GetPrettyFullName());
             }
             if (deserializer is CustomDeserializer)
             {

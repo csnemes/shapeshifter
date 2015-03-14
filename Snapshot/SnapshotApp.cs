@@ -102,6 +102,24 @@ namespace Snapshot
             }
         }
 
+        [Verb(Description = "View current snaphsot's types with versions.")]
+        public void View(
+            [Required]
+            [Description("Comma separated list of files to be parsed during snapshot creation. Wildcards are accepted.")]
+            string[] include,
+            [Description("Comma separated list of files to be excluded during snapshot creation. Only specify file names, not paths. Wildcards are accepted.")]
+            [Aliases("x")]
+            string[] exclude
+            )
+        {
+            var snapshot = SnapshotTaken.TakeSnapshot("ActualSnapshot", include, exclude ?? new string[0], _verbose);
+            Console.WriteLine("Actual snapshot contains:");
+            foreach (var serializerInfo in snapshot.Snapshot.DefaultSerializers.OrderBy(item => item.TypeFullName))
+            {
+                Console.WriteLine("{0} => {1}[{2}]", serializerInfo.TypeFullName, serializerInfo.PackformatName, serializerInfo.Version);
+            }
+        }
+
         [Global(Aliases = "f",
             Description =
                 "Specifies the snapshot file location to be used during command execution. If not specified the working directory and the shapeshifter.snapshot name will be used as default."

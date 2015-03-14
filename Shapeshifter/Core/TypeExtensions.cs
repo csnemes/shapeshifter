@@ -126,5 +126,27 @@ namespace Shapeshifter.Core
             sb.Append(">");
             return sb.ToString();
         }
+
+        public static string GetPrettyFullName(this Type type)
+        {
+            if (!type.IsGenericType) return type.FullName;
+
+            Type[] genericArguments = type.GetGenericArguments();
+            var sb = new StringBuilder(type.Namespace);
+            sb.Append(".");
+            sb.Append(type.Name.Substring(0, type.Name.IndexOf('`')));
+            sb.Append("<");
+            for (int idx = 0; idx < genericArguments.Length; idx++)
+            {
+                Type argType = genericArguments[idx];
+                sb.Append(argType.GetPrettyFullName());
+                if (idx < genericArguments.Length - 1)
+                {
+                    sb.Append(",");
+                }
+            }
+            sb.Append(">");
+            return sb.ToString();
+        }
     }
 }

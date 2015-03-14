@@ -9,7 +9,7 @@ namespace Shapeshifter.SchemaComparison.Impl
 {
     [DataContract]
     [Serializable]
-    internal class DefaultSerializerInfo : SerializerInfo
+    internal class DefaultSerializerInfo : SerializerInfo, ISerializationInformation
     {
         [DataMember]
         private readonly string _typeFullName;
@@ -32,6 +32,9 @@ namespace Shapeshifter.SchemaComparison.Impl
         {
             get { return _serializedMembers; }
         }
+
+
+
     }
 
     [DataContract]

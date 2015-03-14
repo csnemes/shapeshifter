@@ -176,6 +176,14 @@ namespace Shapeshifter.SchemaComparison
             return result;
         }
 
+        /// <summary>
+        /// Returns information on default serializers
+        /// </summary>
+        public IEnumerable<ISerializationInformation> DefaultSerializers
+        {
+            get { return _serializers.OfType<DefaultSerializerInfo>(); }
+        }
+
         private bool ExistsDeserializerFor(SerializerInfo serializerInfo)
         {
             return _deserializers.ContainsKey(serializerInfo.Key);

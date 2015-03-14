@@ -82,6 +82,7 @@
     <Compile Include="SchemaComparison\Impl\SnapshotCreatorInSeparateAppDomain.cs" />
     <Compile Include="SchemaComparison\MissingDeserializerInfo.cs" />
     <Compile Include="SchemaComparison\Impl\SerializerInfo.cs" />
+    <Compile Include="SchemaComparison\ISerializationInformation.cs" />
     <Compile Include="SchemaComparison\Snapshot.cs" />
     <Compile Include="SchemaComparison\Impl\SnapshotDetector.cs" />
     <Compile Include="SchemaComparison\SnapshotDifference.cs" />
