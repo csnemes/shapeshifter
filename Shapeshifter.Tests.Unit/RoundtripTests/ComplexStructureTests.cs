@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using Shapeshifter.Tests.Unit.RoundtripTests.ComplexStructure;
 
@@ -25,10 +26,19 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
         public void MesurePerformance()
         {
             var customer = CreateCustomer(10, 5);
+            Debug.WriteLine("Cust10_Json:{0}", MesureJsonPerformance(customer));
+            Debug.WriteLine("Cust10_Shapeshifter:{0}", MesureShapeshifterPerformance(customer));
+            customer = CreateCustomer(50, 10);
+            Debug.WriteLine("Cust50_Json:{0}", MesureJsonPerformance(customer));
+            Debug.WriteLine("Cust50_Shapeshifter:{0}", MesureShapeshifterPerformance(customer));
+        }
 
+        private TimeSpan MesureShapeshifterPerformance(Customer customer)
+        {
             var watch = Stopwatch.StartNew();
             var shapeshifterSerializer = new ShapeshifterSerializer<Customer>();
-            for (int cnt = 1; cnt < 10; cnt++)
+
+            for (int cnt = 1; cnt < 1000; cnt++)
             {
                 using (var stream = new MemoryStream())
                 {
@@ -38,11 +48,33 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
                 }
             }
             watch.Stop();
-            Debug.Print(watch.Elapsed.ToString());
-            
+            return watch.Elapsed;
         }
 
-        private Customer CreateCustomer(int numberOfOrders, int numberOfOrderItemsInASingleOrder)
+        private TimeSpan MesureJsonPerformance(Customer customer)
+        {
+            var watch = Stopwatch.StartNew();
+            var jsonSerializer = new JsonSerializer();
+
+            for (int cnt = 1; cnt < 1000; cnt++)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    var writer = new StreamWriter(stream);
+                    jsonSerializer.Serialize(writer, customer);
+                    writer.Flush();
+
+                    stream.Seek(0, SeekOrigin.Begin);
+
+                    var reader = new StreamReader(stream);
+                    var result = jsonSerializer.Deserialize(reader, typeof(Customer));
+                }
+            }
+            watch.Stop();
+            return watch.Elapsed;
+        }
+
+       private Customer CreateCustomer(int numberOfOrders, int numberOfOrderItemsInASingleOrder)
         {
             var orders = new List<Order>();
             for (int idx = 1; idx < numberOfOrders; idx++)

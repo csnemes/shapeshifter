@@ -76,7 +76,8 @@ namespace Snapshot
             [Description("Defines the name of the oldest snapshot taken into account.")]
             string oldestSnapshot,
             [Description("Returns with exit code 1 if there is a difference between the snapshots.")]
-            bool failOnDifference)
+            [Aliases("failOnDifference")]
+            bool haltOnDifference)
         {
             var path = GetSnapshotPath();
             if (!System.IO.File.Exists(path))
@@ -95,7 +96,7 @@ namespace Snapshot
             Console.WriteLine("The following differences are detected:");
             Console.WriteLine(difference.GetHumanReadableResult(_verbose));
 
-            if (failOnDifference)
+            if (haltOnDifference)
             {
                 Environment.Exit(1);
             }
