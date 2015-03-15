@@ -114,6 +114,29 @@ namespace Shapeshifter.SchemaComparison
             _snapshots[indexToBeReplaced] = snapshot;
         }
 
+
+        /// <summary>
+        /// Removes an existing snapshot with the given name. 
+        /// </summary>
+        /// <param name="name">Name of the snapshot to be reomved</param>
+        public void RemoveSnapshot(string name)
+        {
+            if (String.IsNullOrWhiteSpace(name))
+            {
+                throw Exceptions.SnapshotNameIsMissing();
+            }
+
+            var indexToBeDeleted =
+                _snapshots.FindIndex(snap => snap.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (indexToBeDeleted == -1)
+            {
+                throw Exceptions.SnapshotIsMssing(name);
+            }
+
+            _snapshots.RemoveAt(indexToBeDeleted);
+        }
+
         private void CheckSnapshotName(string name)
         {
             if (String.IsNullOrWhiteSpace(name))
@@ -157,7 +180,6 @@ namespace Shapeshifter.SchemaComparison
             var serializer = new ShapeshifterSerializer<SnapshotHistory>();
             serializer.Serialize(stream, this);
         }
-
 
     }
 }

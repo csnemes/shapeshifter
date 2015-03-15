@@ -131,6 +131,31 @@ namespace Snapshot
             }
         }
 
+        [Verb(Description = "Deletes a snapshot from the snapshot file with the given name.")]
+        public void Delete(
+            [Required]
+            [Description("The name of the snapshot")]
+            string name,
+            [Description("If specified the snapshot won't be saved to the snapshot file.")]
+            [DefaultValue(false)]
+            bool whatif)
+        {
+            var path = GetSnapshotPath();
+            if (!System.IO.File.Exists(path))
+            {
+                throw new ApplicationException(String.Format("Snapshot file on path {0} not found.", path));
+            }
+            var history = SnapshotHistory.LoadFrom(path);
+
+            history.RemoveSnapshot(name);
+
+            if (!whatif)
+            {
+                history.SaveTo(path);
+                Console.WriteLine("Snapshot deleted.");
+            }
+        }
+
         [Global(Aliases = "f",
             Description =
                 "Specifies the snapshot file location to be used during command execution. If not specified the working directory and the shapeshifter.snapshot name will be used as default."
