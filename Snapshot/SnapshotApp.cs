@@ -27,7 +27,10 @@ namespace Snapshot
             string[] exclude,
             [Description("If specified the snapshot won't be saved to the snapshot file.")]
             [DefaultValue(false)]
-            bool whatif)
+            bool whatif,
+            [Description("If specified the snapshot will replace an existing one with the same name (Use only in special cases to fixup messed snapshots).")]
+            [DefaultValue(false)]
+            bool replace)
         {
             var path = GetSnapshotPath();
             var snapshotHistory = System.IO.File.Exists(path) ? SnapshotHistory.LoadFrom(path) : SnapshotHistory.Empty;
@@ -37,7 +40,15 @@ namespace Snapshot
             Console.WriteLine("Assemblies parsed:");
             snapshot.AssembliesParsed.ForEach(Console.WriteLine);
 
-            snapshotHistory.AddSnapshot(snapshot.Snapshot);
+            if (replace)
+            {
+                snapshotHistory.ReplaceSnapshot(snapshot.Snapshot);
+            }
+            else
+            {
+                snapshotHistory.AddSnapshot(snapshot.Snapshot);
+            }
+
             if (!whatif)
             {
                 snapshotHistory.SaveTo(path);

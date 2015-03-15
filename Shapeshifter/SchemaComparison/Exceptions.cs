@@ -23,6 +23,14 @@ namespace Shapeshifter.SchemaComparison
                 String.Format("Snapshot name {0} already exists in snapshot file.", name)));
         }
 
+
+        public const string SnapshotIsMssingId = "SnapshotIsMssing";
+        public static Exception SnapshotIsMssing(string name)
+        {
+            return SafeCreateException(() => new ShapeshifterException(SnapshotIsMssingId,
+                String.Format("Snapshot with name {0} cannot be found.", name)));
+        }
+
         private static Exception SafeCreateException(Func<Exception> exceptionCreationFunc)
         {
             try

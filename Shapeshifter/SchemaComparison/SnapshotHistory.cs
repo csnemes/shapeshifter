@@ -92,6 +92,28 @@ namespace Shapeshifter.SchemaComparison
             _snapshots.Add(snapshot);
         }
 
+        /// <summary>
+        /// Replaces an existing snapshot with the same name. 
+        /// </summary>
+        /// <param name="snapshot">Snapshot to replace with.</param>
+        public void ReplaceSnapshot(Snapshot snapshot)
+        {
+            if (String.IsNullOrWhiteSpace(snapshot.Name))
+            {
+                throw Exceptions.SnapshotNameIsMissing();
+            }
+
+            var indexToBeReplaced =
+                _snapshots.FindIndex(snap => snap.Name.Equals(snapshot.Name, StringComparison.OrdinalIgnoreCase));
+
+            if (indexToBeReplaced == -1)
+            {
+                throw Exceptions.SnapshotIsMssing(snapshot.Name);
+            }
+
+            _snapshots[indexToBeReplaced] = snapshot;
+        }
+
         private void CheckSnapshotName(string name)
         {
             if (String.IsNullOrWhiteSpace(name))
@@ -135,5 +157,7 @@ namespace Shapeshifter.SchemaComparison
             var serializer = new ShapeshifterSerializer<SnapshotHistory>();
             serializer.Serialize(stream, this);
         }
+
+
     }
 }
