@@ -8,8 +8,8 @@
         /// <summary>
         /// Writes the value to the serialization stream under the given key.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">target key</param>
+        /// <param name="value">value to write</param>
         void Write(string key, object value);
     }
 }

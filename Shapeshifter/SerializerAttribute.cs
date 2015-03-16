@@ -38,6 +38,9 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute for the given targetType, serialized name and version
         /// </summary>
+        /// <param name="targetType">Target type for the serializer</param>
+        /// <param name="version">Target version for the serializer</param>
+        /// <param name="packformatName">Name used for the type in serilaized form</param>
         public SerializerAttribute(Type targetType, string packformatName, uint version)
             :this(targetType, packformatName, (uint?) version)
         {
@@ -46,6 +49,8 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute for the given targetType and optional serialized name
         /// </summary>
+        /// <param name="targetType">Target type for the serializer</param>
+        /// <param name="packformatName">Name used for the type in serilaized form</param>
         public SerializerAttribute(Type targetType, string packformatName = null)
             : this(targetType, packformatName, null)
         {
@@ -54,6 +59,8 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute for the given targetType and version
         /// </summary>
+        /// <param name="targetType">Target type for the serializer</param>
+        /// <param name="version">Target version for the serializer</param>
         public SerializerAttribute(Type targetType, uint version) 
             : this(targetType, null, version)
         {

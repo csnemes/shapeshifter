@@ -32,6 +32,7 @@ namespace Shapeshifter
         /// <summary>
         /// Creates a factory which parses all passed assemblies for deserializers and roots when creating a serializer
         /// </summary>
+        /// <param name="assembliesToParse">List of assemblies we would like to parse for deserializers and shapeshifterroots</param>
         public ShapeshifterSerializerFactory(IEnumerable<Assembly> assembliesToParse)
         {
             _assembliesToParse = new List<Assembly>(assembliesToParse);

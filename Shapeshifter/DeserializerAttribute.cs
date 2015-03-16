@@ -49,6 +49,7 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute with the specified targetType
         /// </summary>
+        /// <param name="targetType">Target type for the deserializer</param>
         public DeserializerAttribute(Type targetType)
             : this(targetType, targetType.GetPrettyName(), null)
         {
@@ -57,6 +58,8 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute with the specified targetType and version
         /// </summary>
+        /// <param name="targetType">Target type for the deserializer</param>
+        /// <param name="version">Target version for the deserializer</param>
         public DeserializerAttribute(Type targetType, uint version)
             : this(targetType, targetType.GetPrettyName(), version)
         {
@@ -65,6 +68,8 @@ namespace Shapeshifter
         /// <summary>
         /// Creates an instance of the attribute with the specified serialized type name and version
         /// </summary>
+        /// <param name="packformatName">Serialized name of the target type</param>
+        /// <param name="version">Target version for the deserializer</param>
         public DeserializerAttribute(string packformatName, uint version)
             : this(null, packformatName, version)
         {

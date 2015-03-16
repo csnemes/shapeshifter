@@ -40,6 +40,8 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a serialized name and version.
         /// </summary>
+        /// <param name="packformatName">Name used in the serialized form for the attributed type</param>
+        /// <param name="version">Version used in the serialized form</param>
         public ShapeshifterRootAttribute(string packformatName, uint version)
             :this (packformatName, (uint?) version)
         {
@@ -48,6 +50,7 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a serialized name if given.
         /// </summary>
+        /// <param name="packformatName">Name used in the serialized form for the attributed typye</param>
         public ShapeshifterRootAttribute(string packformatName = null)
             :this(packformatName, null)
         {
@@ -56,6 +59,7 @@ namespace Shapeshifter
         /// <summary>
         /// Initializes the attribute with a version and the default name.
         /// </summary>
+        /// <param name="version">Version used in the serialized form</param>
         public ShapeshifterRootAttribute(uint version)
             : this(null, version)
         {
