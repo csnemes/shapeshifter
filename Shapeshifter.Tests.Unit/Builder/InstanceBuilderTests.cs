@@ -110,8 +110,8 @@ namespace Shapeshifter.Tests.Unit.Builder
         public void SetWrongValue_ShouldThrowException()
         {
             var builder = new InstanceBuilder<TestClass>();
-
-            Action action = () => builder.SetMember("_childPrivateField", 42);
+            builder.SetMember("_childPrivateField", 42);
+            Action action = () => builder.GetInstance();
 
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.FailedToSetValueId);
         }
@@ -173,6 +173,74 @@ namespace Shapeshifter.Tests.Unit.Builder
             instance.GetBasePrivateProperty().Should().Be(1);
             instance.GetChildPrivateField().Should().Be("Seeya");
             instance.GetChildPrivateProperty().Should().Be(43);
+        }
+
+        [Test]
+        public void BeforeInstantiation_ValueCanBeSetTwice()
+        {
+            var builder = new InstanceBuilder<TestClass>();
+            builder.SetMember("_childPrivateField", "Ahoy");
+            builder.SetMember("_childPrivateField", "Hello");
+
+            var instance = builder.GetInstance(); 
+            instance.GetChildPrivateField().Should().Be("Hello");
+        }
+
+        [Test]
+        public void InstancePopulatedFromReaderModifiedAfterwards_ButBeforeCreation()
+        {
+            var objectProperties = new ObjectProperties(new Dictionary<string, object>()
+            {
+                {Constants.TypeNameKey, "TestClass"},
+                {Constants.VersionKey, (long)1},
+                {"_basePrivateField", "Hello"},
+                {"BasePrivateProperty", "Invalid value"},
+                {"_childPrivateField", "Seeya"},
+                {"ChildPrivateProperty", 43},
+            });
+            var reader = new ShapeshifterReader(objectProperties);
+            var builder = new InstanceBuilder<TestClass>(reader);
+
+            builder.SetMember("BasePrivateProperty", 1);
+
+            var instance = builder.GetInstance();
+
+            instance.GetBasePrivateProperty().Should().Be(1);
+        }
+
+        [Test]
+        public void ValuesCanBeRead_AfterCreation()
+        {
+            var builder = new InstanceBuilder<TestClass>(true); //note that we enable after creation manipulation
+            builder.SetMember("_basePublicField", "Hello");
+            builder.SetMember("BasePublicProperty", 42);
+
+            var instance = builder.GetInstance();
+
+            builder.GetMember<string>("_basePublicField").Should().Be("Hello");
+            builder.GetMember<int>("BasePublicProperty").Should().Be(42);
+        }
+
+        [Test]
+        public void GetMember_AfterCreation_ShouldThrow()
+        {
+            var builder = new InstanceBuilder<TestClass>();
+            builder.SetMember("_basePublicField", "Hello");
+
+            var instance = builder.GetInstance();
+
+            Action action = () => builder.GetMember<string>("_basePublicField");
+            action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.InstanceAlreadyGivenAwayId);
+        }
+
+        [Test]
+        public void IfValueIsOverwrittenTheNewValueIsRead()
+        {
+            var builder = new InstanceBuilder<TestClass>();
+            builder.SetMember("_basePublicField", "Hello");
+            builder.SetMember("_basePublicField", "Hi!");
+
+            builder.GetMember<string>("_basePublicField").Should().Be("Hi!");
         }
 
         private class TestClass : TestClassBase

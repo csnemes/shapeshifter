@@ -82,5 +82,36 @@ namespace Shapeshifter.Core
             if (attributes == null || attributes.Length == 0) return false;
             return attributes.OfType<DataMemberAttribute>().Any();
         }
+
+        protected bool Equals(FieldOrPropertyMemberInfo other)
+        {
+            return Equals(_fieldInfo, other._fieldInfo) && Equals(_propertyInfo, other._propertyInfo);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((FieldOrPropertyMemberInfo) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((_fieldInfo != null ? _fieldInfo.GetHashCode() : 0)*397) ^ (_propertyInfo != null ? _propertyInfo.GetHashCode() : 0);
+            }
+        }
+
+        public static bool operator ==(FieldOrPropertyMemberInfo left, FieldOrPropertyMemberInfo right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(FieldOrPropertyMemberInfo left, FieldOrPropertyMemberInfo right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

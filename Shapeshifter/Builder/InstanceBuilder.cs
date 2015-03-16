@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Shapeshifter.Core;
@@ -17,8 +18,9 @@ namespace Shapeshifter.Builder
     {
         private readonly TypeInspector _typeInspector;
         private readonly bool _enableInstanceManipulation;
-        private readonly object _instance;
+        private object _instance;
         private bool _instanceRead = false;
+        private readonly MemberSetRequests _memberSetsRequests;
 
         /// <summary>
         /// Creates a builder for the type given. If a reader is specified it tries to fill the new instance with the data from the reader.
@@ -31,12 +33,14 @@ namespace Shapeshifter.Builder
         /// Instance manipulation be useful in scenarios where one of the values is not known at the custom deserializer, but can be set later on. 
         /// In such case the custom deserializer can return the instance and also save the builder. Later when the missing value is available (eg. on a 
         /// diffrent deserializer) the value can be set using the saved builder.
+        /// Builder registers all data manipulation and defers the actual creation and data set until the last moment.
         /// </remarks>
         public InstanceBuilder(Type typeToBuild, IShapeshifterReader reader, bool enableInstanceManipulation)
         {
             _typeInspector = new TypeInspector(typeToBuild);
             _instance = FormatterServices.GetUninitializedObject(typeToBuild);
             _enableInstanceManipulation = enableInstanceManipulation;
+            _memberSetsRequests = new MemberSetRequests(typeToBuild);
 
             if (reader != null)
             {
@@ -80,7 +84,7 @@ namespace Shapeshifter.Builder
                 FieldOrPropertyMemberInfo target;
                 if (packItemCandidates.TryGetValue(packItem.Key, out target))
                 {
-                    target.SetValueFor(_instance, ValueConverter.ConvertValueToTargetType(target.Type, packItem.Value));
+                    _memberSetsRequests.AddOrReplace(target, packItem.Value);
                 }
             }
         }
@@ -99,14 +103,21 @@ namespace Shapeshifter.Builder
 
             var memberInfo = _typeInspector.GetFieldOrPropertyMemberInfo(name);
 
-            try
-            {
-                var convertedValue = ValueConverter.ConvertValueToTargetType(memberInfo.Type, value);
-                memberInfo.SetValueFor(_instance, convertedValue);
+            if (!_instanceRead)
+            {  //defer set
+                _memberSetsRequests.AddOrReplace(memberInfo, value);
             }
-            catch (Exception ex)
-            {
-                throw Exceptions.FailedToSetValue(name, _typeInspector.Type, ex);
+            else
+            {  //if the instance is already given away just set the value
+                try
+                {
+                    var convertedValue = ValueConverter.ConvertValueToTargetType(memberInfo.Type, value);
+                    memberInfo.SetValueFor(_instance, convertedValue);
+                }
+                catch (Exception ex)
+                {
+                    throw Exceptions.FailedToSetValue(memberInfo.Name, _typeInspector.Type, ex);
+                }
             }
         }
 
@@ -118,8 +129,6 @@ namespace Shapeshifter.Builder
         /// <returns>The value of the given member.</returns>
         public T GetMember<T>(string name)
         {
-            T result;
-
             if (_instanceRead && !_enableInstanceManipulation)
             {
                 throw Exceptions.InstanceAlreadyGivenAway();
@@ -127,17 +136,22 @@ namespace Shapeshifter.Builder
 
             var memberInfo = _typeInspector.GetFieldOrPropertyMemberInfo(name);
 
-            try
-            {
-                var value = memberInfo.GetValueFor(_instance);
-                result = (T) ValueConverter.ConvertValueToTargetType(typeof(T), value);
+            if (!_instanceRead)
+            { //read from the deferred set
+                return _memberSetsRequests.Get<T>(memberInfo);
             }
-            catch (Exception ex)
-            {
-                throw Exceptions.FailedToGetValue(name, _typeInspector.Type, ex);
+            else
+            { //instance is already given away, read from that
+                try
+                {
+                    var value = memberInfo.GetValueFor(_instance);
+                    return (T)ValueConverter.ConvertValueToTargetType(typeof(T), value);
+                }
+                catch (Exception ex)
+                {
+                    throw Exceptions.FailedToGetValue(name, _typeInspector.Type, ex);
+                }
             }
-
-            return result;
         }
 
         /// <summary>
@@ -151,8 +165,94 @@ namespace Shapeshifter.Builder
                 throw Exceptions.InstanceAlreadyGivenAway();
             }
 
+            _instance = _memberSetsRequests.CreateInstance();
             _instanceRead = true;
             return _instance;
+        }
+
+
+        private class MemberSetRequests
+        {
+            private readonly List<MemberSetRequest> _memberSetsRequests = new List<MemberSetRequest>();
+            private readonly Type _typeToBuild;
+
+            public MemberSetRequests(Type typeToBuild)
+            {
+                _typeToBuild = typeToBuild;
+            }
+
+            public void AddOrReplace(FieldOrPropertyMemberInfo memberInfo, object value)
+            {
+                var idxFound = _memberSetsRequests.FindIndex(item => item.MemberInfo.Equals(memberInfo));
+                if (idxFound == -1)
+                {
+                    _memberSetsRequests.Add(new MemberSetRequest(memberInfo, value));
+                }
+                else
+                {
+                    _memberSetsRequests[idxFound] = new MemberSetRequest(memberInfo, value);
+                }
+            }
+
+            public T Get<T>(FieldOrPropertyMemberInfo memberInfo)
+            {
+                try
+                {
+                    var setItem = _memberSetsRequests.FirstOrDefault(item => item.MemberInfo.Equals(memberInfo));
+                    if (setItem == null)
+                    {
+                        return default(T);
+                    }
+                    return (T)ValueConverter.ConvertValueToTargetType(typeof(T), setItem.Value);
+                }
+                catch (Exception ex)
+                {
+                    throw Exceptions.FailedToGetValue(memberInfo.Name, _typeToBuild, ex);
+                }
+            }
+
+            public object CreateInstance()
+            {
+                var instance = FormatterServices.GetUninitializedObject(_typeToBuild);
+                foreach (var memberSetsRequest in _memberSetsRequests)
+                {
+                    var memberInfo = memberSetsRequest.MemberInfo;
+                    var value = memberSetsRequest.Value;
+                    try
+                    {
+                        var convertedValue = ValueConverter.ConvertValueToTargetType(memberInfo.Type, value);
+                        memberInfo.SetValueFor(instance, convertedValue);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw Exceptions.FailedToSetValue(memberInfo.Name, _typeToBuild, ex);
+                    }
+                }
+
+                return instance;
+            }
+
+            private class MemberSetRequest
+            {
+                private readonly FieldOrPropertyMemberInfo _memberInfo;
+                private readonly object _value;
+
+                public MemberSetRequest(FieldOrPropertyMemberInfo memberInfo, object value)
+                {
+                    _memberInfo = memberInfo;
+                    _value = value;
+                }
+
+                public FieldOrPropertyMemberInfo MemberInfo
+                {
+                    get { return _memberInfo; }
+                }
+
+                public object Value
+                {
+                    get { return _value; }
+                }
+            }
         }
     }
 
