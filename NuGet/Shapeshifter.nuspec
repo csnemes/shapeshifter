@@ -1,15 +1,15 @@
 <?xml version="1.0"?>
-<package >
+<package>
   <metadata>
     <id>Shapeshifter</id>
-    <version>1.2.0</version>
+    <version>1.3.0</version>
     <authors>csnemes</authors>
     <owners>csnemes</owners>
     <projectUrl>https://github.com/csnemes/shapeshifter</projectUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Shapeshifter is a serialization library for long-term data storage. It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.</description>
 	<summary>Shapeshifter is a JSON based serialization library for long-term data storage.</summary>
-    <releaseNotes>Initial release.</releaseNotes>
+    <releaseNotes>Bug fixes and some new features.</releaseNotes>
     <copyright>Copyright 2014</copyright>
     <tags>shapeshifter json serializer deserializer</tags>
     <dependencies>
