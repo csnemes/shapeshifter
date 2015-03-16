@@ -39,6 +39,15 @@ Version History:
   - Bugfix: Snapshot verbose flag did not list the assemblies processed
   - Small refactorings 
 
+*1.3.0
+  - Modified descendant search to include all visited types. This way ForAllDescendant custom serializers can work without explicitly adding search scope during serializer creation. The most visible effect of this change is that enums now will work properly :-)
+  - Bugfix Issue#5: snapshot.exe exits with -1 in case of error
+  - Snapshot.exe extended with 'view' verb. It can be used to list names and corresponding versions from the current snapshot
+  - Pretty formatting snapshot.exe generic type names  
+  - Snapshot.exe entended with 'delete' verb which can be used to delete snapshots from the snapshot history file.
+  - Snapshot.exe 'add' verb extended with a replace switch. It can be used to replace an existing snapshot in the snapshot history file.
+  - Issue#6: InstanceBuilder now works in a deferred mode. Fields can be overwritten before actual instance creation.
+  
 Notes:
 ---
 
