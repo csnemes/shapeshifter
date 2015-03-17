@@ -1,4 +1,4 @@
-Shapeshifter 1.2.0
+Shapeshifter 1.3.0
 ============
 Shapeshifter is a serialization library for long-term data storage. 
 It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.    
