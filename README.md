@@ -10,10 +10,6 @@ Compatibility:
 ---
   - .NET Framework 4.0+
 
-Current Release:
----
-  - This is the initial production release 
-
 To install:
 ---
   - using NuGet: Install-Package Shapeshifter
