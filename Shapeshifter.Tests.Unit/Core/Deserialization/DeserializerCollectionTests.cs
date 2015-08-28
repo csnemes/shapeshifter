@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using FluentAssertions;
 using NUnit.Framework;
 using Shapeshifter.Core;
@@ -53,7 +54,7 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
         }
 
         [Test]
-        public void AddTwoCustomDeserializers_Throws()
+        public void AddTwoCustomDeserializersForTheSameMethod_NotThrows()
         {
             var myCustomDeserializer1 = new CustomDeserializer("MyPackformatName", 1, null);
             var myCustomDeserializer2 = new CustomDeserializer("MyPackformatName", 1, null);
@@ -64,8 +65,30 @@ namespace Shapeshifter.Tests.Unit.Core.Deserialization
                     .Add(myCustomDeserializer1)
                     .Add(myCustomDeserializer2);
             };
+            action.ShouldNotThrow<ShapeshifterException>();
+        }
+
+        [Test]
+        public void AddTwoCustomDeserializersForDifferentMethods_Throws()
+        {
+
+            var method1 = typeof (DeserializerCollectionTests).GetMethod("Method1", BindingFlags.Instance | BindingFlags.NonPublic);
+            var method2 = typeof(DeserializerCollectionTests).GetMethod("Method2", BindingFlags.Instance | BindingFlags.NonPublic);
+
+            var myCustomDeserializer1 = new CustomDeserializer("MyPackformatName", 1, method1);
+            var myCustomDeserializer2 = new CustomDeserializer("MyPackformatName", 1, method2);
+
+            Action action = () =>
+            {
+                var deserializerCollection = (DeserializerCollection)DeserializerCollection.New
+                     .Add(myCustomDeserializer1)
+                     .Add(myCustomDeserializer2);
+            };
             action.ShouldThrow<ShapeshifterException>().Where(i => i.Id == Exceptions.DeserializerAlreadyExistsId);
         }
+
+        private void Method1() { }
+        private void Method2() { }
 
         [Test]
         public void AddTwoDefaultDeserializers_Throws()
