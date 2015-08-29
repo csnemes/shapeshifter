@@ -1,4 +1,4 @@
-Shapeshifter 1.2.0
+Shapeshifter 1.3.0
 ============
 Shapeshifter is a serialization library for long-term data storage. 
 It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.    
@@ -9,10 +9,6 @@ Should you have any question/problem send an email to csaba.nemes@outlook.com or
 Compatibility:
 ---
   - .NET Framework 4.0+
-
-Current Release:
----
-  - This is the initial production release 
 
 To install:
 ---
