@@ -1,4 +1,4 @@
-Shapeshifter 1.3.0
+Shapeshifter 1.3.1
 ============
 Shapeshifter is a serialization library for long-term data storage. 
 It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.    
@@ -44,6 +44,10 @@ Version History:
   - Snapshot.exe 'add' verb extended with a replace switch. It can be used to replace an existing snapshot in the snapshot history file.
   - Issue#6: InstanceBuilder now works in a deferred mode. Fields can be overwritten before actual instance creation.
   
+*1.3.1
+  - snapshot.exe compares existing snapshots in reverse order
+  - fixed issue of detecting the same deserializer twice
+
 Notes:
 ---
 
