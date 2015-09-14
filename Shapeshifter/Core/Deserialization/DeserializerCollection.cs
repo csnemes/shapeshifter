@@ -103,6 +103,11 @@ namespace Shapeshifter.Core.Deserialization
                     return otherCustomDeserializer;
                 }
 
+                if (customDeserializer.MethodInfo == otherCustomDeserializer.MethodInfo)
+                {
+                    return customDeserializer;
+                }
+
                 throw Exceptions.DeserializerAlreadyExists(customDeserializer);
             }
 

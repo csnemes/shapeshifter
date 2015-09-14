@@ -168,7 +168,7 @@ namespace Shapeshifter.SchemaComparison
         public SnapshotDifference CompareToBase(IEnumerable<Snapshot> snapshots)
         {
             SnapshotDifference result = SnapshotDifference.Empty;
-            foreach (Snapshot snapshot in snapshots)
+            foreach (Snapshot snapshot in snapshots.OrderByDescending(item => item.TakenDate))
             {
                 result = result.CombineWith(CompareToBase(snapshot));
             }
