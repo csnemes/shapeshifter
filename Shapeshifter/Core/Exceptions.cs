@@ -192,7 +192,7 @@ namespace Shapeshifter.Core
         public static Exception PackformatNameCollision(string packformatName, Type type)
         {
             return SafeCreateException(() => new ShapeshifterException(PackformatNameCollisionyId,
-                String.Format("Packformat name {0} is already in use, cannot use it for type {1}. Please use Shapeshifter attribute with Name property to specify a different name.",
+                String.Format("Packformat name {0} is already in use, cannot use it for type {1}. Please use ShapeshifterRoot attribute with Name property to specify a different name.",
                     packformatName, type.FullName)));
         }
 
