@@ -107,7 +107,7 @@ namespace Snapshot
             Console.WriteLine("The following differences are detected:");
             Console.WriteLine(difference.GetHumanReadableResult(_verbose));
 
-            if (haltOnDifference)
+            if (haltOnDifference && difference.HasMissingItem)
             {
                 Environment.Exit(1);
             }
