@@ -1,4 +1,4 @@
-Shapeshifter 1.3.1
+Shapeshifter 1.3.2
 ============
 Shapeshifter is a serialization library for long-term data storage. 
 It offers the ease of storing data in serialized (JSON based) form while helping you handle object graph changes.    
@@ -17,7 +17,7 @@ To install:
 
 To build:
 ---
-Use Visual Studio 2013
+Use Visual Studio 2015
 
 Version History:
 ---
@@ -48,6 +48,10 @@ Version History:
   - snapshot.exe compares existing snapshots in reverse order
   - fixed issue of detecting the same deserializer twice
 
+*1.3.2
+  - fixed issue with not detecting HasSet<T> data members
+  - fixed exit value of snapshot.exe
+  
 Notes:
 ---
 
