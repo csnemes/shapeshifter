@@ -65,6 +65,7 @@
     <Compile Include="RoundtripTests\ComplexStructure\Product.cs" />
     <Compile Include="RoundtripTests\CustomSerializerForGenericDescendantsTests.cs" />
     <Compile Include="RoundtripTests\EnumConverterTests.cs" />
+    <Compile Include="RoundtripTests\HashSetTests.cs" />
     <Compile Include="RoundtripTests\IEnumerableImplementingClassTests.cs" />
     <Compile Include="RoundtripTests\ListBasedClassTests.cs" />
     <Compile Include="RoundtripTests\NonStaticCustomDeserializerTests.cs" />

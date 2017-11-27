@@ -58,6 +58,44 @@ namespace Shapeshifter.Tests.Unit.RoundtripTests
             unpacked.PersonList.Should().Equal(personList, (p1, p2) => p1.Name == p2.Name);
         }
 
+        [Test]
+        public void DirectIntegerList_MultiElementTest()
+        {
+            var machine = GetSerializer<List<int>>();
+            var source = new List<int>() { 2, 4, 8 };
+            string packed = machine.Serialize(source);
+            var unpacked = machine.Deserialize(packed);
+            unpacked.Should().NotBeNull();
+            unpacked.Should().Equal(new List<int>() { 2, 4, 8 });
+        }
+
+
+        [Test]
+        public void ReproducedLiveIssueWithListsWithinDictionary()
+        {
+            var machine = GetSerializer<DictionaryIssueTestClass>();
+            var source = new DictionaryIssueTestClass();
+            source.Dict.Add("key", "stringValue");
+            source.Dict.Add("key2", new List<int>() { 2, 4, 8 });
+            source.Dict.Add("key3", new List<Person>() { new Person() { Name = "Joe" }, new Person() { Name = "Jim"} });
+
+            string packed = machine.Serialize(source);
+            var unpacked = machine.Deserialize(packed);
+            unpacked.Should().NotBeNull();
+        }
+
+        [DataContract]
+        [ShapeshifterRoot]
+        private class DictionaryIssueTestClass
+        {
+            public DictionaryIssueTestClass()
+            {
+                Dict = new Dictionary<string, object>();
+            }
+
+            public Dictionary<string, object> Dict { get; set; }             
+        }
+
         [DataContract]
         [ShapeshifterRoot]
         private class ClassWithNumericLists

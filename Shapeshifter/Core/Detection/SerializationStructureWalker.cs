@@ -84,7 +84,8 @@ namespace Shapeshifter.Core.Detection
                 else if (candidateType.IsGenericType)
                 {
                     Type genericDefType = candidateType.GetGenericTypeDefinition();
-                    if (genericDefType == typeof(List<>) || genericDefType == typeof(Collection<>) || genericDefType == typeof(IEnumerable<>))
+                    if (genericDefType == typeof(HashSet<>) || genericDefType == typeof(List<>) 
+                        || genericDefType == typeof(Collection<>) || genericDefType == typeof(IEnumerable<>))
                     {
                         InternalWalkType(candidateType.GetGenericArguments()[0]);
                     }
